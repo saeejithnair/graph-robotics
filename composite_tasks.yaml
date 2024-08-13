@@ -1,0 +1,41 @@
+composite_tasks:
+  - name: PrepareCoffee
+    description: Place a mug under the coffee machine nozzle and press the start button to make coffee.
+  - name: DryDishes
+    description: Set bowls and cups on the counter to dry, after they have been washed.
+  - name: RestockPantry
+    description: Group all canned foods together on a shelf in the cabinet, right next to existing canned foods.
+  - name: ArrangeVegetables
+    description: Place vegetables from the sink onto the cutting board on the counter, to prepare for chopping them.
+  - name: CheesyBread
+    description: Pick up the wedge of cheese and place it on the slice of bread.
+  - name: MicrowaveThawing
+    description: Pick frozen food and place in microwave, then turn on microwave to thaw the food.
+  - name: FillKettle
+    description: Place an empty kettle from the cabinet and place in the sink to be filled with water.
+  - name: PrepMarinatingMeat
+    description: Place steak and condiments on cutting board for marination.
+  - name: DateNite
+    description: Pick up candles and a bottle of wine and place them in the dining area for date night.
+  - name: BowlAndCup
+    description: An empty bowl and an empty cup are left on the island. Stack the cup inside the bowl and move the stacked items to the counter.
+  - name: PrepForSanitizing
+    description: Organize cleaning supplies on the counter for easy access.
+  - name: MakeFruitBowl
+    description: Gather various fruits into a bowl for serving.
+  - name: PantryMishap
+    description: Sort the canned and packaged foods into a drawer while placing the vegetables on a nearby counter.
+  - name: DrainVeggies
+    description: Dump the veggies in the pot into the sink to drain. Turn off the faucet, and place the pot back on the counter.
+  - name: SetupFrying
+    description: Retrieve a pan and transport it to the stove, then turn on the stove.
+  - name: HeatMug
+    description: Place a mug in the microwave and then turn on the microwave.
+  - name: ColorfulSalsa
+    description: Create salsa by gathering specific vegetables from a mixed pile on the counter and placing them onto the cutting board.
+  - name: OrganizeBakingIngredients
+    description: Obtain dairy ingredients and place them together for baking.
+  - name: PlaceFoodInBowls
+    description: Arrange bowls on the counter and place an assortment of vegetables in each bowl.
+  - name: SteamInMicrowave
+    description: Put a bowl of vegetables inside the microwave to steam them there.
