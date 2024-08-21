@@ -14,10 +14,10 @@ os.environ["MUJOCO_GL"] = "osmesa"
 
 @dataclass
 class Args:
-    environment: str = "Lift"
+    environment: str = "Stack"
     robots: str = "Panda"
-    camera: str = "agentview"
-    video_path: str = "panda_lift_video"
+    camera: str = "frontview"
+    video_path: str = "panda_stack_video"
     timesteps: int = 500
     height: int = 512
     width: int = 512
@@ -32,7 +32,7 @@ def main(args: Args):
         has_offscreen_renderer=True,
         ignore_done=True,
         use_camera_obs=True,
-        use_object_obs=False,
+        use_object_obs=True,
         camera_names=args.camera,
         camera_heights=args.height,
         camera_widths=args.width,
@@ -40,6 +40,9 @@ def main(args: Args):
 
     obs = env.reset()
     ndim = env.action_dim
+
+    # Print available observation keys
+    print("Available observation keys:", obs.keys())
 
     # Create a video writer with imageio
     video_path = f"{args.video_path}_{args.camera}.mp4"
@@ -49,6 +52,21 @@ def main(args: Args):
         # Run a uniformly random agent
         action = np.random.randn(ndim)
         obs, reward, done, info = env.step(action)
+
+        # Print gripper position and pose
+        gripper_pos = obs["robot0_eef_pos"]
+        gripper_quat = obs["robot0_eef_quat"]
+        print(f"Gripper position: {gripper_pos}")
+        print(f"Gripper orientation (quaternion): {gripper_quat}")
+        # print(f"{obs.keys()}")
+
+        # Print object positions and poses
+        for obj_name in ["cubeA", "cubeB"]:
+            if f"{obj_name}_pos" in obs and f"{obj_name}_quat" in obs:
+                obj_pos = obs[f"{obj_name}_pos"]
+                obj_quat = obs[f"{obj_name}_quat"]
+                print(f"{obj_name} position: {obj_pos}")
+                print(f"{obj_name} orientation (quaternion): {obj_quat}")
 
         # Dump a frame from every K frames
         if i % args.skip_frame == 0:
