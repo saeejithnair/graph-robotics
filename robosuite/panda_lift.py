@@ -17,7 +17,7 @@ class Args:
     environment: str = "Lift"
     robots: str = "Panda"
     camera: str = "agentview"
-    video_path: str = "panda_lift_video.mp4"
+    video_path: str = "panda_lift_video"
     timesteps: int = 500
     height: int = 512
     width: int = 512
@@ -42,7 +42,8 @@ def main(args: Args):
     ndim = env.action_dim
 
     # Create a video writer with imageio
-    writer = imageio.get_writer(args.video_path, fps=20)
+    video_path = f"{args.video_path}_{args.camera}.mp4"
+    writer = imageio.get_writer(video_path, fps=20)
 
     for i in range(args.timesteps):
         # Run a uniformly random agent
@@ -60,7 +61,7 @@ def main(args: Args):
 
     env.close()
     writer.close()
-    print(f"Video saved to {args.video_path}")
+    print(f"Video saved to {video_path}")
 
 if __name__ == "__main__":
     tyro.cli(main)
