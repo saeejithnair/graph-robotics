@@ -12,6 +12,7 @@ macros.IMAGE_CONVENTION = "opencv"
 # Set the MUJOCO_GL environment variable to use a software renderer
 os.environ["MUJOCO_GL"] = "osmesa"
 
+
 @dataclass
 class Args:
     environment: str = "Stack"
@@ -23,12 +24,13 @@ class Args:
     width: int = 512
     skip_frame: int = 1
 
+
 def main(args: Args):
     # Initialize environment with offscreen renderer
     env = make(
         args.environment,
         robots=args.robots,
-        has_renderer=False,
+        has_renderer=True,
         has_offscreen_renderer=True,
         ignore_done=True,
         use_camera_obs=True,
@@ -36,6 +38,7 @@ def main(args: Args):
         camera_names=args.camera,
         camera_heights=args.height,
         camera_widths=args.width,
+        camera_segmentations="instance",
     )
 
     obs = env.reset()
@@ -56,21 +59,22 @@ def main(args: Args):
         # Print gripper position and pose
         gripper_pos = obs["robot0_eef_pos"]
         gripper_quat = obs["robot0_eef_quat"]
-        print(f"Gripper position: {gripper_pos}")
-        print(f"Gripper orientation (quaternion): {gripper_quat}")
+        # print(f"Gripper position: {gripper_pos}")
+        # print(f"Gripper orientation (quaternion): {gripper_quat}")
         # print(f"{obs.keys()}")
 
         # Print object positions and poses
-        for obj_name in ["cubeA", "cubeB"]:
-            if f"{obj_name}_pos" in obs and f"{obj_name}_quat" in obs:
-                obj_pos = obs[f"{obj_name}_pos"]
-                obj_quat = obs[f"{obj_name}_quat"]
-                print(f"{obj_name} position: {obj_pos}")
-                print(f"{obj_name} orientation (quaternion): {obj_quat}")
+        # for obj_name in ["cubeA", "cubeB"]:
+        #     if f"{obj_name}_pos" in obs and f"{obj_name}_quat" in obs:
+        #         obj_pos = obs[f"{obj_name}_pos"]
+        #         obj_quat = obs[f"{obj_name}_quat"]
+        # print(f"{obj_name} position: {obj_pos}")
+        # print(f"{obj_name} orientation (quaternion): {obj_quat}")
 
         # Dump a frame from every K frames
         if i % args.skip_frame == 0:
             frame = obs[args.camera + "_image"]
+            frame = np.uint8(frame * 255)
             writer.append_data(frame)
             print(f"Saving frame #{i}")
 
@@ -80,6 +84,7 @@ def main(args: Args):
     env.close()
     writer.close()
     print(f"Video saved to {video_path}")
+
 
 if __name__ == "__main__":
     tyro.cli(main)
