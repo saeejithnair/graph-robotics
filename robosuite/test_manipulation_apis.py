@@ -20,8 +20,9 @@ def run_atomic_tasks(env, render=True):
         # test_move_to_position,
         # test_rotate_gripper,
         # test_tilt_gripper,
-        # test_align_gripper,
-        # test_approach_object,
+        # test_align_gripper_vertical,
+        test_align_gripper_horizontal,
+        test_approach_object,
         test_pick_and_place,
         test_trajectory,
     ]
@@ -135,30 +136,40 @@ def test_tilt_gripper(sim_env, render):
     print("--- Gripper Tilt Test Completed ---\n")
 
 
-def test_align_gripper(sim_env, render):
+def test_align_gripper_vertical(sim_env, render, setup=True):
+    if setup:
+        # Setup so that we can test from a horizontal state
+        test_align_gripper_horizontal(sim_env, render, setup=False)
     print("Aligning gripper vertically...")
     current_pose = sim_env.get_gripper_pose()
     print(f"[DEBUG] Current pose before vertical alignment: {current_pose}")
     vertical_quat = sim_env.get_vertical_ori()
     print(f"[DEBUG] Vertical orientation quaternion: {vertical_quat}")
     sim_env.move_to_pose(Pose(current_pose.pos, vertical_quat))
+    sim_env.null_step(10)  # Allow time for the movement to complete
     current_pose = sim_env.get_gripper_pose()
     print(f"[DEBUG] Current pose after vertical alignment: {current_pose}")
     if render:
         for _ in range(100):
             sim_env.step(np.zeros(7))
 
+
+def test_align_gripper_horizontal(sim_env, render, setup=True):
+    if setup:
+        # Setup so that we can test from a vertical state
+        test_align_gripper_vertical(sim_env, render, setup=False)
     print("Aligning gripper horizontally...")
     current_pose = sim_env.get_gripper_pose()
     print(f"[DEBUG] Current pose before horizontal alignment: {current_pose}")
     horizontal_quat = sim_env.get_horizontal_ori()
     print(f"[DEBUG] Horizontal orientation quaternion: {horizontal_quat}")
     sim_env.move_to_pose(Pose(current_pose.pos, horizontal_quat))
+    sim_env.null_step(100)  # Allow time for the movement to complete
     current_pose = sim_env.get_gripper_pose()
     print(f"[DEBUG] Current pose after horizontal alignment: {current_pose}")
+
     if render:
-        for _ in range(100):
-            sim_env.step(np.zeros(7))
+        sim_env.null_step(100)
 
 
 def test_approach_object(sim_env, render):
@@ -177,35 +188,44 @@ def test_approach_object(sim_env, render):
 def test_pick_and_place(sim_env, render):
     print("Performing a pick and place task...")
 
-    # Approach the object
-    sim_env.approach_object("cube", distance=0.05)
-
     # Align gripper with the object
     object_pose = sim_env.get_object_pose("cube")
-    sim_env.move_to_pose(Pose(object_pose.pos, sim_env.get_vertical_ori()))
+    print(f"[DEBUG] Object pose: {object_pose}. Align gripper with object...")
+    sim_env.move_to_pose(Pose(object_pose.pos + np.array([0, 0, 0.05]), None))
+    sim_env.null_step()
+
+    # Approach the object
+    sim_env.approach_object("cube", distance=0.05)
+    print("Approached object...")
+    sim_env.null_step()
 
     # Move to grasp position
-    grasp_pose = Pose(
-        object_pose.pos + np.array([0, 0, 0.02]), sim_env.get_vertical_ori()
-    )
+    grasp_pose = Pose(object_pose.pos, None)
+    print(f"[DEBUG] Grasp pose: {grasp_pose}, moving to grasp position...")
     sim_env.move_to_pose(grasp_pose)
+    sim_env.null_step()
 
     # Close gripper to grasp object
-    sim_env.close_gripper(speed=0.05)
+    print("Closing gripper to grasp object...")
+    sim_env.close_gripper()
+    sim_env.null_step()
 
     # Lift object
+    print("Lifting object...")
     sim_env.lift_object(height=0.3)
+    sim_env.null_step()
 
     # Move to target position
     target_pos = np.array([0.3, -0.2, 0.3])
+    print(f"Moving to target position: {target_pos}")
     sim_env.move_to_pose(Pose(target_pos, sim_env.get_vertical_ori()))
+    sim_env.null_step()
 
     # Place object
+    print("Placing object...")
     sim_env.place_object(target_pos - np.array([0, 0, 0.05]))
 
-    if render:
-        for _ in range(100):
-            sim_env.step(np.zeros(7))
+    sim_env.null_step()
 
 
 def test_trajectory(sim_env, render):
