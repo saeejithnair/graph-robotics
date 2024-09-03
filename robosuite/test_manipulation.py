@@ -46,7 +46,7 @@ def create_release_action(env):
     return action
 
 
-def move_to_position(env, obs, target_pos, threshold=0.01, max_steps=100):
+def move_to_pose(env, obs, target_pos, threshold=0.01, max_steps=100):
     for _ in range(max_steps):
         action = create_move_action(env, obs, target_pos)
         obs, reward, done, info = env.step(action)
@@ -65,12 +65,12 @@ def move_to_position(env, obs, target_pos, threshold=0.01, max_steps=100):
 def pick_up_object(env, obs, object_pos):
     # Move above the object
     above_pos = object_pos + np.array([0, 0, 0.05])  # 5cm above the object
-    obs, success = move_to_position(env, obs, above_pos)
+    obs, success = move_to_pose(env, obs, above_pos)
     if not success:
         return obs, False
 
     # Move down to the object
-    obs, success = move_to_position(env, obs, object_pos)
+    obs, success = move_to_pose(env, obs, object_pos)
     if not success:
         return obs, False
 
@@ -86,7 +86,7 @@ def pick_up_object(env, obs, object_pos):
 
         # Lift the object
         lift_pos = object_pos + np.array([0, 0, 0.1])  # 10cm above the object
-        obs, success = move_to_position(env, obs, lift_pos)
+        obs, success = move_to_pose(env, obs, lift_pos)
         return obs, success
     else:
         logger.error("Failed to grasp the object")
@@ -96,12 +96,12 @@ def pick_up_object(env, obs, object_pos):
 def place_object(env, obs, target_pos):
     # Move above the target position
     above_pos = target_pos + np.array([0, 0, 0.1])  # 10cm above the target
-    obs, success = move_to_position(env, obs, above_pos)
+    obs, success = move_to_pose(env, obs, above_pos)
     if not success:
         return obs, False
 
     # Move down to the target position
-    obs, success = move_to_position(env, obs, target_pos)
+    obs, success = move_to_pose(env, obs, target_pos)
     if not success:
         return obs, False
 
@@ -112,7 +112,7 @@ def place_object(env, obs, target_pos):
         env.render()
 
     # Move up
-    obs, _ = move_to_position(env, obs, above_pos)
+    obs, _ = move_to_pose(env, obs, above_pos)
 
     logger.info("Object placed at target position")
     return obs, True

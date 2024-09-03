@@ -17,11 +17,11 @@ def run_atomic_tasks(env, render=True):
 
     tasks = [
         # test_open_close_gripper,
-        test_move_to_position,
-        test_rotate_gripper,
-        test_tilt_gripper,
-        test_align_gripper,
-        test_approach_object,
+        # test_move_to_position,
+        # test_rotate_gripper,
+        # test_tilt_gripper,
+        # test_align_gripper,
+        # test_approach_object,
         test_pick_and_place,
         test_trajectory,
     ]
@@ -30,7 +30,7 @@ def run_atomic_tasks(env, render=True):
         print(f"Running task: {task.__name__}")
         sim_env.reset()
         task(sim_env, render)
-        input("Press Enter to continue to the next task...")
+        # input("Press Enter to continue to the next task...")
 
 
 def test_open_close_gripper(sim_env, render):
@@ -49,53 +49,113 @@ def test_move_to_position(sim_env, render):
     print(poses)
     target_pose = poses["cube"]
     target_pose.pos[2]
+    target_pose.quat = None
     print(f"Target pose: {target_pose}")
-    sim_env.move_to_position(target_pose)
+    sim_env.move_to_pose(target_pose)
     if render:
         for _ in range(100):
             sim_env.step(np.zeros(7))
 
 
+def degs_to_rads(degs):
+    return np.deg2rad(degs)
+
+
+def rads_to_degs(rads):
+    return np.rad2deg(rads)
+
+
 def test_rotate_gripper(sim_env, render):
     print("Rotating gripper around z-axis...")
     current_pose = sim_env.get_gripper_pose()
-    rotated_quat = sim_env.rotate_around_gripper_z_axis(90)
-    sim_env.move_to_position(Pose(current_pose.pos, None))
-    sim_env.rotate_to_orientation(rotated_quat)
+    rotated_quat = sim_env.rotate_around_gripper_z_axis(89)
+    sim_env.move_to_pose(Pose(current_pose.pos, rotated_quat))
+
+    if render:
+        for _ in range(100):
+            sim_env.step(np.zeros(7))
+    print("Rotating gripper back around z-axis...")
+    current_pose = sim_env.get_gripper_pose()
+    rotated_quat = sim_env.rotate_around_gripper_z_axis(-89)
+    sim_env.move_to_pose(Pose(current_pose.pos, rotated_quat))
     if render:
         for _ in range(100):
             sim_env.step(np.zeros(7))
 
 
 def test_tilt_gripper(sim_env, render):
-    print("Tilting gripper up and down...")
-    current_pose = sim_env.get_gripper_pose()
-    tilted_quat = sim_env.tilt_updown(30)
-    sim_env.move_to_position(Pose(current_pose.pos, tilted_quat))
-    if render:
-        for _ in range(100):
-            sim_env.step(np.zeros(7))
+    print("\n--- Testing Gripper Tilt ---")
 
-    print("Tilting gripper left and right...")
+    def render_steps(steps=100):
+        if render:
+            print(f"Rendering for {steps} steps...")
+            for _ in range(steps):
+                sim_env.step(np.zeros(7))
+
+    # Get the initial gripper pose
+    initial_pose = sim_env.get_gripper_pose()
+    print(
+        f"[DEBUG] Initial gripper pose: position = {initial_pose.pos}, orientation = {initial_pose.quat}"
+    )
+
+    # Test tilt up
+    print("\nTilting gripper up by 30 degrees...")
+    tilted_quat = sim_env.tilt_updown(30)
+    tilted_pose = Pose(initial_pose.pos, tilted_quat)
+    print(f"[DEBUG] Tilted pose (up): {tilted_pose}")
+    sim_env.move_to_pose(tilted_pose)
+    current_pose = sim_env.get_gripper_pose()
+    print(f"[DEBUG] Current pose after tilt up: {current_pose}")
+    render_steps()
+
+    # Undo tilt up
+    print("\nReturning gripper to original orientation...")
+    sim_env.move_to_pose(initial_pose)
+    current_pose = sim_env.get_gripper_pose()
+    print(f"[DEBUG] Current pose after undoing tilt: {current_pose}")
+    render_steps()
+
+    # Test tilt left
+    print("\nTilting gripper left by 30 degrees...")
     tilted_quat = sim_env.tilt_leftright(30)
-    sim_env.move_to_position(Pose(current_pose.pos, tilted_quat))
-    if render:
-        for _ in range(100):
-            sim_env.step(np.zeros(7))
+    tilted_pose = Pose(initial_pose.pos, tilted_quat)
+    print(f"[DEBUG] Tilted pose (left): {tilted_pose}")
+    sim_env.move_to_pose(tilted_pose)
+    current_pose = sim_env.get_gripper_pose()
+    print(f"[DEBUG] Current pose after tilt left: {current_pose}")
+    render_steps()
+
+    # Undo tilt left
+    print("\nReturning gripper to original orientation...")
+    sim_env.move_to_pose(initial_pose)
+    current_pose = sim_env.get_gripper_pose()
+    print(f"[DEBUG] Final gripper pose: {current_pose}")
+    render_steps()
+
+    print("--- Gripper Tilt Test Completed ---\n")
 
 
 def test_align_gripper(sim_env, render):
     print("Aligning gripper vertically...")
     current_pose = sim_env.get_gripper_pose()
+    print(f"[DEBUG] Current pose before vertical alignment: {current_pose}")
     vertical_quat = sim_env.get_vertical_ori()
-    sim_env.move_to_position(Pose(current_pose.pos, vertical_quat))
+    print(f"[DEBUG] Vertical orientation quaternion: {vertical_quat}")
+    sim_env.move_to_pose(Pose(current_pose.pos, vertical_quat))
+    current_pose = sim_env.get_gripper_pose()
+    print(f"[DEBUG] Current pose after vertical alignment: {current_pose}")
     if render:
         for _ in range(100):
             sim_env.step(np.zeros(7))
 
     print("Aligning gripper horizontally...")
+    current_pose = sim_env.get_gripper_pose()
+    print(f"[DEBUG] Current pose before horizontal alignment: {current_pose}")
     horizontal_quat = sim_env.get_horizontal_ori()
-    sim_env.move_to_position(Pose(current_pose.pos, horizontal_quat))
+    print(f"[DEBUG] Horizontal orientation quaternion: {horizontal_quat}")
+    sim_env.move_to_pose(Pose(current_pose.pos, horizontal_quat))
+    current_pose = sim_env.get_gripper_pose()
+    print(f"[DEBUG] Current pose after horizontal alignment: {current_pose}")
     if render:
         for _ in range(100):
             sim_env.step(np.zeros(7))
@@ -103,7 +163,12 @@ def test_align_gripper(sim_env, render):
 
 def test_approach_object(sim_env, render):
     print("Approaching an object...")
-    sim_env.approach_object("cubeA", distance=0.05)
+    object_pose = sim_env.get_object_pose("cube")
+    print(f"[DEBUG] Object pose: {object_pose}")
+    if object_pose is None:
+        print("[ERROR] Object 'cubeA' not found. Skipping approach test.")
+        return
+    sim_env.approach_object("cube", distance=0.05)
     if render:
         for _ in range(100):
             sim_env.step(np.zeros(7))
@@ -113,17 +178,17 @@ def test_pick_and_place(sim_env, render):
     print("Performing a pick and place task...")
 
     # Approach the object
-    sim_env.approach_object("cubeA", distance=0.05)
+    sim_env.approach_object("cube", distance=0.05)
 
     # Align gripper with the object
-    object_pose = sim_env.get_object_pose("cubeA")
-    sim_env.move_to_position(Pose(object_pose.pos, sim_env.get_vertical_ori()))
+    object_pose = sim_env.get_object_pose("cube")
+    sim_env.move_to_pose(Pose(object_pose.pos, sim_env.get_vertical_ori()))
 
     # Move to grasp position
     grasp_pose = Pose(
         object_pose.pos + np.array([0, 0, 0.02]), sim_env.get_vertical_ori()
     )
-    sim_env.move_to_position(grasp_pose)
+    sim_env.move_to_pose(grasp_pose)
 
     # Close gripper to grasp object
     sim_env.close_gripper(speed=0.05)
@@ -133,7 +198,7 @@ def test_pick_and_place(sim_env, render):
 
     # Move to target position
     target_pos = np.array([0.3, -0.2, 0.3])
-    sim_env.move_to_position(Pose(target_pos, sim_env.get_vertical_ori()))
+    sim_env.move_to_pose(Pose(target_pos, sim_env.get_vertical_ori()))
 
     # Place object
     sim_env.place_object(target_pos - np.array([0, 0, 0.05]))

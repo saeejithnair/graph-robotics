@@ -44,9 +44,12 @@ class SimEnv:
     def get_gripper_width(self) -> float:
         return self.obs["robot0_gripper_qpos"][0]
 
-    def get_object_pose(self, object_id: str) -> Pose:
+    def get_object_pose(self, object_id: str) -> Optional[Pose]:
         obj_pos = self.obs.get(f"{object_id}_pos")
         obj_quat = self.obs.get(f"{object_id}_quat")
+        if obj_pos is None or obj_quat is None:
+            print(f"[WARNING] Object {object_id} not found in the environment.")
+            return None
         return Pose(obj_pos, obj_quat)
 
     def get_all_object_poses(self) -> Dict[str, Pose]:
@@ -86,7 +89,7 @@ class SimEnv:
                 return True
         return False
 
-    def move_to_position(self, target_pose: Pose, max_steps: int = 1000) -> bool:
+    def move_to_pose(self, target_pose: Pose, max_steps: int = 1000) -> bool:
         # Move along each axis
         for i in range(3):  # 0: X, 1: Y, 2: Z
             target_pos = self.get_gripper_pose().pos.copy()
@@ -97,10 +100,8 @@ class SimEnv:
                 print(f"Failed to move along axis {i}")
                 return False
 
-        return True
-
         # # Rotate to target orientation
-        # return self.rotate_to_orientation(target_pose.quat, max_steps)
+        return self.rotate_to_orientation(target_pose.quat, max_steps)
 
     def move_along_axis(
         self, target_pos: np.ndarray, axis: int, max_steps: int
@@ -124,17 +125,29 @@ class SimEnv:
     def rotate_to_orientation(
         self, target_quat: np.ndarray, max_steps: int = 1000
     ) -> bool:
+        if target_quat is None:
+            return True
+
         for _ in range(max_steps):
             current_quat = self.get_gripper_pose().quat
             if np.allclose(current_quat, target_quat, atol=1e-3):
                 return True
 
-            ori_error = quat2axisangle(
-                quat_multiply(target_quat, quat_conjugate(current_quat))
-            )
+            # Calculate the difference between current and target orientation
+            diff_quat = quat_multiply(target_quat, quat_conjugate(current_quat))
 
-            action = np.zeros(7)
-            action[3:6] = ori_error
+            # Convert to axis-angle representation
+            axis_angle = quat2axisangle(diff_quat)
+
+            # Limit the maximum rotation per step
+            max_rotation = 0.1  # radians
+            if np.linalg.norm(axis_angle) > max_rotation:
+                axis_angle = axis_angle / np.linalg.norm(axis_angle) * max_rotation
+
+            # Create an action to rotate towards the target orientation
+            action = np.zeros(7)  # Assuming 7 DoF robot
+            action[3:6] = axis_angle
+
             self.step(action)
 
         return False
@@ -143,7 +156,7 @@ class SimEnv:
         self, fingertip_pos: np.ndarray, tar_quat: np.ndarray
     ) -> bool:
         ee_pos = self.fingertip_pos_to_ee(fingertip_pos, tar_quat)
-        return self.move_to_position(Pose(ee_pos, tar_quat))
+        return self.move_to_pose(Pose(ee_pos, tar_quat))
 
     def fingertip_pos_to_ee(
         self, fingertip_pos: np.ndarray, ee_quat: np.ndarray
@@ -173,6 +186,7 @@ class SimEnv:
     def rotate_around_gripper_z_axis(
         self, angle: float, quat: Optional[np.ndarray] = None
     ) -> np.ndarray:
+        angle = np.clip(angle, -89, 89)
         theta_rad = np.radians(angle)
         cos_theta, sin_theta = np.cos(theta_rad), np.sin(theta_rad)
         r_gd = np.array(
@@ -187,40 +201,49 @@ class SimEnv:
         return mat2quat(r_bd)
 
     def tilt_updown(self, degrees: float) -> np.ndarray:
-        current_pose = self.get_gripper_pose()
-        g_z = self.extract_z_axis(current_pose.quat)
-        g_z[2] = 0
-        g_x = np.array((g_z[1], -g_z[0], 0))
-        g_y = np.cross(g_z, g_x)
-        g_x, g_y, g_z = [v / np.linalg.norm(v) for v in (g_x, g_y, g_z)]
-        r_b = np.column_stack((g_x, g_y, g_z))
-        r_bs = r_b.T
-        mat_g_in_s = quat2mat(current_pose.quat)
-        mat_g_in_b = r_bs @ mat_g_in_s
-        euler_g_in_b = Rotation.from_matrix(mat_g_in_b).as_euler("xyz")
-        angle = np.radians(degrees)
-        delta_euler = np.array((angle, 0.0, 0.0))
-        new_euler = euler_g_in_b + delta_euler
-        new_quat_g_in_b = Rotation.from_euler("xyz", new_euler).as_quat()
-        new_mat_g_in_b = quat2mat(new_quat_g_in_b)
-        new_mat_g_in_s = r_b @ new_mat_g_in_b
-        return mat2quat(new_mat_g_in_s)
+        print(f"[DEBUG] Tilting gripper up/down by {degrees} degrees")
+        current_quat = self.get_gripper_pose().quat
+        print(f"[DEBUG] Current gripper quaternion: {current_quat}")
+
+        # Create a rotation around the Y-axis (which should be the gripper's local X-axis)
+        tilt_rotation = Rotation.from_euler("y", np.radians(degrees))
+
+        # Apply this rotation to the current orientation
+        current_rotation = Rotation.from_quat(current_quat)
+        new_rotation = current_rotation * tilt_rotation
+
+        new_quat = new_rotation.as_quat()
+        print(f"[DEBUG] New gripper quaternion after tilt: {new_quat}")
+        return new_quat
 
     def tilt_leftright(self, degrees: float) -> np.ndarray:
-        current_pose = self.get_gripper_pose()
-        current_euler = Rotation.from_quat(current_pose.quat).as_euler("xyz")
-        angle = np.radians(degrees)
-        delta_euler = np.array((0.0, 0.0, angle))
-        new_euler = current_euler + delta_euler
-        return Rotation.from_euler("xyz", new_euler).as_quat()
+        print(f"[DEBUG] Tilting gripper left/right by {degrees} degrees")
+        current_quat = self.get_gripper_pose().quat
+        print(f"[DEBUG] Current gripper quaternion: {current_quat}")
+
+        # Create a rotation around the Z-axis
+        tilt_rotation = Rotation.from_euler("z", np.radians(degrees))
+
+        # Apply this rotation to the current orientation
+        current_rotation = Rotation.from_quat(current_quat)
+        new_rotation = current_rotation * tilt_rotation
+
+        new_quat = new_rotation.as_quat()
+        print(f"[DEBUG] New gripper quaternion after tilt: {new_quat}")
+        return new_quat
 
     def align_z_axis_with_vector(
         self, z_axis: np.ndarray, finger_plane: str = "vertical"
     ) -> np.ndarray:
-        g_z = z_axis / np.linalg.norm(z_axis)
+        g_z = z_axis / (
+            np.linalg.norm(z_axis) + 1e-10
+        )  # Add small epsilon to avoid division by zero
+
         if finger_plane == "horizontal":
             g_x = np.array([0.0, 0.0, 1.0])
             g_y = np.cross(g_z, g_x)
+            if np.allclose(g_y, 0):
+                g_y = np.array([0.0, 1.0, 0.0])
         elif finger_plane == "vertical":
             g_y = (
                 np.array([0.0, 0.0, 1.0])
@@ -228,21 +251,43 @@ class SimEnv:
                 else np.array([0.0, 0.0, -1.0])
             )
             g_x = np.cross(g_y, g_z)
+            if np.allclose(g_x, 0):
+                g_x = np.array([1.0, 0.0, 0.0])
+
         g_y = np.cross(g_z, g_x)
-        g_x, g_y = [v / np.linalg.norm(v) for v in (g_x, g_y)]
+
+        # Normalize g_x and g_y, handling zero vectors
+        g_x = g_x / (np.linalg.norm(g_x) + 1e-10)
+        g_y = g_y / (np.linalg.norm(g_y) + 1e-10)
+
         r_matrix = np.column_stack((g_x, g_y, g_z))
+
+        # Ensure the matrix is orthogonal
+        u, _, vt = np.linalg.svd(r_matrix)
+        r_matrix = u @ vt
+
         return self.rotate_around_gripper_z_axis(45, mat2quat(r_matrix))
 
     def get_horizontal_ori(self) -> np.ndarray:
+        print("[DEBUG] Entering get_horizontal_ori")
         current_z_axis = self.extract_z_axis(self.get_gripper_pose().quat)
+        print(f"[DEBUG] Current z-axis: {current_z_axis}")
         if np.abs(current_z_axis[2]) > 0.9:
             target_z_axis = np.array((1.0, 0.0, 0.0))
         else:
             current_z_axis[2] = 0.0
-            target_z_axis = current_z_axis / np.linalg.norm(current_z_axis)
+            norm = np.linalg.norm(current_z_axis)
+            if norm < 1e-6:
+                target_z_axis = np.array((1.0, 0.0, 0.0))
+            else:
+                target_z_axis = current_z_axis / norm
             target_z_axis = -target_z_axis if target_z_axis[0] < 0 else target_z_axis
+        print(f"[DEBUG] Target z-axis: {target_z_axis}")
         quat_tmp = self.align_z_axis_with_vector(target_z_axis)
-        return self.rotate_around_gripper_z_axis(-90, quat_tmp)
+        print(f"[DEBUG] Temporary quaternion: {quat_tmp}")
+        result = self.rotate_around_gripper_z_axis(-90, quat_tmp)
+        print(f"[DEBUG] Final result: {result}")
+        return result
 
     def get_vertical_ori(self) -> np.ndarray:
         return self.align_z_axis_with_vector(np.array((0.0, 0.0, -1.0)))
@@ -251,27 +296,30 @@ class SimEnv:
         self, object_id: str, distance: float = 0.05, speed: float = 0.1
     ) -> bool:
         object_pose = self.get_object_pose(object_id)
+        if object_pose is None or object_pose.pos is None:
+            print(f"[ERROR] Object {object_id} not found or has invalid position.")
+            return False
         gripper_pose = self.get_gripper_pose()
         direction = object_pose.pos - gripper_pose.pos
         direction_norm = direction / np.linalg.norm(direction)
         target_pos = object_pose.pos - direction_norm * distance
-        return self.move_to_pose(Pose(target_pos, gripper_pose.quat), speed)
+        return self.move_to_pose(Pose(target_pos, gripper_pose.quat))
 
     def lift_object(self, height: float, speed: float = 0.1) -> bool:
         current_pose = self.get_gripper_pose()
         target_pos = current_pose.pos.copy()
         target_pos[2] = height
-        return self.move_to_pose(Pose(target_pos, current_pose.quat), speed)
+        return self.move_to_pose(Pose(target_pos, current_pose.quat))
 
     def place_object(self, target_pos: np.ndarray, speed: float = 0.1) -> bool:
         current_pose = self.get_gripper_pose()
-        if not self.move_to_pose(Pose(target_pos, current_pose.quat), speed):
+        if not self.move_to_pose(Pose(target_pos, current_pose.quat)):
             return False
         return self.open_gripper()
 
     def execute_trajectory(self, waypoints: List[Pose], speed: float = 0.1) -> bool:
         for waypoint in waypoints:
-            if not self.move_to_pose(waypoint, speed):
+            if not self.move_to_pose(waypoint):
                 return False
         return True
 
