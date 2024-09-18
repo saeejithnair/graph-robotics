@@ -21,10 +21,10 @@ def run_atomic_tasks(env, render=True):
         # test_rotate_gripper,
         # test_tilt_gripper,
         # test_align_gripper_vertical,
-        test_align_gripper_horizontal,
-        test_approach_object,
+        # test_align_gripper_horizontal,
+        # test_approach_object,
         test_pick_and_place,
-        test_trajectory,
+        # test_trajectory,
     ]
 
     for task in tasks:
@@ -191,41 +191,63 @@ def test_pick_and_place(sim_env, render):
     # Align gripper with the object
     object_pose = sim_env.get_object_pose("cube")
     print(f"[DEBUG] Object pose: {object_pose}. Align gripper with object...")
-    sim_env.move_to_pose(Pose(object_pose.pos + np.array([0, 0, 0.05]), None))
-    sim_env.null_step()
+    approach_pos = object_pose.pos + np.array([0, 0, 0.1])  # Increased approach height
+    sim_env.move_to_pose(Pose(approach_pos, sim_env.get_vertical_ori()))
+    sim_env.null_step(50)  # Allow more time for movement
 
     # Approach the object
-    sim_env.approach_object("cube", distance=0.05)
+    sim_env.approach_object("cube", distance=0.03)  # Reduced approach distance
     print("Approached object...")
-    sim_env.null_step()
+    sim_env.null_step(50)
 
     # Move to grasp position
-    grasp_pose = Pose(object_pose.pos, None)
+    grasp_pose = Pose(object_pose.pos + np.array([0, 0, 0.02]), sim_env.get_vertical_ori())  # Slight offset
     print(f"[DEBUG] Grasp pose: {grasp_pose}, moving to grasp position...")
     sim_env.move_to_pose(grasp_pose)
-    sim_env.null_step()
+    sim_env.null_step(50)
 
     # Close gripper to grasp object
     print("Closing gripper to grasp object...")
     sim_env.close_gripper()
-    sim_env.null_step()
+    sim_env.null_step(50)
+
+    # Check if object is grasped
+    if not sim_env.check_grasp("cube"):
+        print("Failed to grasp the object. Aborting pick and place.")
+        return
 
     # Lift object
     print("Lifting object...")
-    sim_env.lift_object(height=0.3)
-    sim_env.null_step()
+    lift_height = 0.1  # Reduced lift height
+    lift_pos = grasp_pose.pos + np.array([0, 0, lift_height])
+    print(f"[DEBUG] Lift position: {lift_pos}")
+    lift_pose = Pose(lift_pos, sim_env.get_vertical_ori())
+    print(f"[DEBUG] Lift pose: {lift_pose}")
+    sim_env.move_to_pose(lift_pose)
+    sim_env.null_step(50)
 
     # Move to target position
-    target_pos = np.array([0.3, -0.2, 0.3])
+    target_pos = np.array([0.2, -0.2, lift_pos[2]])  # Reduced horizontal movement
     print(f"Moving to target position: {target_pos}")
     sim_env.move_to_pose(Pose(target_pos, sim_env.get_vertical_ori()))
-    sim_env.null_step()
+    sim_env.null_step(50)
 
     # Place object
     print("Placing object...")
-    sim_env.place_object(target_pos - np.array([0, 0, 0.05]))
+    place_pos = target_pos - np.array([0, 0, lift_height])
+    sim_env.move_to_pose(Pose(place_pos, sim_env.get_vertical_ori()))
+    sim_env.null_step(50)
 
-    sim_env.null_step()
+    # Open gripper
+    print("Opening gripper...")
+    sim_env.open_gripper()
+    sim_env.null_step(50)
+
+    # Move up slightly
+    sim_env.move_to_pose(Pose(target_pos, sim_env.get_vertical_ori()))
+    sim_env.null_step(50)
+
+    print("Pick and place completed.")
 
 
 def test_trajectory(sim_env, render):

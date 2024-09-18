@@ -322,3 +322,9 @@ class SimEnv:
         if reset_gripper:
             self.open_gripper()
         self.gripper_width = self.obs["robot0_gripper_qpos"][0]
+
+    def check_grasp(self, object_name):
+        object_pos = self.get_object_pose(object_name).pos
+        gripper_pos = self.get_gripper_pose().pos
+        distance = np.linalg.norm(object_pos - gripper_pos)
+        return distance < 0.05  # Adjust this threshold as needed
