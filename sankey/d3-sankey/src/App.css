@@ -22,10 +22,8 @@ h1 {
 
 .link {
   fill: none;
-  stroke: #000;
-  stroke-opacity: .2;
 }
 
 .link:hover {
-  stroke-opacity: .5;
+  stroke-opacity: 0.8;
 }

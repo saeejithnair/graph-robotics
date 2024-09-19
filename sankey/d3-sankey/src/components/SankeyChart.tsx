@@ -58,11 +58,13 @@ const SankeyChart: React.FC<SankeyChartProps> = ({ data }) => {
 
       gradient.append("stop")
         .attr("offset", "0%")
-        .attr("stop-color", color((link.source as Node).name.replace(/ .*/, "")));
+        .attr("stop-color", color((link.source as Node).name.replace(/ .*/, "")))
+        .attr("stop-opacity", 0.2);
 
       gradient.append("stop")
         .attr("offset", "100%")
-        .attr("stop-color", color((link.target as Node).name.replace(/ .*/, "")));
+        .attr("stop-color", color((link.target as Node).name.replace(/ .*/, "")))
+        .attr("stop-opacity", 0.2);
     });
 
     // Links
@@ -74,8 +76,14 @@ const SankeyChart: React.FC<SankeyChartProps> = ({ data }) => {
       .attr("d", sankeyLinkHorizontal())
       .attr("stroke-width", d => Math.max(1, d.width ?? 0))
       .attr("stroke", (d, i) => `url(#gradient-${i})`)
-      .style("opacity", 0.5)
-      .sort((a, b) => (b.width ?? 0) - (a.width ?? 0));
+      .style("fill", "none")
+      .style("stroke-opacity", 1)
+      .style("stroke-dasharray", function(this: SVGPathElement) {
+        return this.getTotalLength() + " " + this.getTotalLength();
+      })
+      .style("stroke-dashoffset", function(this: SVGPathElement) {
+        return this.getTotalLength();
+      });
 
     link.append("title")
       .text(d => `${(d.source as Node).name} → ${(d.target as Node).name}\n${format(d.value)}`);
@@ -113,32 +121,24 @@ const SankeyChart: React.FC<SankeyChartProps> = ({ data }) => {
         .filter(d => d.source === nodeData);
 
       links
-        .style("opacity", 1)
+        .style("stroke-opacity", 1)
         .transition()
         .duration(400)
         .ease(d3.easeLinear)
         .style("stroke-dashoffset", 0)
-        .on("end", function(d) {
+        .on("end", function(this: SVGPathElement, d: Link) {
           branchAnimate(d.target as Node);
         });
     }
 
-    svg.selectAll<SVGPathElement, Link>(".link")
-      .style("stroke-dasharray", function() {
-        return this.getTotalLength() + " " + this.getTotalLength();
-      })
-      .style("stroke-dashoffset", function() {
-        return this.getTotalLength();
-      });
-
-    node.on("mouseover", (event, d) => {
-      svg.selectAll(".link").style("opacity", 0.05);
+    node.on("mouseover", (event: MouseEvent, d: Node) => {
+      svg.selectAll(".link").style("stroke-opacity", 0.1);
       branchAnimate(d);
     }).on("mouseout", () => {
       svg.selectAll<SVGPathElement, Link>(".link")
         .interrupt()
-        .style("opacity", 0.5)
-        .style("stroke-dashoffset", function() {
+        .style("stroke-opacity", 1)
+        .style("stroke-dashoffset", function(this: SVGPathElement) {
           return this.getTotalLength();
         });
     });
