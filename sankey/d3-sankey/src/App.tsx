@@ -30,7 +30,7 @@ const App: React.FC = () => {
 
   return (
     <div className="App">
-      <h1>Energy Flow Sankey Diagram</h1>
+      <h1>Scene Graph Sankey Diagram</h1>
       {data && <SankeyChart data={data} />}
     </div>
   );
