@@ -1,0 +1,1654 @@
+{
+  "id": "root",
+  "label": "Scene",
+  "description": "Description for Scene",
+  "position": [0, 0, 0],
+  "children": [
+    {
+      "id": "house",
+      "label": "House",
+      "description": "Description for House",
+      "position": [0, 0, 0],
+      "children": [
+        {
+          "id": "floor-0",
+          "label": "Ground Floor",
+          "description": "Description for Ground Floor",
+          "position": [0, 0, 0],
+          "children": [
+            {
+              "id": "ground-floor-living-room",
+              "label": "Living Room",
+              "description": "Description for Living Room",
+              "position": [0, 0, 0],
+              "children": [
+                {
+                  "id": "sofa",
+                  "label": "Sofa",
+                  "description": "Description for Sofa",
+                  "position": [0.5, 0, 0.5],
+                  "children": [
+                    {
+                      "id": "sofa-cushion-1",
+                      "label": "Cushion 1",
+                      "description": "Description for Cushion 1",
+                      "position": [0.5, 0.1, 0.5],
+                      "children": []
+                    },
+                    {
+                      "id": "sofa-cushion-2",
+                      "label": "Cushion 2",
+                      "description": "Description for Cushion 2",
+                      "position": [0.7, 0.1, 0.5],
+                      "children": []
+                    },
+                    {
+                      "id": "sofa-throw-blanket",
+                      "label": "Throw Blanket",
+                      "description": "Description for Throw Blanket",
+                      "position": [0.9, 0.1, 0.5],
+                      "children": []
+                    }
+                  ]
+                },
+                {
+                  "id": "tv-stand",
+                  "label": "TV Stand",
+                  "description": "Description for TV Stand",
+                  "position": [-0.5, 0, -0.5],
+                  "children": [
+                    {
+                      "id": "tv",
+                      "label": "Television",
+                      "description": "Description for Television",
+                      "position": [-0.5, 0.5, -0.5],
+                      "children": []
+                    },
+                    {
+                      "id": "remote",
+                      "label": "Remote",
+                      "description": "Description for Remote",
+                      "position": [-0.3, 0.1, -0.4],
+                      "children": []
+                    },
+                    {
+                      "id": "game-console",
+                      "label": "Game Console",
+                      "description": "Description for Game Console",
+                      "position": [0, 0.1, -0.4],
+                      "children": []
+                    },
+                    {
+                      "id": "dvd-player",
+                      "label": "DVD Player",
+                      "description": "Description for DVD Player",
+                      "position": [0.3, 0.1, -0.4],
+                      "children": []
+                    }
+                  ]
+                },
+                {
+                  "id": "coffee-table",
+                  "label": "Coffee Table",
+                  "description": "Description for Coffee Table",
+                  "position": [0, 0, 0],
+                  "children": [
+                    {
+                      "id": "table-magazine",
+                      "label": "Magazine",
+                      "description": "Description for Magazine",
+                      "position": [0, 0.1, 0],
+                      "children": []
+                    },
+                    {
+                      "id": "table-coaster",
+                      "label": "Coaster",
+                      "description": "Description for Coaster",
+                      "position": [0.1, 0.1, 0.1],
+                      "children": []
+                    },
+                    {
+                      "id": "table-vase",
+                      "label": "Vase",
+                      "description": "Description for Vase",
+                      "position": [0.2, 0.1, 0.2],
+                      "children": []
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "ground-floor-kitchen",
+              "label": "Kitchen",
+              "description": "Description for Kitchen",
+              "position": [2, 0, 0],
+              "children": [
+                {
+                  "id": "dining-table",
+                  "label": "Dining Table",
+                  "description": "Description for Dining Table",
+                  "position": [0, 0, 0],
+                  "children": [
+                    {
+                      "id": "place-setting-0",
+                      "label": "Place Setting 1",
+                      "description": "Description for Place Setting 1",
+                      "position": [-0.45, 0.1, -0.15],
+                      "children": [
+                        {
+                          "id": "plate-0",
+                          "label": "Plate",
+                          "description": "Description for Plate",
+                          "position": [0, 0.01, 0],
+                          "children": [
+                            {
+                              "id": "fork-0",
+                              "label": "Fork",
+                              "description": "Description for Fork",
+                              "position": [-0.05, 0.02, 0],
+                              "children": []
+                            },
+                            {
+                              "id": "knife-0",
+                              "label": "Knife",
+                              "description": "Description for Knife",
+                              "position": [0, 0.02, 0],
+                              "children": []
+                            },
+                            {
+                              "id": "spoon-0",
+                              "label": "Spoon",
+                              "description": "Description for Spoon",
+                              "position": [0.05, 0.02, 0],
+                              "children": []
+                            }
+                          ]
+                        },
+                        {
+                          "id": "glass-0",
+                          "label": "Glass",
+                          "description": "Description for Glass",
+                          "position": [0.1, 0.02, 0.1],
+                          "children": [
+                            {
+                              "id": "drink-0",
+                              "label": "Drink",
+                              "description": "Description for Drink",
+                              "position": [0, 0.01, 0],
+                              "children": []
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "id": "place-setting-1",
+                      "label": "Place Setting 2",
+                      "description": "Description for Place Setting 2",
+                      "position": [-0.15, 0.1, 0.15],
+                      "children": [
+                        {
+                          "id": "plate-1",
+                          "label": "Plate",
+                          "description": "Description for Plate",
+                          "position": [0, 0.01, 0],
+                          "children": [
+                            {
+                              "id": "fork-1",
+                              "label": "Fork",
+                              "description": "Description for Fork",
+                              "position": [-0.05, 0.02, 0],
+                              "children": []
+                            },
+                            {
+                              "id": "knife-1",
+                              "label": "Knife",
+                              "description": "Description for Knife",
+                              "position": [0, 0.02, 0],
+                              "children": []
+                            },
+                            {
+                              "id": "spoon-1",
+                              "label": "Spoon",
+                              "description": "Description for Spoon",
+                              "position": [0.05, 0.02, 0],
+                              "children": []
+                            }
+                          ]
+                        },
+                        {
+                          "id": "glass-1",
+                          "label": "Glass",
+                          "description": "Description for Glass",
+                          "position": [0.1, 0.02, 0.1],
+                          "children": [
+                            {
+                              "id": "drink-1",
+                              "label": "Drink",
+                              "description": "Description for Drink",
+                              "position": [0, 0.01, 0],
+                              "children": []
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "id": "place-setting-2",
+                      "label": "Place Setting 3",
+                      "description": "Description for Place Setting 3",
+                      "position": [0.15, 0.1, -0.15],
+                      "children": [
+                        {
+                          "id": "plate-2",
+                          "label": "Plate",
+                          "description": "Description for Plate",
+                          "position": [0, 0.01, 0],
+                          "children": [
+                            {
+                              "id": "fork-2",
+                              "label": "Fork",
+                              "description": "Description for Fork",
+                              "position": [-0.05, 0.02, 0],
+                              "children": []
+                            },
+                            {
+                              "id": "knife-2",
+                              "label": "Knife",
+                              "description": "Description for Knife",
+                              "position": [0, 0.02, 0],
+                              "children": []
+                            },
+                            {
+                              "id": "spoon-2",
+                              "label": "Spoon",
+                              "description": "Description for Spoon",
+                              "position": [0.05, 0.02, 0],
+                              "children": []
+                            }
+                          ]
+                        },
+                        {
+                          "id": "glass-2",
+                          "label": "Glass",
+                          "description": "Description for Glass",
+                          "position": [0.1, 0.02, 0.1],
+                          "children": [
+                            {
+                              "id": "drink-2",
+                              "label": "Drink",
+                              "description": "Description for Drink",
+                              "position": [0, 0.01, 0],
+                              "children": []
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "id": "place-setting-3",
+                      "label": "Place Setting 4",
+                      "description": "Description for Place Setting 4",
+                      "position": [0.45, 0.1, 0.15],
+                      "children": [
+                        {
+                          "id": "plate-3",
+                          "label": "Plate",
+                          "description": "Description for Plate",
+                          "position": [0, 0.01, 0],
+                          "children": [
+                            {
+                              "id": "fork-3",
+                              "label": "Fork",
+                              "description": "Description for Fork",
+                              "position": [-0.05, 0.02, 0],
+                              "children": []
+                            },
+                            {
+                              "id": "knife-3",
+                              "label": "Knife",
+                              "description": "Description for Knife",
+                              "position": [0, 0.02, 0],
+                              "children": []
+                            },
+                            {
+                              "id": "spoon-3",
+                              "label": "Spoon",
+                              "description": "Description for Spoon",
+                              "position": [0.05, 0.02, 0],
+                              "children": []
+                            }
+                          ]
+                        },
+                        {
+                          "id": "glass-3",
+                          "label": "Glass",
+                          "description": "Description for Glass",
+                          "position": [0.1, 0.02, 0.1],
+                          "children": [
+                            {
+                              "id": "drink-3",
+                              "label": "Drink",
+                              "description": "Description for Drink",
+                              "position": [0, 0.01, 0],
+                              "children": []
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "id": "kitchen-island",
+                  "label": "Kitchen Island",
+                  "description": "Description for Kitchen Island",
+                  "position": [-1, 0, 0],
+                  "children": [
+                    {
+                      "id": "cutting-board",
+                      "label": "Cutting Board",
+                      "description": "Description for Cutting Board",
+                      "position": [-1, 0.1, 0],
+                      "children": []
+                    },
+                    {
+                      "id": "knife-block",
+                      "label": "Knife Block",
+                      "description": "Description for Knife Block",
+                      "position": [-0.8, 0.1, 0],
+                      "children": []
+                    },
+                    {
+                      "id": "fruit-bowl",
+                      "label": "Fruit Bowl",
+                      "description": "Description for Fruit Bowl",
+                      "position": [-0.6, 0.1, 0],
+                      "children": []
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "ground-floor-bedroom",
+              "label": "Bedroom",
+              "description": "Description for Bedroom",
+              "position": [4, 0, 0],
+              "children": [
+                {
+                  "id": "bed",
+                  "label": "Bed",
+                  "description": "Description for Bed",
+                  "position": [0, 0, 0],
+                  "children": [
+                    {
+                      "id": "pillow-1",
+                      "label": "Pillow 1",
+                      "description": "Description for Pillow 1",
+                      "position": [-0.3, 0.1, 0],
+                      "children": []
+                    },
+                    {
+                      "id": "pillow-2",
+                      "label": "Pillow 2",
+                      "description": "Description for Pillow 2",
+                      "position": [-0.1, 0.1, 0],
+                      "children": []
+                    },
+                    {
+                      "id": "blanket",
+                      "label": "Blanket",
+                      "description": "Description for Blanket",
+                      "position": [0.1, 0.1, 0],
+                      "children": []
+                    },
+                    {
+                      "id": "sheets",
+                      "label": "Sheets",
+                      "description": "Description for Sheets",
+                      "position": [0.3, 0.1, 0],
+                      "children": []
+                    }
+                  ]
+                },
+                {
+                  "id": "dresser",
+                  "label": "Dresser",
+                  "description": "Description for Dresser",
+                  "position": [-1, 0, -1],
+                  "children": [
+                    {
+                      "id": "mirror",
+                      "label": "Mirror",
+                      "description": "Description for Mirror",
+                      "position": [-1, 0.5, -1],
+                      "children": []
+                    },
+                    {
+                      "id": "jewelry-box",
+                      "label": "Jewelry Box",
+                      "description": "Description for Jewelry Box",
+                      "position": [-0.8, 0.5, -1],
+                      "children": []
+                    },
+                    {
+                      "id": "photo-frame",
+                      "label": "Photo Frame",
+                      "description": "Description for Photo Frame",
+                      "position": [-0.6, 0.5, -1],
+                      "children": []
+                    }
+                  ]
+                },
+                {
+                  "id": "closet",
+                  "label": "Closet",
+                  "description": "Description for Closet",
+                  "position": [1, 0, -1],
+                  "children": [
+                    {
+                      "id": "clothes-rod",
+                      "label": "Clothes Rod",
+                      "description": "Description for Clothes Rod",
+                      "position": [1, 0, -1],
+                      "children": []
+                    },
+                    {
+                      "id": "shoe-rack",
+                      "label": "Shoe Rack",
+                      "description": "Description for Shoe Rack",
+                      "position": [1, 0.5, -1],
+                      "children": []
+                    },
+                    {
+                      "id": "storage-box",
+                      "label": "Storage Box",
+                      "description": "Description for Storage Box",
+                      "position": [1, 1, -1],
+                      "children": []
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "ground-floor-bathroom",
+              "label": "Bathroom",
+              "description": "Description for Bathroom",
+              "position": [6, 0, 0],
+              "children": [
+                {
+                  "id": "sink",
+                  "label": "Sink",
+                  "description": "Description for Sink",
+                  "position": [0, 0.5, 0],
+                  "children": [
+                    {
+                      "id": "faucet",
+                      "label": "Faucet",
+                      "description": "Description for Faucet",
+                      "position": [-0.2, 0.1, 0],
+                      "children": []
+                    },
+                    {
+                      "id": "soap-dispenser",
+                      "label": "Soap Dispenser",
+                      "description": "Description for Soap Dispenser",
+                      "position": [0, 0.1, 0],
+                      "children": []
+                    },
+                    {
+                      "id": "toothbrush-holder",
+                      "label": "Toothbrush Holder",
+                      "description": "Description for Toothbrush Holder",
+                      "position": [0.2, 0.1, 0],
+                      "children": []
+                    }
+                  ]
+                },
+                {
+                  "id": "bathtub",
+                  "label": "Bathtub",
+                  "description": "Description for Bathtub",
+                  "position": [-1, 0, -1],
+                  "children": [
+                    {
+                      "id": "shower-head",
+                      "label": "Shower Head",
+                      "description": "Description for Shower Head",
+                      "position": [-1, 0.5, -1],
+                      "children": []
+                    },
+                    {
+                      "id": "shower-curtain",
+                      "label": "Shower Curtain",
+                      "description": "Description for Shower Curtain",
+                      "position": [-0.7, 0.5, -1],
+                      "children": []
+                    },
+                    {
+                      "id": "bath-mat",
+                      "label": "Bath Mat",
+                      "description": "Description for Bath Mat",
+                      "position": [-0.4, 0.5, -1],
+                      "children": []
+                    }
+                  ]
+                },
+                {
+                  "id": "toilet",
+                  "label": "Toilet",
+                  "description": "Description for Toilet",
+                  "position": [1, 0, -1],
+                  "children": [
+                    {
+                      "id": "toilet-paper",
+                      "label": "Toilet Paper",
+                      "description": "Description for Toilet Paper",
+                      "position": [1.2, 0.3, -1],
+                      "children": []
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "floor-1",
+          "label": "First Floor",
+          "description": "Description for First Floor",
+          "position": [0, 3, 0],
+          "children": [
+            {
+              "id": "ground-floor-living-room",
+              "label": "Living Room",
+              "description": "Description for Living Room",
+              "position": [0, 0, 0],
+              "children": [
+                {
+                  "id": "sofa",
+                  "label": "Sofa",
+                  "description": "Description for Sofa",
+                  "position": [0.5, 0, 0.5],
+                  "children": [
+                    {
+                      "id": "sofa-cushion-1",
+                      "label": "Cushion 1",
+                      "description": "Description for Cushion 1",
+                      "position": [0.5, 0.1, 0.5],
+                      "children": []
+                    },
+                    {
+                      "id": "sofa-cushion-2",
+                      "label": "Cushion 2",
+                      "description": "Description for Cushion 2",
+                      "position": [0.7, 0.1, 0.5],
+                      "children": []
+                    },
+                    {
+                      "id": "sofa-throw-blanket",
+                      "label": "Throw Blanket",
+                      "description": "Description for Throw Blanket",
+                      "position": [0.9, 0.1, 0.5],
+                      "children": []
+                    }
+                  ]
+                },
+                {
+                  "id": "tv-stand",
+                  "label": "TV Stand",
+                  "description": "Description for TV Stand",
+                  "position": [-0.5, 0, -0.5],
+                  "children": [
+                    {
+                      "id": "tv",
+                      "label": "Television",
+                      "description": "Description for Television",
+                      "position": [-0.5, 0.5, -0.5],
+                      "children": []
+                    },
+                    {
+                      "id": "remote",
+                      "label": "Remote",
+                      "description": "Description for Remote",
+                      "position": [-0.3, 0.1, -0.4],
+                      "children": []
+                    },
+                    {
+                      "id": "game-console",
+                      "label": "Game Console",
+                      "description": "Description for Game Console",
+                      "position": [0, 0.1, -0.4],
+                      "children": []
+                    },
+                    {
+                      "id": "dvd-player",
+                      "label": "DVD Player",
+                      "description": "Description for DVD Player",
+                      "position": [0.3, 0.1, -0.4],
+                      "children": []
+                    }
+                  ]
+                },
+                {
+                  "id": "coffee-table",
+                  "label": "Coffee Table",
+                  "description": "Description for Coffee Table",
+                  "position": [0, 0, 0],
+                  "children": [
+                    {
+                      "id": "table-magazine",
+                      "label": "Magazine",
+                      "description": "Description for Magazine",
+                      "position": [0, 0.1, 0],
+                      "children": []
+                    },
+                    {
+                      "id": "table-coaster",
+                      "label": "Coaster",
+                      "description": "Description for Coaster",
+                      "position": [0.1, 0.1, 0.1],
+                      "children": []
+                    },
+                    {
+                      "id": "table-vase",
+                      "label": "Vase",
+                      "description": "Description for Vase",
+                      "position": [0.2, 0.1, 0.2],
+                      "children": []
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "ground-floor-kitchen",
+              "label": "Kitchen",
+              "description": "Description for Kitchen",
+              "position": [2, 0, 0],
+              "children": [
+                {
+                  "id": "dining-table",
+                  "label": "Dining Table",
+                  "description": "Description for Dining Table",
+                  "position": [0, 0, 0],
+                  "children": [
+                    {
+                      "id": "place-setting-0",
+                      "label": "Place Setting 1",
+                      "description": "Description for Place Setting 1",
+                      "position": [-0.45, 0.1, -0.15],
+                      "children": [
+                        {
+                          "id": "plate-0",
+                          "label": "Plate",
+                          "description": "Description for Plate",
+                          "position": [0, 0.01, 0],
+                          "children": [
+                            {
+                              "id": "fork-0",
+                              "label": "Fork",
+                              "description": "Description for Fork",
+                              "position": [-0.05, 0.02, 0],
+                              "children": []
+                            },
+                            {
+                              "id": "knife-0",
+                              "label": "Knife",
+                              "description": "Description for Knife",
+                              "position": [0, 0.02, 0],
+                              "children": []
+                            },
+                            {
+                              "id": "spoon-0",
+                              "label": "Spoon",
+                              "description": "Description for Spoon",
+                              "position": [0.05, 0.02, 0],
+                              "children": []
+                            }
+                          ]
+                        },
+                        {
+                          "id": "glass-0",
+                          "label": "Glass",
+                          "description": "Description for Glass",
+                          "position": [0.1, 0.02, 0.1],
+                          "children": [
+                            {
+                              "id": "drink-0",
+                              "label": "Drink",
+                              "description": "Description for Drink",
+                              "position": [0, 0.01, 0],
+                              "children": []
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "id": "place-setting-1",
+                      "label": "Place Setting 2",
+                      "description": "Description for Place Setting 2",
+                      "position": [-0.15, 0.1, 0.15],
+                      "children": [
+                        {
+                          "id": "plate-1",
+                          "label": "Plate",
+                          "description": "Description for Plate",
+                          "position": [0, 0.01, 0],
+                          "children": [
+                            {
+                              "id": "fork-1",
+                              "label": "Fork",
+                              "description": "Description for Fork",
+                              "position": [-0.05, 0.02, 0],
+                              "children": []
+                            },
+                            {
+                              "id": "knife-1",
+                              "label": "Knife",
+                              "description": "Description for Knife",
+                              "position": [0, 0.02, 0],
+                              "children": []
+                            },
+                            {
+                              "id": "spoon-1",
+                              "label": "Spoon",
+                              "description": "Description for Spoon",
+                              "position": [0.05, 0.02, 0],
+                              "children": []
+                            }
+                          ]
+                        },
+                        {
+                          "id": "glass-1",
+                          "label": "Glass",
+                          "description": "Description for Glass",
+                          "position": [0.1, 0.02, 0.1],
+                          "children": [
+                            {
+                              "id": "drink-1",
+                              "label": "Drink",
+                              "description": "Description for Drink",
+                              "position": [0, 0.01, 0],
+                              "children": []
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "id": "place-setting-2",
+                      "label": "Place Setting 3",
+                      "description": "Description for Place Setting 3",
+                      "position": [0.15, 0.1, -0.15],
+                      "children": [
+                        {
+                          "id": "plate-2",
+                          "label": "Plate",
+                          "description": "Description for Plate",
+                          "position": [0, 0.01, 0],
+                          "children": [
+                            {
+                              "id": "fork-2",
+                              "label": "Fork",
+                              "description": "Description for Fork",
+                              "position": [-0.05, 0.02, 0],
+                              "children": []
+                            },
+                            {
+                              "id": "knife-2",
+                              "label": "Knife",
+                              "description": "Description for Knife",
+                              "position": [0, 0.02, 0],
+                              "children": []
+                            },
+                            {
+                              "id": "spoon-2",
+                              "label": "Spoon",
+                              "description": "Description for Spoon",
+                              "position": [0.05, 0.02, 0],
+                              "children": []
+                            }
+                          ]
+                        },
+                        {
+                          "id": "glass-2",
+                          "label": "Glass",
+                          "description": "Description for Glass",
+                          "position": [0.1, 0.02, 0.1],
+                          "children": [
+                            {
+                              "id": "drink-2",
+                              "label": "Drink",
+                              "description": "Description for Drink",
+                              "position": [0, 0.01, 0],
+                              "children": []
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "id": "place-setting-3",
+                      "label": "Place Setting 4",
+                      "description": "Description for Place Setting 4",
+                      "position": [0.45, 0.1, 0.15],
+                      "children": [
+                        {
+                          "id": "plate-3",
+                          "label": "Plate",
+                          "description": "Description for Plate",
+                          "position": [0, 0.01, 0],
+                          "children": [
+                            {
+                              "id": "fork-3",
+                              "label": "Fork",
+                              "description": "Description for Fork",
+                              "position": [-0.05, 0.02, 0],
+                              "children": []
+                            },
+                            {
+                              "id": "knife-3",
+                              "label": "Knife",
+                              "description": "Description for Knife",
+                              "position": [0, 0.02, 0],
+                              "children": []
+                            },
+                            {
+                              "id": "spoon-3",
+                              "label": "Spoon",
+                              "description": "Description for Spoon",
+                              "position": [0.05, 0.02, 0],
+                              "children": []
+                            }
+                          ]
+                        },
+                        {
+                          "id": "glass-3",
+                          "label": "Glass",
+                          "description": "Description for Glass",
+                          "position": [0.1, 0.02, 0.1],
+                          "children": [
+                            {
+                              "id": "drink-3",
+                              "label": "Drink",
+                              "description": "Description for Drink",
+                              "position": [0, 0.01, 0],
+                              "children": []
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "id": "kitchen-island",
+                  "label": "Kitchen Island",
+                  "description": "Description for Kitchen Island",
+                  "position": [-1, 0, 0],
+                  "children": [
+                    {
+                      "id": "cutting-board",
+                      "label": "Cutting Board",
+                      "description": "Description for Cutting Board",
+                      "position": [-1, 0.1, 0],
+                      "children": []
+                    },
+                    {
+                      "id": "knife-block",
+                      "label": "Knife Block",
+                      "description": "Description for Knife Block",
+                      "position": [-0.8, 0.1, 0],
+                      "children": []
+                    },
+                    {
+                      "id": "fruit-bowl",
+                      "label": "Fruit Bowl",
+                      "description": "Description for Fruit Bowl",
+                      "position": [-0.6, 0.1, 0],
+                      "children": []
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "ground-floor-bedroom",
+              "label": "Bedroom",
+              "description": "Description for Bedroom",
+              "position": [4, 0, 0],
+              "children": [
+                {
+                  "id": "bed",
+                  "label": "Bed",
+                  "description": "Description for Bed",
+                  "position": [0, 0, 0],
+                  "children": [
+                    {
+                      "id": "pillow-1",
+                      "label": "Pillow 1",
+                      "description": "Description for Pillow 1",
+                      "position": [-0.3, 0.1, 0],
+                      "children": []
+                    },
+                    {
+                      "id": "pillow-2",
+                      "label": "Pillow 2",
+                      "description": "Description for Pillow 2",
+                      "position": [-0.1, 0.1, 0],
+                      "children": []
+                    },
+                    {
+                      "id": "blanket",
+                      "label": "Blanket",
+                      "description": "Description for Blanket",
+                      "position": [0.1, 0.1, 0],
+                      "children": []
+                    },
+                    {
+                      "id": "sheets",
+                      "label": "Sheets",
+                      "description": "Description for Sheets",
+                      "position": [0.3, 0.1, 0],
+                      "children": []
+                    }
+                  ]
+                },
+                {
+                  "id": "dresser",
+                  "label": "Dresser",
+                  "description": "Description for Dresser",
+                  "position": [-1, 0, -1],
+                  "children": [
+                    {
+                      "id": "mirror",
+                      "label": "Mirror",
+                      "description": "Description for Mirror",
+                      "position": [-1, 0.5, -1],
+                      "children": []
+                    },
+                    {
+                      "id": "jewelry-box",
+                      "label": "Jewelry Box",
+                      "description": "Description for Jewelry Box",
+                      "position": [-0.8, 0.5, -1],
+                      "children": []
+                    },
+                    {
+                      "id": "photo-frame",
+                      "label": "Photo Frame",
+                      "description": "Description for Photo Frame",
+                      "position": [-0.6, 0.5, -1],
+                      "children": []
+                    }
+                  ]
+                },
+                {
+                  "id": "closet",
+                  "label": "Closet",
+                  "description": "Description for Closet",
+                  "position": [1, 0, -1],
+                  "children": [
+                    {
+                      "id": "clothes-rod",
+                      "label": "Clothes Rod",
+                      "description": "Description for Clothes Rod",
+                      "position": [1, 0, -1],
+                      "children": []
+                    },
+                    {
+                      "id": "shoe-rack",
+                      "label": "Shoe Rack",
+                      "description": "Description for Shoe Rack",
+                      "position": [1, 0.5, -1],
+                      "children": []
+                    },
+                    {
+                      "id": "storage-box",
+                      "label": "Storage Box",
+                      "description": "Description for Storage Box",
+                      "position": [1, 1, -1],
+                      "children": []
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "ground-floor-bathroom",
+              "label": "Bathroom",
+              "description": "Description for Bathroom",
+              "position": [6, 0, 0],
+              "children": [
+                {
+                  "id": "sink",
+                  "label": "Sink",
+                  "description": "Description for Sink",
+                  "position": [0, 0.5, 0],
+                  "children": [
+                    {
+                      "id": "faucet",
+                      "label": "Faucet",
+                      "description": "Description for Faucet",
+                      "position": [-0.2, 0.1, 0],
+                      "children": []
+                    },
+                    {
+                      "id": "soap-dispenser",
+                      "label": "Soap Dispenser",
+                      "description": "Description for Soap Dispenser",
+                      "position": [0, 0.1, 0],
+                      "children": []
+                    },
+                    {
+                      "id": "toothbrush-holder",
+                      "label": "Toothbrush Holder",
+                      "description": "Description for Toothbrush Holder",
+                      "position": [0.2, 0.1, 0],
+                      "children": []
+                    }
+                  ]
+                },
+                {
+                  "id": "bathtub",
+                  "label": "Bathtub",
+                  "description": "Description for Bathtub",
+                  "position": [-1, 0, -1],
+                  "children": [
+                    {
+                      "id": "shower-head",
+                      "label": "Shower Head",
+                      "description": "Description for Shower Head",
+                      "position": [-1, 0.5, -1],
+                      "children": []
+                    },
+                    {
+                      "id": "shower-curtain",
+                      "label": "Shower Curtain",
+                      "description": "Description for Shower Curtain",
+                      "position": [-0.7, 0.5, -1],
+                      "children": []
+                    },
+                    {
+                      "id": "bath-mat",
+                      "label": "Bath Mat",
+                      "description": "Description for Bath Mat",
+                      "position": [-0.4, 0.5, -1],
+                      "children": []
+                    }
+                  ]
+                },
+                {
+                  "id": "toilet",
+                  "label": "Toilet",
+                  "description": "Description for Toilet",
+                  "position": [1, 0, -1],
+                  "children": [
+                    {
+                      "id": "toilet-paper",
+                      "label": "Toilet Paper",
+                      "description": "Description for Toilet Paper",
+                      "position": [1.2, 0.3, -1],
+                      "children": []
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "floor-2",
+          "label": "Attic",
+          "description": "Description for Attic",
+          "position": [0, 6, 0],
+          "children": [
+            {
+              "id": "ground-floor-living-room",
+              "label": "Living Room",
+              "description": "Description for Living Room",
+              "position": [0, 0, 0],
+              "children": [
+                {
+                  "id": "sofa",
+                  "label": "Sofa",
+                  "description": "Description for Sofa",
+                  "position": [0.5, 0, 0.5],
+                  "children": [
+                    {
+                      "id": "sofa-cushion-1",
+                      "label": "Cushion 1",
+                      "description": "Description for Cushion 1",
+                      "position": [0.5, 0.1, 0.5],
+                      "children": []
+                    },
+                    {
+                      "id": "sofa-cushion-2",
+                      "label": "Cushion 2",
+                      "description": "Description for Cushion 2",
+                      "position": [0.7, 0.1, 0.5],
+                      "children": []
+                    },
+                    {
+                      "id": "sofa-throw-blanket",
+                      "label": "Throw Blanket",
+                      "description": "Description for Throw Blanket",
+                      "position": [0.9, 0.1, 0.5],
+                      "children": []
+                    }
+                  ]
+                },
+                {
+                  "id": "tv-stand",
+                  "label": "TV Stand",
+                  "description": "Description for TV Stand",
+                  "position": [-0.5, 0, -0.5],
+                  "children": [
+                    {
+                      "id": "tv",
+                      "label": "Television",
+                      "description": "Description for Television",
+                      "position": [-0.5, 0.5, -0.5],
+                      "children": []
+                    },
+                    {
+                      "id": "remote",
+                      "label": "Remote",
+                      "description": "Description for Remote",
+                      "position": [-0.3, 0.1, -0.4],
+                      "children": []
+                    },
+                    {
+                      "id": "game-console",
+                      "label": "Game Console",
+                      "description": "Description for Game Console",
+                      "position": [0, 0.1, -0.4],
+                      "children": []
+                    },
+                    {
+                      "id": "dvd-player",
+                      "label": "DVD Player",
+                      "description": "Description for DVD Player",
+                      "position": [0.3, 0.1, -0.4],
+                      "children": []
+                    }
+                  ]
+                },
+                {
+                  "id": "coffee-table",
+                  "label": "Coffee Table",
+                  "description": "Description for Coffee Table",
+                  "position": [0, 0, 0],
+                  "children": [
+                    {
+                      "id": "table-magazine",
+                      "label": "Magazine",
+                      "description": "Description for Magazine",
+                      "position": [0, 0.1, 0],
+                      "children": []
+                    },
+                    {
+                      "id": "table-coaster",
+                      "label": "Coaster",
+                      "description": "Description for Coaster",
+                      "position": [0.1, 0.1, 0.1],
+                      "children": []
+                    },
+                    {
+                      "id": "table-vase",
+                      "label": "Vase",
+                      "description": "Description for Vase",
+                      "position": [0.2, 0.1, 0.2],
+                      "children": []
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "ground-floor-kitchen",
+              "label": "Kitchen",
+              "description": "Description for Kitchen",
+              "position": [2, 0, 0],
+              "children": [
+                {
+                  "id": "dining-table",
+                  "label": "Dining Table",
+                  "description": "Description for Dining Table",
+                  "position": [0, 0, 0],
+                  "children": [
+                    {
+                      "id": "place-setting-0",
+                      "label": "Place Setting 1",
+                      "description": "Description for Place Setting 1",
+                      "position": [-0.45, 0.1, -0.15],
+                      "children": [
+                        {
+                          "id": "plate-0",
+                          "label": "Plate",
+                          "description": "Description for Plate",
+                          "position": [0, 0.01, 0],
+                          "children": [
+                            {
+                              "id": "fork-0",
+                              "label": "Fork",
+                              "description": "Description for Fork",
+                              "position": [-0.05, 0.02, 0],
+                              "children": []
+                            },
+                            {
+                              "id": "knife-0",
+                              "label": "Knife",
+                              "description": "Description for Knife",
+                              "position": [0, 0.02, 0],
+                              "children": []
+                            },
+                            {
+                              "id": "spoon-0",
+                              "label": "Spoon",
+                              "description": "Description for Spoon",
+                              "position": [0.05, 0.02, 0],
+                              "children": []
+                            }
+                          ]
+                        },
+                        {
+                          "id": "glass-0",
+                          "label": "Glass",
+                          "description": "Description for Glass",
+                          "position": [0.1, 0.02, 0.1],
+                          "children": [
+                            {
+                              "id": "drink-0",
+                              "label": "Drink",
+                              "description": "Description for Drink",
+                              "position": [0, 0.01, 0],
+                              "children": []
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "id": "place-setting-1",
+                      "label": "Place Setting 2",
+                      "description": "Description for Place Setting 2",
+                      "position": [-0.15, 0.1, 0.15],
+                      "children": [
+                        {
+                          "id": "plate-1",
+                          "label": "Plate",
+                          "description": "Description for Plate",
+                          "position": [0, 0.01, 0],
+                          "children": [
+                            {
+                              "id": "fork-1",
+                              "label": "Fork",
+                              "description": "Description for Fork",
+                              "position": [-0.05, 0.02, 0],
+                              "children": []
+                            },
+                            {
+                              "id": "knife-1",
+                              "label": "Knife",
+                              "description": "Description for Knife",
+                              "position": [0, 0.02, 0],
+                              "children": []
+                            },
+                            {
+                              "id": "spoon-1",
+                              "label": "Spoon",
+                              "description": "Description for Spoon",
+                              "position": [0.05, 0.02, 0],
+                              "children": []
+                            }
+                          ]
+                        },
+                        {
+                          "id": "glass-1",
+                          "label": "Glass",
+                          "description": "Description for Glass",
+                          "position": [0.1, 0.02, 0.1],
+                          "children": [
+                            {
+                              "id": "drink-1",
+                              "label": "Drink",
+                              "description": "Description for Drink",
+                              "position": [0, 0.01, 0],
+                              "children": []
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "id": "place-setting-2",
+                      "label": "Place Setting 3",
+                      "description": "Description for Place Setting 3",
+                      "position": [0.15, 0.1, -0.15],
+                      "children": [
+                        {
+                          "id": "plate-2",
+                          "label": "Plate",
+                          "description": "Description for Plate",
+                          "position": [0, 0.01, 0],
+                          "children": [
+                            {
+                              "id": "fork-2",
+                              "label": "Fork",
+                              "description": "Description for Fork",
+                              "position": [-0.05, 0.02, 0],
+                              "children": []
+                            },
+                            {
+                              "id": "knife-2",
+                              "label": "Knife",
+                              "description": "Description for Knife",
+                              "position": [0, 0.02, 0],
+                              "children": []
+                            },
+                            {
+                              "id": "spoon-2",
+                              "label": "Spoon",
+                              "description": "Description for Spoon",
+                              "position": [0.05, 0.02, 0],
+                              "children": []
+                            }
+                          ]
+                        },
+                        {
+                          "id": "glass-2",
+                          "label": "Glass",
+                          "description": "Description for Glass",
+                          "position": [0.1, 0.02, 0.1],
+                          "children": [
+                            {
+                              "id": "drink-2",
+                              "label": "Drink",
+                              "description": "Description for Drink",
+                              "position": [0, 0.01, 0],
+                              "children": []
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "id": "place-setting-3",
+                      "label": "Place Setting 4",
+                      "description": "Description for Place Setting 4",
+                      "position": [0.45, 0.1, 0.15],
+                      "children": [
+                        {
+                          "id": "plate-3",
+                          "label": "Plate",
+                          "description": "Description for Plate",
+                          "position": [0, 0.01, 0],
+                          "children": [
+                            {
+                              "id": "fork-3",
+                              "label": "Fork",
+                              "description": "Description for Fork",
+                              "position": [-0.05, 0.02, 0],
+                              "children": []
+                            },
+                            {
+                              "id": "knife-3",
+                              "label": "Knife",
+                              "description": "Description for Knife",
+                              "position": [0, 0.02, 0],
+                              "children": []
+                            },
+                            {
+                              "id": "spoon-3",
+                              "label": "Spoon",
+                              "description": "Description for Spoon",
+                              "position": [0.05, 0.02, 0],
+                              "children": []
+                            }
+                          ]
+                        },
+                        {
+                          "id": "glass-3",
+                          "label": "Glass",
+                          "description": "Description for Glass",
+                          "position": [0.1, 0.02, 0.1],
+                          "children": [
+                            {
+                              "id": "drink-3",
+                              "label": "Drink",
+                              "description": "Description for Drink",
+                              "position": [0, 0.01, 0],
+                              "children": []
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "id": "kitchen-island",
+                  "label": "Kitchen Island",
+                  "description": "Description for Kitchen Island",
+                  "position": [-1, 0, 0],
+                  "children": [
+                    {
+                      "id": "cutting-board",
+                      "label": "Cutting Board",
+                      "description": "Description for Cutting Board",
+                      "position": [-1, 0.1, 0],
+                      "children": []
+                    },
+                    {
+                      "id": "knife-block",
+                      "label": "Knife Block",
+                      "description": "Description for Knife Block",
+                      "position": [-0.8, 0.1, 0],
+                      "children": []
+                    },
+                    {
+                      "id": "fruit-bowl",
+                      "label": "Fruit Bowl",
+                      "description": "Description for Fruit Bowl",
+                      "position": [-0.6, 0.1, 0],
+                      "children": []
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "ground-floor-bedroom",
+              "label": "Bedroom",
+              "description": "Description for Bedroom",
+              "position": [4, 0, 0],
+              "children": [
+                {
+                  "id": "bed",
+                  "label": "Bed",
+                  "description": "Description for Bed",
+                  "position": [0, 0, 0],
+                  "children": [
+                    {
+                      "id": "pillow-1",
+                      "label": "Pillow 1",
+                      "description": "Description for Pillow 1",
+                      "position": [-0.3, 0.1, 0],
+                      "children": []
+                    },
+                    {
+                      "id": "pillow-2",
+                      "label": "Pillow 2",
+                      "description": "Description for Pillow 2",
+                      "position": [-0.1, 0.1, 0],
+                      "children": []
+                    },
+                    {
+                      "id": "blanket",
+                      "label": "Blanket",
+                      "description": "Description for Blanket",
+                      "position": [0.1, 0.1, 0],
+                      "children": []
+                    },
+                    {
+                      "id": "sheets",
+                      "label": "Sheets",
+                      "description": "Description for Sheets",
+                      "position": [0.3, 0.1, 0],
+                      "children": []
+                    }
+                  ]
+                },
+                {
+                  "id": "dresser",
+                  "label": "Dresser",
+                  "description": "Description for Dresser",
+                  "position": [-1, 0, -1],
+                  "children": [
+                    {
+                      "id": "mirror",
+                      "label": "Mirror",
+                      "description": "Description for Mirror",
+                      "position": [-1, 0.5, -1],
+                      "children": []
+                    },
+                    {
+                      "id": "jewelry-box",
+                      "label": "Jewelry Box",
+                      "description": "Description for Jewelry Box",
+                      "position": [-0.8, 0.5, -1],
+                      "children": []
+                    },
+                    {
+                      "id": "photo-frame",
+                      "label": "Photo Frame",
+                      "description": "Description for Photo Frame",
+                      "position": [-0.6, 0.5, -1],
+                      "children": []
+                    }
+                  ]
+                },
+                {
+                  "id": "closet",
+                  "label": "Closet",
+                  "description": "Description for Closet",
+                  "position": [1, 0, -1],
+                  "children": [
+                    {
+                      "id": "clothes-rod",
+                      "label": "Clothes Rod",
+                      "description": "Description for Clothes Rod",
+                      "position": [1, 0, -1],
+                      "children": []
+                    },
+                    {
+                      "id": "shoe-rack",
+                      "label": "Shoe Rack",
+                      "description": "Description for Shoe Rack",
+                      "position": [1, 0.5, -1],
+                      "children": []
+                    },
+                    {
+                      "id": "storage-box",
+                      "label": "Storage Box",
+                      "description": "Description for Storage Box",
+                      "position": [1, 1, -1],
+                      "children": []
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "ground-floor-bathroom",
+              "label": "Bathroom",
+              "description": "Description for Bathroom",
+              "position": [6, 0, 0],
+              "children": [
+                {
+                  "id": "sink",
+                  "label": "Sink",
+                  "description": "Description for Sink",
+                  "position": [0, 0.5, 0],
+                  "children": [
+                    {
+                      "id": "faucet",
+                      "label": "Faucet",
+                      "description": "Description for Faucet",
+                      "position": [-0.2, 0.1, 0],
+                      "children": []
+                    },
+                    {
+                      "id": "soap-dispenser",
+                      "label": "Soap Dispenser",
+                      "description": "Description for Soap Dispenser",
+                      "position": [0, 0.1, 0],
+                      "children": []
+                    },
+                    {
+                      "id": "toothbrush-holder",
+                      "label": "Toothbrush Holder",
+                      "description": "Description for Toothbrush Holder",
+                      "position": [0.2, 0.1, 0],
+                      "children": []
+                    }
+                  ]
+                },
+                {
+                  "id": "bathtub",
+                  "label": "Bathtub",
+                  "description": "Description for Bathtub",
+                  "position": [-1, 0, -1],
+                  "children": [
+                    {
+                      "id": "shower-head",
+                      "label": "Shower Head",
+                      "description": "Description for Shower Head",
+                      "position": [-1, 0.5, -1],
+                      "children": []
+                    },
+                    {
+                      "id": "shower-curtain",
+                      "label": "Shower Curtain",
+                      "description": "Description for Shower Curtain",
+                      "position": [-0.7, 0.5, -1],
+                      "children": []
+                    },
+                    {
+                      "id": "bath-mat",
+                      "label": "Bath Mat",
+                      "description": "Description for Bath Mat",
+                      "position": [-0.4, 0.5, -1],
+                      "children": []
+                    }
+                  ]
+                },
+                {
+                  "id": "toilet",
+                  "label": "Toilet",
+                  "description": "Description for Toilet",
+                  "position": [1, 0, -1],
+                  "children": [
+                    {
+                      "id": "toilet-paper",
+                      "label": "Toilet Paper",
+                      "description": "Description for Toilet Paper",
+                      "position": [1.2, 0.3, -1],
+                      "children": []
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

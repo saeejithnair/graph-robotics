@@ -19,6 +19,7 @@ interface SankeyData {
 
 const App: React.FC = () => {
   const [data, setData] = useState<SankeyData | null>(null);
+  const [animate, setAnimate] = useState(true); // Add state for animation toggle
 
   useEffect(() => {
     fetch('/energy.json')
@@ -31,7 +32,10 @@ const App: React.FC = () => {
   return (
     <div className="App">
       <h1>Scene Graph Sankey Diagram</h1>
-      {data && <SankeyChart data={data} />}
+      <button onClick={() => setAnimate(!animate)}>
+        {animate ? 'Disable Animations' : 'Enable Animations'}
+      </button>
+      {data && <SankeyChart data={data} animate={animate} />} {/* Pass animate prop */}
     </div>
   );
 };

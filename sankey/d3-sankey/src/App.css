@@ -10,6 +10,13 @@ h1 {
   font-size: 1.4rem;
 }
 
+button {
+  margin: 10px;
+  padding: 10px 20px;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
 .node rect {
   fill-opacity: .9;
   shape-rendering: crispEdges;

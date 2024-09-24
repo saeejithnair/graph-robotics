@@ -17,9 +17,10 @@ type Link = SankeyLink<NodeDatum, LinkDatum>;
 
 interface SankeyChartProps {
   data: { nodes: NodeDatum[]; links: LinkDatum[] };
+  animate: boolean; // Add animate prop
 }
 
-const SankeyChart: React.FC<SankeyChartProps> = ({ data }) => {
+const SankeyChart: React.FC<SankeyChartProps> = ({ data, animate }) => {
   const chartRef = useRef<SVGSVGElement>(null);
 
   useEffect(() => {
@@ -131,19 +132,25 @@ const SankeyChart: React.FC<SankeyChartProps> = ({ data }) => {
         });
     }
 
-    node.on("mouseover", (event: MouseEvent, d: Node) => {
-      svg.selectAll(".link").style("stroke-opacity", 0.1);
-      branchAnimate(d);
-    }).on("mouseout", () => {
+    if (animate) {
+      node.on("mouseover", (event: MouseEvent, d: Node) => {
+        svg.selectAll(".link").style("stroke-opacity", 0.1);
+        branchAnimate(d);
+      }).on("mouseout", () => {
+        svg.selectAll<SVGPathElement, Link>(".link")
+          .interrupt()
+          .style("stroke-opacity", 1)
+          .style("stroke-dashoffset", function(this: SVGPathElement) {
+            return this.getTotalLength();
+          });
+      });
+    } else {
       svg.selectAll<SVGPathElement, Link>(".link")
-        .interrupt()
         .style("stroke-opacity", 1)
-        .style("stroke-dashoffset", function(this: SVGPathElement) {
-          return this.getTotalLength();
-        });
-    });
+        .style("stroke-dashoffset", 0);
+    }
 
-  }, [data]);
+  }, [data, animate]); // Add animate to dependency array
 
   return <svg ref={chartRef} style={{ height: '500px', width: '960px', margin: 'auto' }} />;
 };
