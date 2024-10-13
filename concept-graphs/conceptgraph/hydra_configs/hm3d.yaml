@@ -1,0 +1,6 @@
+defaults:
+  - base_paths
+
+dataset_root: /pub3/qasim/hm3d/data/frames
+dataset_config: ${repo_root}/conceptgraph/dataset/dataconfigs/hm3d.yaml
+scene_id: 000-hm3d-BFRyYbPCCPE
