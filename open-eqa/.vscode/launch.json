@@ -1,0 +1,41 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "sg-reasoner/main.py",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "sg-reasoner/main.py",
+            "console": "integratedTerminal",
+            "justMyCode": false
+        },
+        {
+            "name": "evaluate-predictions.py",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "evaluate-predictions.py",
+            "console": "integratedTerminal",
+            "args": ["/home/qasim/Projects/open-eqa/results/open-eqa-v0-gemini-1.5-flash-latest.json", "--force"],
+            "justMyCode": false
+        },
+        {
+            "name": "gpt4v-conceptgraph",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "openeqa/baselines/gpt4v-conceptgraph.py",
+            "console": "integratedTerminal",
+            "justMyCode": false
+        },
+        {
+            "name": "gemini-pro-vision-conceptgraph",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "openeqa/baselines/gemini-pro-vision-conceptgraph.py",
+            "console": "integratedTerminal",
+            "justMyCode": false
+        }
+    ]
+}
