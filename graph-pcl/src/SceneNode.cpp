@@ -77,7 +77,7 @@ std::vector<SceneNode::PointXYZPtr> SceneNode::getPointReferences() const {
 void SceneNode::addChild(std::shared_ptr<SceneNode> child) {
     std::lock_guard<std::mutex> lock(mutex_);
     children_.push_back(child);
-    child->setParent(shared_from_this()); // Now works because of inheritance
+    child->setParent(shared_from_this());
 }
 
 void SceneNode::removeChild(std::shared_ptr<SceneNode> child) {
@@ -128,4 +128,11 @@ void SceneNode::calculateBoundingBox() {
 
     boundingBoxMin_ << minX, minY, minZ;
     boundingBoxMax_ << maxX, maxY, maxZ;
+}
+
+// Add point using coordinates
+void SceneNode::addPoint(float x, float y, float z) {
+    std::lock_guard<std::mutex> lock(mutex_);
+    auto point = std::make_shared<pcl::PointXYZ>(x, y, z);
+    pointReferences_.push_back(point);
 }

@@ -13,11 +13,12 @@ int main() {
     node->setLabel("UpdatedNode");
     assert(node->getLabel() == "UpdatedNode");
 
-    // Add points
-    pcl::PointXYZ p1(1.0, 2.0, 3.0);
-    pcl::PointXYZ p2(4.0, 5.0, 6.0);
-    node->addPointReference(&p1);
-    node->addPointReference(&p2);
+    // Add points using std::shared_ptr
+    auto p1 = std::make_shared<pcl::PointXYZ>(1.0, 2.0, 3.0);
+    auto p2 = std::make_shared<pcl::PointXYZ>(4.0, 5.0, 6.0);
+    node->addPointReference(p1);
+    node->addPointReference(p2);
+
     auto points = node->getPointReferences();
     assert(points.size() == 2);
     assert(points[0]->x == 1.0f);

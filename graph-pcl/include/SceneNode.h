@@ -15,7 +15,7 @@
 // Inherit from std::enable_shared_from_this
 class SceneNode : public std::enable_shared_from_this<SceneNode> {
 public:
-    using PointXYZPtr = pcl::PointXYZ*;
+    using PointXYZPtr = std::shared_ptr<pcl::PointXYZ>;
     using PointCloudPtr = std::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>;
 
     // Constructor
@@ -51,6 +51,9 @@ public:
 
     // Bounding Box Calculation
     void calculateBoundingBox();
+
+    // Add point using coordinates
+    void addPoint(float x, float y, float z);
 
 private:
     // Attributes
