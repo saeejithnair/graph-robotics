@@ -1,3 +1,7 @@
 [submodule "third-party/segment-anything-2"]
 	path = third-party/segment-anything-2
 	url = git@github.com:saeejithnair/segment-anything-2.git
+[submodule "graph-pcl/extern/pybind11"]
+	path = graph-pcl/extern/pybind11
+	url = ../../pybind/pybind11
+	branch = stable
