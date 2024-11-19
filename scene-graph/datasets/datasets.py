@@ -8,17 +8,17 @@ from typing import Dict, List, Optional, Union
 import cv2
 import imageio
 import numpy as np
+import open3d as o3d
 import torch
 import torch.nn.functional as F
 import yaml
 from natsort import natsorted
 from scipy.spatial.transform import Rotation as R
-import open3d as o3d 
 
-from utils import measure_time
-import utils
-import images
 import geometry
+import utils
+from utils import measure_time
+
 
 def as_intrinsics_matrix(intrinsics):
     """
@@ -31,7 +31,6 @@ def as_intrinsics_matrix(intrinsics):
     K[0, 2] = intrinsics[2]
     K[1, 2] = intrinsics[3]
     return K
-
 
 
 def readEXR_onlydepth(filename):
@@ -68,13 +67,15 @@ def readEXR_onlydepth(filename):
 
     return Y
 
+
 def read_txt_to_numpy_array(filename):
-  with open(filename, 'r') as f:
-    data = []
-    for line in f:
-      row = [float(x) for x in line.split()]
-      data.append(row)
-  return np.array(data)
+    with open(filename, "r") as f:
+        data = []
+        for line in f:
+            row = [float(x) for x in line.split()]
+            data.append(row)
+    return np.array(data)
+
 
 class GradSLAMDataset(torch.utils.data.Dataset):
     def __init__(
@@ -92,7 +93,7 @@ class GradSLAMDataset(torch.utils.data.Dataset):
         load_embeddings: bool = False,
         embedding_dir: str = "feat_lseg_240_320",
         embedding_dim: int = 512,
-        relative_pose: bool = True, # If True, the pose is relative to the first frame
+        relative_pose: bool = True,  # If True, the pose is relative to the first frame
         **kwargs,
     ):
         super().__init__()
@@ -127,7 +128,9 @@ class GradSLAMDataset(torch.utils.data.Dataset):
             raise ValueError("start must be positive. Got {0}.".format(stride))
         if not (end == -1 or end > start):
             raise ValueError(
-                "end ({0}) must be -1 (use all images) or greater than start ({1})".format(end, start)
+                "end ({0}) must be -1 (use all images) or greater than start ({1})".format(
+                    end, start
+                )
             )
 
         self.distortion = (
@@ -155,7 +158,7 @@ class GradSLAMDataset(torch.utils.data.Dataset):
                 )
         self.num_imgs = len(self.color_paths)
         self.poses = self.load_poses()
-        
+
         if self.end == -1:
             self.end = self.num_imgs
 
@@ -207,9 +210,9 @@ class GradSLAMDataset(torch.utils.data.Dataset):
             interpolation=cv2.INTER_LINEAR,
         )
         if self.normalize_color:
-            color = images.normalize_image(color)
+            color = utils.normalize_image(color)
         if self.channels_first:
-            color = images.channels_first(color)
+            color = utils.channels_first(color)
         return color
 
     def _preprocess_depth(self, depth: np.ndarray, scale=True):
@@ -233,11 +236,11 @@ class GradSLAMDataset(torch.utils.data.Dataset):
         )
         depth = np.expand_dims(depth, -1)
         if self.channels_first:
-            depth = images.channels_first(depth)
+            depth = utils.channels_first(depth)
         if scale:
             depth = depth / self.png_depth_scale
         return depth
-    
+
     def _preprocess_poses(self, poses: torch.Tensor):
         r"""Preprocesses the poses by setting first pose in a sequence to identity and computing the relative
         homogenous transformation for all other poses.
@@ -257,22 +260,22 @@ class GradSLAMDataset(torch.utils.data.Dataset):
             poses,
             orthogonal_rotations=False,
         )
-        
+
     def get_cam_K(self):
-        '''
+        """
         Return camera intrinsics matrix K
-        
+
         Returns:
             K (torch.Tensor): Camera intrinsics matrix, of shape (3, 3)
-        '''
+        """
         K = as_intrinsics_matrix([self.fx, self.fy, self.cx, self.cy])
         K = torch.from_numpy(K)
         return K
-    
+
     def read_embedding_from_file(self, embedding_path: str):
-        '''
+        """
         Read embedding from file and process it. To be implemented in subclass for each dataset separately.
-        '''
+        """
         raise NotImplementedError
 
     def __getitem__(self, index):
@@ -340,7 +343,8 @@ class GradSLAMDataset(torch.utils.data.Dataset):
             Point cloud as an Open3D object.
         """
         raise NotImplementedError()
-        
+
+
 class Hm3dDataset(GradSLAMDataset):
     def __init__(
         self,
@@ -371,7 +375,7 @@ class Hm3dDataset(GradSLAMDataset):
             embedding_dim=embedding_dim,
             **kwargs,
         )
-        
+
     def get_filepaths(self):
         color_paths = natsorted(glob.glob(f"{self.input_folder}/*-rgb.png"))
         depth_paths = natsorted(glob.glob(f"{self.input_folder}/*-depth.png"))
@@ -381,37 +385,32 @@ class Hm3dDataset(GradSLAMDataset):
                 glob.glob(f"{self.input_folder}/{self.embedding_dir}/*.pt")
             )
         return color_paths, depth_paths, embedding_paths
-    
+
     def load_poses(self):
         poses = []
         posefiles = natsorted(glob.glob(f"{self.input_folder}/0*.txt"))
-        
+
         P = torch.tensor(
-            [
-                [1, 0, 0, 0],
-                [0, -1, 0, 0],
-                [0, 0, -1, 0],
-                [0, 0, 0, 1]
-            ]
+            [[1, 0, 0, 0], [0, -1, 0, 0], [0, 0, -1, 0], [0, 0, 0, 1]]
         ).float()
         # P = torch.eye(4).float()
-        
+
         for posefile in posefiles:
             pose = read_txt_to_numpy_array(posefile)
             # pose = np.asarray(pose_raw['pose'])
-            
+
             pose = torch.from_numpy(pose).float()
             # pose[:3,3] /= (65535/10)
             pose = P @ pose @ P.T
-            
+
             poses.append(pose)
-            
+
         return poses
 
     # def get_cam_K(self):
     #     '''
     #     Return camera intrinsics matrix K
-        
+
     #     Returns:
     #         K (torch.Tensor): Camera intrinsics matrix, of shape (3, 3)
     #     '''
@@ -444,12 +443,12 @@ class Hm3dDataset(GradSLAMDataset):
     #     if self.distortion is not None:
     #         # undistortion is only applied on color image, not depth!
     #         color = cv2.undistort(color, K, self.distortion)
-        
+
     #     depth = self._preprocess_depth(depth, scale=False)
-        
+
     #     # I added this depth rescaling myself, undoing the effect of the extraction
     #     depth = depth*10/65535
-        
+
     #     depth = torch.from_numpy(depth)
 
     #     K = conceptgraphs_datautils.scale_intrinsics(

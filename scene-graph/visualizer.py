@@ -75,33 +75,33 @@ class Visualizer3D:
 
 class _UnitTestNode:
     def __init__(self, id, level, location=None, label=None, 
-                 caption=None, point_idxs=None, pcd=None, height_by_level=False) -> None:
+                 caption=None, local_pcd_idxs=None, pcd=None, height_by_level=False) -> None:
         self.id = id
         self.level = level
-        self.point_idxs = point_idxs
+        self.local_pcd_idxs = local_pcd_idxs
         self.label = f'node' if not label else label
         self.caption = 'None' if not caption else caption
         if not location:
-            mean_pcd = np.mean(np.asarray(pcd.points)[point_idxs], 0)
+            mean_pcd = np.mean(np.asarray(pcd.points)[local_pcd_idxs], 0)
             height = None
             if height_by_level:
                 height = self.level*0.5 + 4 # heursitic
             else:
-                max_pcd_height = np.max(- np.asarray(pcd.points)[point_idxs], 0)[1]
+                max_pcd_height = np.max(- np.asarray(pcd.points)[local_pcd_idxs], 0)[1]
                 height = max_pcd_height + self.level*0.3 + 0.5
             location = [mean_pcd[0], -1 * height, mean_pcd[2]]
         self.location = location
-    def add_point_idxs(self, point_idxs):
-        self.point_idxs = point_idxs
+    def add_local_pcd_idxs(self, local_pcd_idxs):
+        self.local_pcd_idxs = local_pcd_idxs
 
 if __name__ == '__main__':
     pcd = o3d.io.read_point_cloud("/home/qasim/Projects/graph-robotics/scene-graph/outputs/pcd/000-hm3d-BFRyYbPCCPE.pcd")
     visualizer = Visualizer3D()
     nodes = [
-        _UnitTestNode(0, 0, point_idxs=[i for i in range(150)], caption='test caption', pcd=pcd),
-        _UnitTestNode(1, 1, point_idxs=[i for i in range(500, 1000)], pcd=pcd),
-        _UnitTestNode(2, 0, point_idxs=[i for i in range(1500, 2000)], pcd=pcd),
-        _UnitTestNode(3, 2, point_idxs=[i for i in range(3000, 3500)], pcd=pcd),
+        _UnitTestNode(0, 0, local_pcd_idxs=[i for i in range(150)], caption='test caption', pcd=pcd),
+        _UnitTestNode(1, 1, local_pcd_idxs=[i for i in range(500, 1000)], pcd=pcd),
+        _UnitTestNode(2, 0, local_pcd_idxs=[i for i in range(1500, 2000)], pcd=pcd),
+        _UnitTestNode(3, 2, local_pcd_idxs=[i for i in range(3000, 3500)], pcd=pcd),
     ]
     children = {
         0: [],
@@ -119,7 +119,7 @@ if __name__ == '__main__':
             level = nodes[idx].level,
             children_locs=[nodes[c].location for c in children[idx]],
             children_labels=[nodes[c].label for c in children[idx]],
-            points=get_points_at_idxs(pcd, nodes[idx].point_idxs),
+            points=get_points_at_idxs(pcd, nodes[idx].local_pcd_idxs),
         )
     def get_points_at_idxs(pcd, idxs):
         return np.asarray(pcd.points)[idxs]

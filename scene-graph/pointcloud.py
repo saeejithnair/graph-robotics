@@ -3,56 +3,57 @@ import open3d as o3d
 from collections import Counter
 import faiss
 import utils
+from scipy.spatial import ConvexHull
 
 def pcd_denoise_dbscan(pcd: o3d.geometry.PointCloud, eps=0.02, min_points=10):
-        """
-        Denoise the point cloud using DBSCAN.
-        :param pcd: Point cloud to denoise.
-        :param eps: Maximum distance between two samples for one to be considered as in the neighborhood of the other.
-        :param min_points: The number of samples in a neighborhood for a point to be considered as a core point.
-        :return: Denoised point cloud.
-        """
-        ### Remove noise via clustering
-        pcd_clusters = pcd.cluster_dbscan(
-            eps=eps,
-            min_points=min_points,
-        )
+    """
+    Denoise the point cloud using DBSCAN.
+    :param pcd: Point cloud to denoise.
+    :param eps: Maximum distance between two samples for one to be considered as in the neighborhood of the other.
+    :param min_points: The number of samples in a neighborhood for a point to be considered as a core point.
+    :return: Denoised point cloud.
+    """
+    ### Remove noise via clustering
+    pcd_clusters = pcd.cluster_dbscan(
+        eps=eps,
+        min_points=min_points,
+    )
 
-        # Convert to numpy arrays
-        obj_points = np.asarray(pcd.points)
-        obj_colors = np.asarray(pcd.colors)
-        pcd_clusters = np.array(pcd_clusters)
+    # Convert to numpy arrays
+    obj_points = np.asarray(pcd.points)
+    obj_colors = np.asarray(pcd.colors)
+    pcd_clusters = np.array(pcd_clusters)
 
-        # Count all labels in the cluster
-        counter = Counter(pcd_clusters)
+    # Count all labels in the cluster
+    counter = Counter(pcd_clusters)
 
-        # Remove the noise label
-        if counter and (-1 in counter):
-            del counter[-1]
+    # Remove the noise label
+    if counter and (-1 in counter):
+        del counter[-1]
 
-        if counter:
-            # Find the label of the largest cluster
-            most_common_label, _ = counter.most_common(1)[0]
+    if counter:
+        # Find the label of the largest cluster
+        most_common_label, _ = counter.most_common(1)[0]
 
-            # Create mask for points in the largest cluster
-            largest_mask = pcd_clusters == most_common_label
+        # Create mask for points in the largest cluster
+        largest_mask = pcd_clusters == most_common_label
 
-            # Apply mask
-            largest_cluster_points = obj_points[largest_mask]
-            largest_cluster_colors = obj_colors[largest_mask]
+        # Apply mask
+        largest_cluster_points = obj_points[largest_mask]
+        largest_cluster_colors = obj_colors[largest_mask]
 
-            # If the largest cluster is too small, return the original point cloud
-            if len(largest_cluster_points) < 5:
-                return pcd
+        # If the largest cluster is too small, return the original point cloud
+        if len(largest_cluster_points) < 5:
+            return pcd
 
-            # Create a new PointCloud object
-            largest_cluster_pcd = o3d.geometry.PointCloud()
-            largest_cluster_pcd.points = o3d.utility.Vector3dVector(largest_cluster_points)
-            largest_cluster_pcd.colors = o3d.utility.Vector3dVector(largest_cluster_colors)
+        # Create a new PointCloud object
+        largest_cluster_pcd = o3d.geometry.PointCloud()
+        largest_cluster_pcd.points = o3d.utility.Vector3dVector(largest_cluster_points)
+        largest_cluster_pcd.colors = o3d.utility.Vector3dVector(largest_cluster_colors)
 
-            pcd = largest_cluster_pcd
+        pcd = largest_cluster_pcd
 
-        return pcd
+    return pcd
     
 
 def find_nearest_points(local_points: np.ndarray, global_points: np.ndarray, k: int = 1):
@@ -197,3 +198,42 @@ def create_depth_cloud(depth, cam_K):
     
     points = np.stack((X, Y, Z), -1)
     return points
+
+def compute_3d_iou(bbox1, bbox2, padding=0, use_iou=True):
+    # Get the coordinates of the first bounding box
+    bbox1_min = np.asarray(bbox1.get_min_bound()) - padding
+    bbox1_max = np.asarray(bbox1.get_max_bound()) + padding
+
+    # Get the coordinates of the second bounding box
+    bbox2_min = np.asarray(bbox2.get_min_bound()) - padding
+    bbox2_max = np.asarray(bbox2.get_max_bound()) + padding
+
+    # Compute the overlap between the two bounding boxes
+    overlap_min = np.maximum(bbox1_min, bbox2_min)
+    overlap_max = np.minimum(bbox1_max, bbox2_max)
+    overlap_size = np.maximum(overlap_max - overlap_min, 0.0)
+
+    overlap_volume = np.prod(overlap_size)
+    bbox1_volume = np.prod(bbox1_max - bbox1_min)
+    bbox2_volume = np.prod(bbox2_max - bbox2_min)
+    
+    obj_1_overlap = overlap_volume / bbox1_volume
+    obj_2_overlap = overlap_volume / bbox2_volume
+    max_overlap = max(obj_1_overlap, obj_2_overlap)
+
+    iou = overlap_volume / (bbox1_volume + bbox2_volume - overlap_volume)
+
+    if use_iou:
+        return iou
+    else:
+        return max_overlap
+    
+def get_bottom_points(points, percentile=10):
+    """Helper method to get bottom points of a point cloud"""
+    z_threshold = np.percentile(points[:, 2], percentile)
+    return points[points[:, 2] <= z_threshold]
+
+def get_top_points(points, percentile=90):
+    """Helper method to get top points of a point cloud"""
+    z_threshold = np.percentile(points[:, 2], percentile)
+    return points[points[:, 2] >= z_threshold]

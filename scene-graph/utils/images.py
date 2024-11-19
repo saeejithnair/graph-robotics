@@ -1,15 +1,20 @@
-import numpy as np
 import warnings
 from typing import List, Union
+
+import matplotlib.pyplot as plt
+import numpy as np
+import PIL
+import supervision as sv
 import torch
-import PIL 
+
 
 def open_image(path, new_size=None):
     if new_size:
         return PIL.Image.open(path).resize(new_size)
     else:
         return PIL.Image.open(path)
-    
+
+
 def normalize_image(rgb: Union[torch.Tensor, np.ndarray]):
     r"""Normalizes RGB image values from :math:`[0, 255]` range to :math:`[0, 1]` range.
 
@@ -62,3 +67,42 @@ def channels_first(rgb: Union[torch.Tensor, np.ndarray]):
         return np.ascontiguousarray(rgb.transpose(*ordering))
     elif torch.is_tensor(rgb):
         return rgb.permute(*ordering).contiguous()
+
+
+def annotate_img_masks(img, masks, labels):
+    if not type(masks) is list:
+        masks = [masks]
+    detections = sv.Detections(
+        xyxy=sv.mask_to_xyxy(masks=np.array(masks)),
+        mask=np.array(masks),
+    )
+    box_annotator = sv.BoxAnnotator()
+    mask_annotator = sv.MaskAnnotator()
+    # label_annotator = sv.LabelAnnotator(text_position=sv.Position.CENTER)
+    annotated_image = img.copy()
+    annotated_image = box_annotator.annotate(
+        annotated_image, detections=detections, labels=labels
+    )
+    annotated_image = mask_annotator.annotate(
+        annotated_image,
+        detections=detections,
+    )
+    return annotated_image
+
+def annotate_img_boxes(img, box, labels):
+    detections = sv.Detections(
+            xyxy=np.array(box),
+        )
+    box_annotator = sv.BoxAnnotator()
+    annotated_image = img.copy()
+    annotated_image = box_annotator.annotate(annotated_image, 
+                                        detections=detections,
+                                        labels=labels
+                                        )
+    return annotated_image
+
+def get_crop(img, xyxy):
+    if type(img) is np.ndarray:
+        return sv.crop_image(image=img, xyxy=xyxy)
+    else:
+        return img.crop(xyxy)

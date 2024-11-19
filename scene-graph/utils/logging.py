@@ -1,9 +1,19 @@
 import logging
+import os
 from collections import defaultdict
+from pathlib import Path
+
+import PIL
 
 # Initialize logging
-logging.basicConfig(level=logging.DEBUG, filename='mapping_process.log', filemode='a',
-                    format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(
+    level=logging.DEBUG,
+    filename="mapping_process.log",
+    filemode="a",
+    format="%(asctime)s - %(levelname)s - %(message)s",
+)
+
+
 class MappingTracker:
     _instance = None
 
@@ -29,27 +39,27 @@ class MappingTracker:
             self.prev_bbox_names = []
             self.brand_new_counter = 0
 
-            
     def increment_total_detections(self, count):
         self.total_detections += count
+
     def get_total_detections(self):
         return self.total_detections
-    
+
     def set_total_detections(self, count):
         self.total_detections = count
-    
+
     def increment_total_detections(self, count):
         self.total_detections += count
-    
+
     def get_total_operations(self):
         return self.total_operations
-    
+
     def set_total_operations(self, count):
         self.total_operations = count
-    
+
     def increment_total_operations(self, count):
         self.total_operations += count
-    
+
     def get_total_objects(self):
         return self.total_objects
 
@@ -58,10 +68,10 @@ class MappingTracker:
 
     def increment_total_objects(self, count):
         self.total_objects += count
-        
+
     def track_merge(self, obj1, obj2):
         self.total_merges += 1
         self.merge_list.append((obj1, obj2))
-        
+
     def increment_total_merges(self, count):
         self.total_merges += count

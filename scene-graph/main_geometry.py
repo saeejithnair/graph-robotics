@@ -139,7 +139,9 @@ def main_geometry(cfg: DictConfig):
         # dbscan_min_points=cfg["dbscan_min_points"],
     )
     
-    o3d.io.write_point_cloud("outputs/pcd/" + cfg.scene_id + '.pcd', scene_graph.full_pcd)
+    result_dir = Path(cfg.result_root) / cfg.scene_id
+    
+    scene_graph.save_pcd(folder=result_dir)
 
         
 if __name__ == '__main__':

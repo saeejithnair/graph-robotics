@@ -9,15 +9,14 @@ from pathlib import Path
 from PIL import Image
 from scenegraph import SceneGraph
 import numpy as np
-import os
-import sys
+import os, sys, shutil
 import open3d as o3d
 from perception import Perceptor
-from images import open_image
-from utils import init_gemini, call_gemini
 from visualizer import Visualizer3D
+from relationship_scorer import RelationshipScorer, FeatureComputer
 import pointcloud
-from node import Detection
+from track import object_to_track
+
 # A logger for this file
 @hydra.main(
     version_base=None,
@@ -31,6 +30,7 @@ def main_semantictree(cfg: DictConfig):
     cfg = utils.process_cfg(cfg)
     
     # Initialize the dataset
+    device = 'cuda'
     dataset = get_dataset(
         dataconfig=cfg.dataset_config,
         start=cfg.start,
@@ -40,22 +40,27 @@ def main_semantictree(cfg: DictConfig):
         sequence=cfg.scene_id,
         desired_height=cfg.image_height,
         desired_width=cfg.image_width,
-        device="cpu",
+        device=device,
         dtype=torch.float,
         # relative_pose=True
     )
     # cam_K = dataset.get_cam_K()
 
-    result_dir = Path(cfg.result_root) / cfg.scene_id / f"{cfg.detections_exp_suffix}"
-
-    scene_graph = SceneGraph()
-    scene_graph.load_pcd("/home/qasim/Projects/graph-robotics/scene-graph/outputs/pcd/000-hm3d-BFRyYbPCCPE.pcd")
-    perceptor = Perceptor()
-    perceptor.init()
+    result_dir = Path(cfg.result_root) / cfg.scene_id 
+    perception_result_dir = result_dir / f"{cfg.detections_exp_suffix}"
+    shutil.rmtree(perception_result_dir, ignore_errors=True)
     
+    scene_graph = SceneGraph()
+    scene_graph.load_pcd(folder=result_dir)
+    perceptor = Perceptor()
+    feature_computer = FeatureComputer(device)
+    relationship_scorer = RelationshipScorer(downsample_voxel_size=0.02)
+    perceptor.init()
+    feature_computer.init()
+
     exit_early_flag = False
     counter = 0
-    for frame_idx in trange(3): # len(dataset)
+    for frame_idx in range(19,29): # len(dataset)
         # Check if we should exit early only if the flag hasn't been set yet
         if not exit_early_flag and utils.should_exit_early(cfg.exit_early_file):
             print("Exit early signal detected. Skipping to the final frame...")
@@ -78,30 +83,33 @@ def main_semantictree(cfg: DictConfig):
         assert image_rgb.max() > 1, "Image is not in range [0, 255]"
         
         unt_pose = dataset.poses[frame_idx]
-        unt_pose = unt_pose.cpu().numpy()
-        adjusted_pose = unt_pose
+        trans_pose = unt_pose.cpu().numpy()
         depth_cloud = pointcloud.create_depth_cloud(depth_array, dataset.get_cam_K())
         
-        detections = []
-        perceptor.process(color_np)
+        detections, _ = perceptor.process(color_np)
+        detections.extract_local_pcd(depth_cloud,
+                                     color_np,
+                                     scene_graph.geometry_map,
+                                     trans_pose,
+                                     cfg.obj_pcd_max_points)
         
-        for i in range(perceptor.num_detections):
-            obj = perceptor.get_object(i)
-            if np.sum(obj['mask']) < cfg.min_points_threshold:
-                continue
-            detections.append(Detection(
-                object = obj,
-                depth_cloud=depth_cloud,
-                img_rgb=color_np,
-                global_pcd=scene_graph.geometry_map,
-                trans_pose=unt_pose,
-                obj_pcd_max_points=cfg.obj_pcd_max_points
-            ))
-            
-        for detection in detections:
-            scene_graph.add_node(detection.to_node(scene_graph.geometry_map))
+        feature_computer.compute_features(image_rgb, scene_graph.geometry_map, detections)
         
-        perceptor.save_results(result_dir)
+        det_matched, matched_tracks = relationship_scorer.associate_dets_to_tracks(detections, scene_graph.get_tracks())
+        
+        scene_graph.process_detections(
+            detections,
+            det_matched,
+            matched_tracks,
+            frame_idx
+        )
+                
+        perceptor.save_results(perception_result_dir, frame_idx)
+        detections.save(perception_result_dir / str(frame_idx), perceptor.img)
+    
+    track_to_parent = relationship_scorer.infer_hierarchy_relationships(scene_graph.tracks, scene_graph.geometry_map)
+    
+    scene_graph.process_hierarchy(track_to_parent)
     
     visualizer = Visualizer3D()
     visualizer.init()
