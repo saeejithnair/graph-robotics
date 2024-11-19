@@ -5,3 +5,6 @@
 	path = graph-pcl/extern/pybind11
 	url = ../../pybind/pybind11
 	branch = stable
+[submodule "third-party/spann3r"]
+	path = third-party/spann3r
+	url = git@github.com:saeejithnair/spann3r.git
