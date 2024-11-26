@@ -1,0 +1,46 @@
+[
+    {
+        "label": "white refrigerator",
+        "caption": "White refrigerator with a stainless steel door",
+        "bbox": [
+            109,
+            399,
+            253,
+            1806
+        ],
+        "confidence": 0.95
+    },
+    {
+        "label": "orange clock",
+        "caption": "Orange clock with a white face and black numbers",
+        "bbox": [
+            200,
+            393,
+            279,
+            570
+        ],
+        "confidence": 0.89
+    },
+    {
+        "label": "white cabinet",
+        "caption": "White cabinet with two doors",
+        "bbox": [
+            0,
+            428,
+            138,
+            798
+        ],
+        "confidence": 0.87
+    },
+    {
+        "label": "green plant",
+        "caption": "Green leafy plant with long stems",
+        "bbox": [
+            591,
+            817,
+            1077,
+            1916
+        ],
+        "confidence": 0.82
+    }
+]
