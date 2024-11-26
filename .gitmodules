@@ -8,3 +8,9 @@
 [submodule "third-party/spann3r"]
 	path = third-party/spann3r
 	url = git@github.com:saeejithnair/spann3r.git
+[submodule "third-party/Open3D"]
+	path = third-party/Open3D
+	url = https://github.com/isl-org/Open3D
+[submodule "third-party/mast3r"]
+	path = third-party/mast3r
+	url = https://github.com/naver/mast3r
