@@ -20,7 +20,7 @@ from track import object_to_track
 # A logger for this file
 @hydra.main(
     version_base=None,
-    config_path="/home/qasim/Projects/graph-robotics/scene-graph/configs/mapping",
+    config_path="configs/mapping",
     config_name="hm3d_mapping",
 )
 # @profile

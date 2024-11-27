@@ -67,7 +67,7 @@ class Perceptor:
                 # resized_bbox = ((box/1000)*normalize_size).astype(np.int64)
 
                 response[i]["bbox"] = bbox
-            return response, raw_response
+            return (response, raw_response)
         except:
             return False
 
@@ -95,10 +95,12 @@ class Perceptor:
         answer = None
         for _ in range(6):
             response = utils.call_gemini(model, [text_prompt] + image_prompt)
-            response, llm_response = self.process_response(response, img_size, img=img)
-            if response:
-                answer = response
-                break
+            result = self.process_response(response, img_size, img=img)
+            if result:
+                response, llm_response = result
+                if response:
+                    answer = response
+                    break
         if not answer:
             raise Exception("Model could not generate bounding boxes")
         return answer, llm_response  # .removeprefix('Answer: ').strip()

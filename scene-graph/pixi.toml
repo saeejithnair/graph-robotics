@@ -18,10 +18,13 @@ pytorch-cuda = { version = "11.8.*", channel = "pytorch" }
 pytorch = { version = "2.1.0", channel = "pytorch" }
 torchvision = { version = "*", channel = "pytorch" }
 torchaudio = { version = "*", channel = "pytorch" }
-habitat-sim = { version = "*", channel = "aihabitat" }
+habitat-sim = { version = "==0.2.5", channel = "aihabitat" }
 
 [pypi-dependencies]
-supervision = "*"
+supervision = { version = "*" }
+transformers = { version = "*" }
+sentencepiece = { version = "*" }
+pillow = { version = "*" }
 hydra-core = { version = "*"}
 pandas = { version = "*" }
 open3d = { version = "*" }
