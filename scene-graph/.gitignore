@@ -1,9 +1,0 @@
-__pycache__/
-checkpoints/
-datasets/__pycache__
-outputs/
-perception/__pycache__
-perception/sample_results/
-perception/sample_images/
-perception/prompts/keys/
-debug*

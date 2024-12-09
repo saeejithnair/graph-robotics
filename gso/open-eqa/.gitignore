@@ -1,0 +1,17 @@
+*.egg-info/
+__pycache__/
+.ipynb_checkpoints/
+
+.DS_Store
+
+*.zip
+*.tgz
+
+data/*
+!data/*.py
+!data/*.md
+!data/*.json
+!data/hm3d/*
+!data/scannet/*
+
+assets/demo_frames/*
