@@ -1282,7 +1282,10 @@ def detections_to_obj_pcd_and_bbox(
         valid_points = mask_points[valid_points_mask]
         valid_colors = mask_colors[valid_points_mask] if mask_colors is not None else None
 
-        downsampled_points, downsampled_colors = dynamic_downsample(valid_points, colors=valid_colors, target=obj_pcd_max_points)
+        downsampled_points, downsampled_colors = dynamic_downsample(
+            valid_points, 
+            colors=valid_colors, 
+            target=obj_pcd_max_points)
 
         # Create point cloud
         pcd = o3d.geometry.PointCloud()

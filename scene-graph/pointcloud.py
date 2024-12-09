@@ -228,6 +228,44 @@ def compute_3d_iou(bbox1, bbox2, padding=0, use_iou=True):
     else:
         return max_overlap
     
+def compute_3d_bbox_distance(bbox1, bbox2, distance_type='surface'):
+    """
+    Compute the distance between two 3D bounding boxes.
+
+    Parameters:
+    - bbox1, bbox2: Bounding box objects with `get_min_bound()` and `get_max_bound()` methods.
+    - distance_type: 'center' for center-to-center distance or 'surface' for surface-to-surface distance.
+
+    Returns:
+    - Distance between the two bounding boxes.
+    """
+    # Get the coordinates of the bounding boxes
+    bbox1_min = np.asarray(bbox1.get_min_bound())
+    bbox1_max = np.asarray(bbox1.get_max_bound())
+    bbox2_min = np.asarray(bbox2.get_min_bound())
+    bbox2_max = np.asarray(bbox2.get_max_bound())
+
+    if distance_type == 'center':
+        # Compute the centers of the bounding boxes
+        bbox1_center = (bbox1_min + bbox1_max) / 2.0
+        bbox2_center = (bbox2_min + bbox2_max) / 2.0
+        
+        # Compute Euclidean distance between the centers
+        distance = np.linalg.norm(bbox1_center - bbox2_center)
+
+    elif distance_type == 'surface':
+        # Compute the closest distance between the surfaces
+        distance_x = max(0, max(bbox1_min[0] - bbox2_max[0], bbox2_min[0] - bbox1_max[0]))
+        distance_y = max(0, max(bbox1_min[1] - bbox2_max[1], bbox2_min[1] - bbox1_max[1]))
+        distance_z = max(0, max(bbox1_min[2] - bbox2_max[2], bbox2_min[2] - bbox1_max[2]))
+        
+        # Compute the overall closest distance
+        distance = np.sqrt(distance_x**2 + distance_y**2 + distance_z**2)
+    else:
+        raise ValueError("Invalid distance_type. Use 'center' or 'surface'.")
+
+    return distance
+    
 def get_bottom_points(points, percentile=10):
     """Helper method to get bottom points of a point cloud"""
     z_threshold = np.percentile(points[:, 2], percentile)

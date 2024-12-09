@@ -1,31 +1,37 @@
+import json
 import logging
-from collections import defaultdict
-import numpy as np
-import pandas as pd
-from omegaconf import DictConfig
-from pathlib import Path
-import omegaconf
 import time
-from omegaconf import OmegaConf
-import json 
+from collections import defaultdict
+from pathlib import Path
+
+import numpy as np
+import omegaconf
+import pandas as pd
 import torch
+from omegaconf import DictConfig, OmegaConf
+
 
 def measure_time(func):
     def wrapper(*args, **kwargs):
         start_time = time.time()
         # print(f"Starting {func.__name__}...")
-        result = func(*args, **kwargs)  # Call the function with any arguments it was called with
+        result = func(
+            *args, **kwargs
+        )  # Call the function with any arguments it was called with
         end_time = time.time()
         elapsed_time = end_time - start_time
-        print(f"Done! Execution time of {func.__name__} function: {elapsed_time:.2f} seconds")
+        print(
+            f"Done! Execution time of {func.__name__} function: {elapsed_time:.2f} seconds"
+        )
         return result  # Return the result of the function call
+
     return wrapper
 
 
 def process_cfg(cfg: DictConfig):
     cfg.dataset_root = Path(cfg.dataset_root)
     cfg.dataset_config = Path(cfg.dataset_config)
-    
+
     if cfg.dataset_config.name != "multiscan.yaml":
         # For datasets whose depth and RGB have the same resolution
         # Set the desired image heights and width from the dataset config
@@ -34,13 +40,24 @@ def process_cfg(cfg: DictConfig):
             cfg.image_height = dataset_cfg.camera_params.image_height
         if cfg.image_width is None:
             cfg.image_width = dataset_cfg.camera_params.image_width
-        print(f"Setting image height and width to {cfg.image_height} x {cfg.image_width}")
+        print(
+            f"Setting image height and width to {cfg.image_height} x {cfg.image_width}"
+        )
     else:
         # For dataset whose depth and RGB have different resolutions
-        assert cfg.image_height is not None and cfg.image_width is not None, \
-            "For multiscan dataset, image height and width must be specified"
+        assert (
+            cfg.image_height is not None and cfg.image_width is not None
+        ), "For multiscan dataset, image height and width must be specified"
 
     return cfg
+
+
+def make_dir(dataset_root, scene_id, exp_suffix, make_dir=True):
+    exp_out_path = Path(dataset_root) / scene_id / "exps" / f"{exp_suffix}"
+    if make_dir:
+        exp_out_path.mkdir(exist_ok=True, parents=True)
+    return exp_out_path
+
 
 def get_exp_out_path(dataset_root, scene_id, exp_suffix, make_dir=True):
     exp_out_path = Path(dataset_root) / scene_id / "exps" / f"{exp_suffix}"
@@ -48,10 +65,12 @@ def get_exp_out_path(dataset_root, scene_id, exp_suffix, make_dir=True):
         exp_out_path.mkdir(exist_ok=True, parents=True)
     return exp_out_path
 
+
 def get_vis_out_path(exp_out_path):
     vis_folder_path = exp_out_path / "vis"
     vis_folder_path.mkdir(exist_ok=True, parents=True)
     return vis_folder_path
+
 
 def get_det_out_path(exp_out_path, make_dir=True):
     detections_folder_path = exp_out_path / "detections"
@@ -59,13 +78,14 @@ def get_det_out_path(exp_out_path, make_dir=True):
         detections_folder_path.mkdir(exist_ok=True, parents=True)
     return detections_folder_path
 
+
 def cfg_to_dict(input_cfg):
-    """ Convert a Hydra configuration object to a native Python dictionary,
+    """Convert a Hydra configuration object to a native Python dictionary,
     ensuring all special types (e.g., ListConfig, DictConfig, PosixPath) are
-    converted to serializable types for JSON. Checks for non-serializable objects. """
-    
+    converted to serializable types for JSON. Checks for non-serializable objects."""
+
     def convert_to_serializable(obj):
-        """ Recursively convert non-serializable objects to serializable types. """
+        """Recursively convert non-serializable objects to serializable types."""
         if isinstance(obj, dict):
             return {k: convert_to_serializable(v) for k, v in obj.items()}
         elif isinstance(obj, list):
@@ -75,7 +95,7 @@ def cfg_to_dict(input_cfg):
         return obj
 
     def check_serializability(obj, context=""):
-        """ Attempt to serialize the object, raising an error if not possible. """
+        """Attempt to serialize the object, raising an error if not possible."""
         try:
             json.dumps(obj)
         except TypeError as e:
@@ -83,7 +103,9 @@ def cfg_to_dict(input_cfg):
 
         if isinstance(obj, dict):
             for k, v in obj.items():
-                check_serializability(v, context=f"{context}.{k}" if context else str(k))
+                check_serializability(
+                    v, context=f"{context}.{k}" if context else str(k)
+                )
         elif isinstance(obj, list):
             for idx, item in enumerate(obj):
                 check_serializability(item, context=f"{context}[{idx}]")
@@ -101,55 +123,57 @@ def cfg_to_dict(input_cfg):
 
     return serializable_cfg
 
+
 def should_exit_early(file_path):
     try:
-        with open(file_path, 'r') as file:
+        with open(file_path, "r") as file:
             data = json.load(file)
-        
+
         # Check if we should exit early
         if data.get("exit_early", False):
             # Reset the exit_early flag to False
             data["exit_early"] = False
             # Write the updated data back to the file
-            with open(file_path, 'w') as file:
+            with open(file_path, "w") as file:
                 json.dump(data, file)
             return True
         else:
             return False
     except Exception as e:
-        # If there's an error reading the file or the key doesn't exist, 
+        # If there's an error reading the file or the key doesn't exist,
         # log the error and return False
         print(f"Error reading {file_path}: {e}")
         logging.info(f"Error reading {file_path}: {e}")
         return False
-    
-    
+
+
 def from_intrinsics_matrix(K: torch.Tensor) -> tuple[float, float, float, float]:
-    '''
+    """
     Get fx, fy, cx, cy from the intrinsics matrix
-    
+
     return 4 scalars
-    '''
+    """
     fx = to_scalar(K[0, 0])
     fy = to_scalar(K[1, 1])
     cx = to_scalar(K[0, 2])
     cy = to_scalar(K[1, 2])
     return fx, fy, cx, cy
 
+
 def to_scalar(d):
-    '''
+    """
     Convert the d to a scalar
-    '''
+    """
     if isinstance(d, float):
         return d
-    
+
     elif "numpy" in str(type(d)):
         assert d.size == 1
         return d.item()
-    
+
     elif isinstance(d, torch.Tensor):
         assert d.numel() == 1
         return d.item()
-    
+
     else:
         raise TypeError(f"Invalid type for conversion: {type(d)}")

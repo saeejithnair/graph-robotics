@@ -10,6 +10,7 @@ import torch
 # Add at the top of the file
 _label_to_class_id = {}
 
+
 def _update_label_mapping(labels):
     """Updates global label mapping with new labels"""
     global _label_to_class_id
@@ -17,6 +18,7 @@ def _update_label_mapping(labels):
         if label not in _label_to_class_id:
             _label_to_class_id[label] = len(_label_to_class_id)
     return _label_to_class_id
+
 
 def open_image(path, new_size=None):
     if new_size:
@@ -84,43 +86,43 @@ def annotate_img_masks(img, masks, labels):
         masks = [masks]
     if isinstance(labels, str):
         labels = [labels] * len(masks)
-        
+    if len(masks) == 0:
+        return img.copy()
+
     # Use global mapping
     class_ids = np.array([_label_to_class_id[label] for label in labels])
-    
+
     detections = sv.Detections(
         xyxy=sv.mask_to_xyxy(masks=np.array(masks)),
         mask=np.array(masks),
-        class_id=class_ids
+        class_id=class_ids,
     )
     box_annotator = sv.BoxAnnotator()
     mask_annotator = sv.MaskAnnotator()
     # label_annotator = sv.LabelAnnotator(text_position=sv.Position.CENTER)
     annotated_image = img.copy()
-    annotated_image = box_annotator.annotate(
-        annotated_image, detections=detections
-    )
+    annotated_image = box_annotator.annotate(annotated_image, detections=detections)
     annotated_image = mask_annotator.annotate(
         annotated_image,
         detections=detections,
     )
     return annotated_image
 
+
 def annotate_img_boxes(img, box, labels):
     # Update global mapping
     _update_label_mapping(labels)
     class_ids = np.array([_label_to_class_id[label] for label in labels])
     # create detections with bounding boxes and class ids
-    detections = sv.Detections(
-        xyxy=np.array(box),
-        class_id=class_ids
-    )
+    detections = sv.Detections(xyxy=np.array(box), class_id=class_ids)
     box_annotator = sv.BoxAnnotator()
     annotated_image = img.copy()
-    annotated_image = box_annotator.annotate(annotated_image, 
-                                        detections=detections,
-                                        )
+    annotated_image = box_annotator.annotate(
+        annotated_image,
+        detections=detections,
+    )
     return annotated_image
+
 
 def get_crop(img, xyxy):
     if type(img) is np.ndarray:
