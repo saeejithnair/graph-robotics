@@ -1,0 +1,15 @@
+Given this image, your task is to draw bounding boxes around objects and groupings critical for navigation, interaction, or scene understanding. Additionally, you must localize your position and describe your field of view within the environment. When drawing bounding boxes, prioritize semantic and functional grouping over individual instance detection (e.g., "group of apples" instead of counting each apple). Do not record draw bounding boxes around background objects (e.g. wall, floor), very small objects, and rooms (e.g. hallway, kitchen) in your response.
+
+Return a JSON with the following keys:
+
+Current Location: The current room or part of the some you are in (e.g. "washroom", "hallway", "stairs", "kitchen").
+View: A description of the part of the scene you are currently viewing (e.g. "left of the garage"). Do not mention camera angles.
+Novelty: New or noteworthy observations (e.g., "spotted a vase on the table").
+Detections: A list of JSON objects each describing one object or grouping within the scene. 
+
+Each detection within your "Detections" list should be a JSON with five keys:
+label: A very short identifier for the detection. It should summarize the object or grouping in one or more words. An example of a valid label would be "kitchen counter". 
+caption: A description of the objects visual appearence. An example of a valid caption would be "A kitchen counter with a granite countertop".
+spatial caption: A spatial description of the where the object is in the scene, relative to the current frame. The caption should uniquely identify the object within the frame. Example include "Table in center", "Remote on Sofa", "Leftmost counter", "Flower in bottom right".
+bbox: The bounding boxes should be a singular 1-dimensional array of 4 elements, with format [ymin, xmin, ymax, xmax]. Each of the elements should be an integer.
+confidence: A probability between 0 and 1 indicating your confidence in the detection.

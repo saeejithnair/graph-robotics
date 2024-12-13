@@ -1,0 +1,282 @@
+[
+  {
+    "question_id": "f2e82760-5c3c-41b1-88b6-85921b9e7b32",
+    "answer": "Yes, a white framed picture."
+  },
+  {
+    "question_id": "7447d782-d1a7-4c87-86dc-b5eafc5a0f76",
+    "answer": "The ceiling is partially white or off-white with wood beams."
+  },
+  {
+    "question_id": "e2ccf6f4-22a9-47d1-ab8d-a05a13435b82",
+    "answer": "The staircase railing is dark brown wood, appearing to be stained or varnished."
+  },
+  {
+    "question_id": "c841bb52-1cec-46d7-bb83-8c99b5c66fa8",
+    "answer": "There are three picture frames on the blue wall. A large horizontal one is above the fireplace, and two smaller vertical ones are to its right. A TV is positioned between the large frame and the smaller ones."
+  },
+  {
+    "question_id": "79344680-6b45-4531-8789-ad0f5ef85b3b",
+    "answer": "A wooden dining table with a patterned tablecloth featuring yellow and brown hues. Only a portion of the table is visible."
+  },
+  {
+    "question_id": "500e6924-0ea3-45c8-89ce-db3d37e142bf",
+    "answer": "No table mats."
+  },
+  {
+    "question_id": "ecad68d2-a16f-4a3e-b8a1-a70ec1c5cf00",
+    "answer": "The door is closed."
+  },
+  {
+    "question_id": "5c1d30b9-5827-49fc-b74f-5ee9909a75b8",
+    "answer": "Okay, I'm ready to answer spatial reasoning questions about home scenes given a scene graph and navigation log.  Please provide the question, scene graph, and navigation log."
+  },
+  {
+    "question_id": "8d7f1dd7-9764-4603-918b-58eefcb0b10e",
+    "answer": "No ceiling fan."
+  },
+  {
+    "question_id": "c8808989-9b62-4764-814e-520fd40c22cd",
+    "answer": "The ceiling is white with wood paneling in sections and recessed lighting."
+  },
+  {
+    "question_id": "564d876c-44f1-4915-8d4b-ab5a7728494f",
+    "answer": "A green plastic bin and a green plastic container."
+  },
+  {
+    "question_id": "77c6644e-6018-4ef3-a683-276d3d2af67f",
+    "answer": "The trash can lids are brown and yellow."
+  },
+  {
+    "question_id": "a86ef102-5500-4fbf-8fae-cdbeb20a3b7b",
+    "answer": "dark blue or black"
+  },
+  {
+    "question_id": "438e8c6f-f27d-4d3d-b13d-6f41c2981c2a",
+    "answer": "light brown concrete"
+  },
+  {
+    "question_id": "9b4a7fbb-680d-4e39-8d60-7b1e521f3108",
+    "answer": "The top shelf to the right of the garage is gray metal. It contains a pair of brown shoes, various bottles and containers (possibly cleaning supplies), and other miscellaneous small items.  The exact count of each item type is unclear."
+  },
+  {
+    "question_id": "35bfcf60-4227-4bbb-9213-e1bf643b2325",
+    "answer": "One trash can is open and overflowing; the other is closed."
+  },
+  {
+    "question_id": "3a803472-47cd-4903-8380-d0b00efbbf08",
+    "answer": "The damaged door is open."
+  },
+  {
+    "question_id": "87019892-7a7f-4ce0-b1e6-4c0d6e87b90a",
+    "answer": "No."
+  },
+  {
+    "question_id": "6fddec60-f221-4944-88c3-a132dfbfd1ed",
+    "answer": "Okay, I'm ready to answer your spatial reasoning questions. Please provide the question, scene graph, and navigation log."
+  },
+  {
+    "question_id": "7f15d867-8ba6-47fa-9bca-9d9ae64046b7",
+    "answer": "Chrysler 200"
+  },
+  {
+    "question_id": "025257b6-8b7e-4f6f-aacc-1788069cbfad",
+    "answer": "There are two large brown plastic trash bins.  One is labeled 07140371 and the other 07141525. Neither label indicates the type of trash that should go in each bin."
+  },
+  {
+    "question_id": "28ea4932-55bf-44b3-9a48-73fde896b8ce",
+    "answer": "Okay, I'm ready to answer your questions. Please provide the question, scene graph, and navigation log."
+  },
+  {
+    "question_id": "30d3104b-cc05-4860-83e8-255fe8311662",
+    "answer": "The broom is leaning against the wall."
+  },
+  {
+    "question_id": "23fb241e-989a-4299-a3fb-8d41f7156397",
+    "answer": "A picture frame."
+  },
+  {
+    "question_id": "96d7f5ef-14b2-432a-8b85-21a0621e41a4",
+    "answer": "A framed picture."
+  },
+  {
+    "question_id": "915cb310-31be-4114-846c-242fc59b581d",
+    "answer": "Okay, I'm ready to receive the scene question, scene graph, and navigation log and provide an answer in the specified format."
+  },
+  {
+    "question_id": "d7019200-5300-459e-a2c1-b54d5ec0a80b",
+    "answer": "The bed has a grey comforter."
+  },
+  {
+    "question_id": "6be2fe87-f20c-48a2-a8fb-161362d86e2a",
+    "answer": "Okay, I'm ready to receive the scene question, scene graph, and navigation log and provide an answer in the specified format."
+  },
+  {
+    "question_id": "79dfe5ce-8a8c-47f3-a606-ab5ab4591c56",
+    "answer": "The space under the bed appears to be carpeted."
+  },
+  {
+    "question_id": "bbb83d84-289c-4f1d-a470-772e5c823a90",
+    "answer": "The patio door is open."
+  },
+  {
+    "question_id": "41ad08e1-cb46-4599-8beb-def3b0f91e34",
+    "answer": "No."
+  },
+  {
+    "question_id": "9ca30022-6b6c-4950-b91d-e90ee80f49d8",
+    "answer": "Yes, a bed."
+  },
+  {
+    "question_id": "1015cab7-827a-437c-ab86-6e4c2a9dd083",
+    "answer": "A black framed monochrome abstract drawing or painting is visible on the bedroom wall."
+  },
+  {
+    "question_id": "9fc2d987-fc9c-4771-a0d4-07d24e2b7910",
+    "answer": "Okay, I'm ready to answer your spatial reasoning questions. Please provide the question, scene graph, and navigation log."
+  },
+  {
+    "question_id": "f776a834-1e21-4442-8834-18b6f9d6cfad",
+    "answer": "No orange painting."
+  },
+  {
+    "question_id": "06745779-f1b8-458b-8daa-ccc18d8958c8",
+    "answer": "The dining table is round and has an orange tablecloth with a dark pattern. A bowl is in the center of the table. Two wooden chairs with carved details are positioned on either side of the table."
+  },
+  {
+    "question_id": "9a0fe947-4c0b-47b8-a1dc-414f2d555c67",
+    "answer": "A staircase."
+  },
+  {
+    "question_id": "e8a806b3-bf39-4854-84bd-72c25493d8cd",
+    "answer": "Light brownish-tan square tiles."
+  },
+  {
+    "question_id": "884e2405-85f6-446f-a0ab-a03e537e5184",
+    "answer": "A staircase is in the center of the room, with a red couch to its right."
+  },
+  {
+    "question_id": "cec83622-f735-435a-b054-1e201a48652c",
+    "answer": "The kitchen countertop has several dark stains and smudges."
+  },
+  {
+    "question_id": "9104773d-a2f0-4be3-a370-f7bf6e242ff7",
+    "answer": "The front door is closed."
+  },
+  {
+    "question_id": "65fbee94-eb23-40b3-84c3-32129c95b52d",
+    "answer": "Yes"
+  },
+  {
+    "question_id": "e59e9409-776f-4c14-945e-11772fd5ff50",
+    "answer": "Okay, I'm ready to answer spatial reasoning questions about home scenes given a scene graph and navigation log.  Please provide the question, scene graph, and navigation log."
+  },
+  {
+    "question_id": "8ddd3d37-86fb-41cf-9948-d0b639706a93",
+    "answer": "The home is on a narrow street with a cobblestone pathway.  Neighboring buildings have terracotta-colored walls; one has a white garage door with graffiti."
+  },
+  {
+    "question_id": "81739eb9-ef32-42e3-b1cf-fa8e826813ef",
+    "answer": "The breakfast table is round, has an orange tablecloth with a dark pattern, and is located in the center of the dining room."
+  },
+  {
+    "question_id": "d9737f88-11c2-454d-aa40-a2e1f3111505",
+    "answer": "Okay, I'm ready to answer your spatial reasoning questions.  Please provide the question, scene graph, and navigation log."
+  },
+  {
+    "question_id": "cbb81160-b858-49d6-a234-a94edb4d0b1d",
+    "answer": "Okay, I'm ready to receive the scene question, scene graph, and navigation log and provide an answer in the specified format."
+  },
+  {
+    "question_id": "554929c8-cd5a-4b19-ab0c-1dba2b5126cb",
+    "answer": "The comforter is light pink with a gray stripe."
+  },
+  {
+    "question_id": "660372d6-b02b-406e-9383-28e27a4da9ab",
+    "answer": "The bedroom floor is mostly clear, with a small pile of folded clothing or bedding near the bed."
+  },
+  {
+    "question_id": "38ce32f5-3c19-46c3-94e6-79efa00a6fbe",
+    "answer": "The front door is closed."
+  },
+  {
+    "question_id": "7c8e453b-67ac-424a-a73e-7f9a0d6d8cc5",
+    "answer": "The window is open."
+  },
+  {
+    "question_id": "ecf1c2a2-f480-45f2-866c-8b73dff5347f",
+    "answer": "No."
+  },
+  {
+    "question_id": "0e49111c-608d-4d02-aacb-3705bdd0ca5e",
+    "answer": "No bathroom is visible."
+  },
+  {
+    "question_id": "87e01245-6f75-4ac3-9844-7f331d7df193",
+    "answer": "The front door is dark brown wood with an arched top and glass panels.  The double interior doors are also wooden with a geometric glass pattern.  The sliding glass door has a wooden frame and multiple panes of glass; the wood is a medium brown."
+  },
+  {
+    "question_id": "41f53d99-4277-4dec-892e-8e52a2cc7402",
+    "answer": "Yes"
+  },
+  {
+    "question_id": "143ade55-0216-455d-8e2f-6aa249596986",
+    "answer": "A small, golden-brown figurine-like doll is on the windowsill in the bottom right corner of a window."
+  },
+  {
+    "question_id": "baa59d32-91d7-48e1-aa38-4c34bdb7296b",
+    "answer": "Yes"
+  },
+  {
+    "question_id": "f144699a-0af1-4830-9b28-a2b82777a92e",
+    "answer": "A hallway wall and the start of a staircase."
+  },
+  {
+    "question_id": "10d6d14b-ef30-42b6-89d7-b79eb4ce9b5d",
+    "answer": "A closed door and a carpeted staircase."
+  },
+  {
+    "question_id": "9585c0be-c248-48cf-93e9-194f6764286f",
+    "answer": "light gray"
+  },
+  {
+    "question_id": "611bbc61-de24-4877-8c4e-1f771ac72d01",
+    "answer": "The doorway to the living room is directly across from the staircase."
+  },
+  {
+    "question_id": "59128ef6-1338-49a8-ab06-191971bb1815",
+    "answer": "The ceiling is white with recessed lighting, but nothing is in the center."
+  },
+  {
+    "question_id": "fa4fdac0-a749-4744-a739-3eff882a2862",
+    "answer": "Okay, I'm ready. Please provide the scene question, scene graph, and navigation log."
+  },
+  {
+    "question_id": "d6142b7c-27e3-4aef-bca7-2cfddca328f4",
+    "answer": "Yes, there are two, and they are off."
+  },
+  {
+    "question_id": "24228768-d745-4796-990f-2b5d8aeb4827",
+    "answer": "No"
+  },
+  {
+    "question_id": "22c31dab-ea65-4752-b541-edcdb3c67108",
+    "answer": "The staircase is stone with grey carpeting.  At least 10 steps are visible, but it extends beyond the visible portion. It likely services at least two stories.  There is visible damage to the carpeting on some steps."
+  },
+  {
+    "question_id": "17d99f84-d536-4623-b428-d298f8669f09",
+    "answer": "The garden is mostly lawn with some landscaping; no immediate hazards are visible, but a thorough check is needed for dog safety."
+  },
+  {
+    "question_id": "c0359449-cb8c-4fe2-8371-fb260735070a",
+    "answer": "The French doors are open, revealing a grassy backyard with structures in the distance."
+  },
+  {
+    "question_id": "8548aacb-669f-4341-a21e-0426e5dc3b42",
+    "answer": "No.  There is a gray cabinet."
+  },
+  {
+    "question_id": "98a31a80-3f7b-416a-ba1a-fc1858523860",
+    "answer": "The painting is an abstract landscape with muted tones and pops of color, featuring what appears to be trees and possibly a sky."
+  }
+]

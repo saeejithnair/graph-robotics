@@ -6,15 +6,19 @@ import traceback
 from pathlib import Path
 from typing import Optional
 
-import ask_question
 import google.generativeai as genai
+import hydra
 import matplotlib.pyplot as plt
 import numpy as np
-import read_graphs
+import torch
 import tqdm
-import utils
 import vertexai
+from omegaconf import DictConfig
 from vertexai.generative_models import GenerativeModel, Part
+
+import ask_question
+import scene_graph.utils as utils
+from scene_graph.datasets import get_dataset
 
 
 def parse_args() -> argparse.Namespace:
@@ -92,19 +96,27 @@ def parse_args() -> argparse.Namespace:
     return args
 
 
-def main(args: argparse.Namespace):
+# A logger for this file
+@hydra.main(
+    version_base=None,
+    config_path="scene_graph/configs/mapping",
+    config_name="hm3d_mapping",
+)
+def main(cfg: DictConfig):
     # check for GOOGLE_API_KEY api key
-    with open("/home/qasim/Projects/open-eqa/sg-reasoner/keys/gemini_key.txt") as f:
+    with open("/home/qasim/Projects/graph-robotics/api_keys/gemini_key.txt") as f:
         GOOGLE_API_KEY = f.read().strip()
     os.environ["GOOGLE_API_KEY"] = GOOGLE_API_KEY
     os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = (
-        "/home/qasim/Projects/open-eqa/sg-reasoner/keys/total-byte-432318-q3-78e6d4aa6497.json"
+        "/home/qasim/Projects/graph-robotics/api_keys/total-byte-432318-q3-78e6d4aa6497.json"
     )
 
-    # load questions
-    questions = json.load(args.questions.open("r"))
-    print("found {:,} questions".format(len(questions)))
+    cfg = utils.process_cfg(cfg)
 
+    # load questions
+    with open(cfg.questions) as f:
+        questions = json.load(f)
+    print("found {:,} questions".format(len(questions)))
     # only run particular questions
     subset_questions = [
         # "73bcd8d2-cd39-46e1-a63a-54acfae8d060",
@@ -116,20 +128,34 @@ def main(args: argparse.Namespace):
     if subset_questions and len(subset_questions) > 0:
         questions = [q for q in questions if q["question_id"] in subset_questions]
 
+    output_path = Path(cfg.questions_output_dir) / (
+        Path(cfg.questions).stem
+        + "-{}-{}.json".format(cfg.questions_model, cfg.questions_exp_name)
+    )
+    debuglog_path = Path(cfg.questions_output_dir) / (
+        "APIDebugLog-{}-{}.json".format(cfg.questions_model, cfg.questions_exp_name)
+    )
+    print("Saving results to ", output_path)
+
     # load results
-    results = []
-    if False:  # args.output_path.exists():
-        results = json.load(args.output_path.open())
+    results, debuglogs = [], []
+    if output_path.exists() and not cfg.questions_ignore_old_results:
+        results = json.load(output_path.open())
         print("found {:,} existing results".format(len(results)))
+        if debuglog_path.exists() and not cfg.questions_ignore_old_results:
+            debuglogs = json.load(debuglog_path.open())
+            print("found {:,} existing results".format(len(results)))
     completed = [item["question_id"] for item in results]
 
-    scenes_available = os.listdir(args.graph_dir)
+    scenes_available = os.listdir(cfg.questions_graph_dir)
 
-    print("Saving results to ", args.output_path)
-
+    device = "cuda:2"
+    api = ask_question.API_NoStructure(device)
     # process data
     for idx, item in enumerate(tqdm.tqdm(questions)):
-        if args.dry_run and idx >= 5:
+        if cfg.questions_dry_run and idx >= 5:
+            break
+        if idx >= 120:
             break
 
         # skip completed questions
@@ -140,36 +166,49 @@ def main(args: argparse.Namespace):
         if not scene_id in scenes_available:
             continue
 
-        # extract scene paths
-        if args.use_annotated_frames:
-            folder = args.graph_dir / scene_id / "exps/s_detections/vis"
-            frames = sorted(folder.glob("*-rgbannotated_for_vlm.jpg"))
-        else:
-            folder = args.frames_directory / scene_id
-            frames = sorted(folder.glob("*-rgb.png"))
-        indices = [int(s.stem[:5]) for s in frames]
-        paths = {int(indices[i]): str(frames[i]) for i in range(len(frames))}
+        dataset = get_dataset(
+            dataconfig=cfg.dataset_config,
+            start=cfg.start,
+            end=cfg.end,
+            stride=cfg.stride,
+            basedir=cfg.dataset_root,
+            sequence=scene_id,
+            desired_height=cfg.image_height,
+            desired_width=cfg.image_width,
+            device=device,
+            dtype=torch.float,
+            # relative_pose=True
+        )
 
         # generate answer
         question = item["question"]
-        answer = ask_question.flat_structure(
+        answer, debuglog = ask_question.flat_graph(
             question=question,
-            image_paths=paths,
-            graph_path=args.graph_dir / scene_id,
-            gemini_model=args.model,
-            gemini_seed=args.seed,
-            gemini_temperature=args.temperature,
-            force=args.force,
+            api=api,
+            dataset=dataset,
+            graph_path=Path(cfg.questions_graph_dir) / scene_id,
+            obj_pcd_max_points=cfg.obj_pcd_max_points,
+            gemini_model=cfg.questions_model,
         )
 
         # store results
+        debuglog[0]["answer"] = item["answer"]
+        debuglog[0]["pred_answer"] = answer
+        debuglog[0]["question_id"] = question_id
+        debuglog[0]["category"] = item["category"]
+        debuglog[0]["episode_history"] = item["episode_history"]
+        debuglogs.append(debuglog)
+        with open(debuglog_path, "w") as f:
+            json.dump(debuglogs, f, indent=2)
         results.append({"question_id": question_id, "answer": answer})
-        json.dump(results, args.output_path.open("w"), indent=2)
+        with open(output_path, "w") as f:
+            json.dump(results, f, indent=2)
 
     # save at end (redundant)
-    json.dump(results, args.output_path.open("w"), indent=2)
+    with open(output_path, "w") as f:
+        json.dump(results, f, indent=2)
     print("saving {:,} answers".format(len(results)))
 
 
 if __name__ == "__main__":
-    main(parse_args())
+    main()

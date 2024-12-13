@@ -1,0 +1,2591 @@
+[
+  [
+    {
+      "question": "What is the white object on the wall above the TV?",
+      "answer": "Air conditioning unit",
+      "question_id": "f2e82760-5c3c-41b1-88b6-85921b9e7b32",
+      "category": "object recognition",
+      "episode_history": "hm3d-v0/000-hm3d-BFRyYbPCCPE"
+    },
+    {
+      "call": "Request Scene Information: 60, \"Is there a white object on the wall above the TV?  If so, please describe it.\"",
+      "keyframe_path": "/pub3/qasim/hm3d/data/frames/000-hm3d-BFRyYbPCCPE/00060-rgb.png",
+      "response": {
+        "Finding": "Yes, there is a white framed picture above the TV.",
+        "Detections": [
+          {
+            "label": "picture",
+            "caption": "A white framed picture on the teal wall above the TV.",
+            "spatial caption": "Picture above the TV",
+            "bbox": [
+              677,
+              226,
+              883,
+              304
+            ],
+            "confidence": 0.9
+          }
+        ]
+      }
+    },
+    {
+      "pred_answer": "Yes, a white framed picture."
+    }
+  ],
+  [
+    {
+      "question": "What material is the ceiling in the living room?",
+      "answer": "Wood panel",
+      "question_id": "7447d782-d1a7-4c87-86dc-b5eafc5a0f76",
+      "category": "attribute recognition",
+      "episode_history": "hm3d-v0/000-hm3d-BFRyYbPCCPE"
+    },
+    {
+      "call": "Request Scene Information: 60, \"Describe the ceiling material and color, if visible\"",
+      "keyframe_path": "/pub3/qasim/hm3d/data/frames/000-hm3d-BFRyYbPCCPE/00060-rgb.png",
+      "response": {
+        "Finding": "The ceiling is partially visible and appears to be white or off-white with wood beams in the back section.",
+        "Detections": [
+          {
+            "label": "Ceiling",
+            "caption": "A white or off-white ceiling with visible wood beams.",
+            "spatial caption": "Ceiling in the back of the room",
+            "bbox": [
+              0,
+              0,
+              960,
+              108
+            ],
+            "confidence": 0.8
+          }
+        ]
+      }
+    },
+    {
+      "pred_answer": "The ceiling is partially white or off-white with wood beams."
+    }
+  ],
+  [
+    {
+      "question": "What color is the staircase railing?",
+      "answer": "Brown",
+      "question_id": "e2ccf6f4-22a9-47d1-ab8d-a05a13435b82",
+      "category": "attribute recognition",
+      "episode_history": "hm3d-v0/000-hm3d-BFRyYbPCCPE"
+    },
+    {
+      "call": "Request Scene Information: 90, \"Describe the color of the staircase railing in detail, including material if possible.\"",
+      "keyframe_path": "/pub3/qasim/hm3d/data/frames/000-hm3d-BFRyYbPCCPE/00090-rgb.png",
+      "response": {
+        "Finding": "The staircase railing is dark brown wood, appearing to be stained or varnished.",
+        "Detections": [
+          {
+            "label": "Staircase Railing",
+            "caption": "A dark brown wooden staircase railing with vertical balusters.",
+            "spatial caption": "Staircase railing to the left of the image.",
+            "bbox": [
+              218,
+              17,
+              954,
+              1010
+            ],
+            "confidence": 0.95
+          }
+        ]
+      }
+    },
+    {
+      "pred_answer": "The staircase railing is dark brown wood, appearing to be stained or varnished."
+    }
+  ],
+  [
+    {
+      "question": "What is in between the two picture frames on the blue wall in the living room?",
+      "answer": "The TV",
+      "question_id": "c841bb52-1cec-46d7-bb83-8c99b5c66fa8",
+      "category": "spatial understanding",
+      "episode_history": "hm3d-v0/000-hm3d-BFRyYbPCCPE"
+    },
+    {
+      "call": "Request Scene Information: 60, \"Identify any picture frames on the blue wall and describe their relative positions and what is between them.\"",
+      "keyframe_path": "/pub3/qasim/hm3d/data/frames/000-hm3d-BFRyYbPCCPE/00060-rgb.png",
+      "response": {
+        "Finding": "There are three picture frames on the blue wall; a large, horizontal one above the fireplace, and two smaller, vertical ones to the right of it.  A TV is between the large frame and the smaller ones.",
+        "Detections": [
+          {
+            "label": "Large Picture Frame",
+            "caption": "A large horizontal picture frame with a landscape-style image inside, located above a fireplace.",
+            "spatial caption": "Large picture frame above fireplace",
+            "bbox": [
+              743,
+              423,
+              960,
+              514
+            ],
+            "confidence": 0.95
+          },
+          {
+            "label": "Small Picture Frame (Left)",
+            "caption": "A small vertical picture frame with a nature scene.",
+            "spatial caption": "Leftmost small picture frame on blue wall",
+            "bbox": [
+              1017,
+              440,
+              1067,
+              496
+            ],
+            "confidence": 0.9
+          },
+          {
+            "label": "Small Picture Frame (Right)",
+            "caption": "A small vertical picture frame with a nature scene.",
+            "spatial caption": "Rightmost small picture frame on blue wall",
+            "bbox": [
+              1507,
+              343,
+              1608,
+              438
+            ],
+            "confidence": 0.85
+          },
+          {
+            "label": "TV",
+            "caption": "A flat-screen TV mounted to a dark stand.",
+            "spatial caption": "TV between picture frames on the blue wall",
+            "bbox": [
+              735,
+              449,
+              971,
+              528
+            ],
+            "confidence": 0.98
+          }
+        ]
+      }
+    },
+    {
+      "pred_answer": "There are three picture frames on the blue wall. A large horizontal one is above the fireplace, and two smaller vertical ones are to its right. A TV is positioned between the large frame and the smaller ones."
+    }
+  ],
+  [
+    {
+      "question": "Is there room on the dining table to eat?",
+      "answer": "Yes",
+      "question_id": "79344680-6b45-4531-8789-ad0f5ef85b3b",
+      "category": "spatial understanding",
+      "episode_history": "hm3d-v0/000-hm3d-BFRyYbPCCPE"
+    },
+    {
+      "call": "Request Scene Information: 30, \"Describe the dining table: its size, shape, and whether there is any space available on the surface.\"",
+      "keyframe_path": "/pub3/qasim/hm3d/data/frames/000-hm3d-BFRyYbPCCPE/00030-rgb.png",
+      "response": {
+        "Finding": "The dining table is partially visible in the bottom right corner, covered with a patterned tablecloth.",
+        "Detections": [
+          {
+            "label": "Dining Table",
+            "caption": "A wooden dining table with a patterned tablecloth featuring yellow and brown hues. Only a portion of the table is visible.",
+            "spatial caption": "Table in bottom right corner",
+            "bbox": [
+              1205,
+              860,
+              1916,
+              1077
+            ],
+            "confidence": 0.9
+          }
+        ]
+      }
+    },
+    {
+      "pred_answer": "A wooden dining table with a patterned tablecloth featuring yellow and brown hues. Only a portion of the table is visible."
+    }
+  ],
+  [
+    {
+      "question": "Is the dining table set with table mats?",
+      "answer": "Yes.",
+      "question_id": "500e6924-0ea3-45c8-89ce-db3d37e142bf",
+      "category": "object state recognition",
+      "episode_history": "hm3d-v0/000-hm3d-BFRyYbPCCPE"
+    },
+    {
+      "call": "Request Scene Information: 30, \"Are there any table mats on the dining table?\"",
+      "keyframe_path": "/pub3/qasim/hm3d/data/frames/000-hm3d-BFRyYbPCCPE/00030-rgb.png",
+      "response": {
+        "Finding": "No table mats are present on the dining table.",
+        "Detections": [
+          {
+            "label": "Dining Table",
+            "caption": "A wooden dining table with a patterned tablecloth.",
+            "spatial caption": "Table in bottom right",
+            "bbox": [
+              1190,
+              859,
+              1918,
+              1077
+            ],
+            "confidence": 0.9
+          }
+        ]
+      }
+    },
+    {
+      "pred_answer": "No table mats."
+    }
+  ],
+  [
+    {
+      "question": "Is the front door open?",
+      "answer": "No",
+      "question_id": "ecad68d2-a16f-4a3e-b8a1-a70ec1c5cf00",
+      "category": "object state recognition",
+      "episode_history": "hm3d-v0/000-hm3d-BFRyYbPCCPE"
+    },
+    {
+      "call": "Request Scene Information: 0, \"Is the door in the image open or closed?\"",
+      "keyframe_path": "/pub3/qasim/hm3d/data/frames/000-hm3d-BFRyYbPCCPE/00000-rgb.png",
+      "response": {
+        "Finding": "The door in the image is closed.",
+        "Detections": [
+          {
+            "label": "Closed Door",
+            "caption": "A white closed door with a visible door frame.",
+            "spatial caption": "Door on the left side of the image.",
+            "bbox": [
+              0,
+              2,
+              531,
+              1073
+            ],
+            "confidence": 0.95
+          }
+        ]
+      }
+    },
+    {
+      "pred_answer": "The door is closed."
+    }
+  ],
+  [
+    {
+      "question": "What should I do to cool down?",
+      "answer": "Turn on the AC unit",
+      "question_id": "5c1d30b9-5827-49fc-b74f-5ee9909a75b8",
+      "category": "functional reasoning",
+      "episode_history": "hm3d-v0/000-hm3d-BFRyYbPCCPE"
+    },
+    {
+      "call": "Request Scene Information: 0, \"Are there any fans or air conditioning vents visible in the scene?\"",
+      "keyframe_path": "/pub3/qasim/hm3d/data/frames/000-hm3d-BFRyYbPCCPE/00000-rgb.png",
+      "response": {
+        "Finding": "No fans or air conditioning vents are visible in this image.",
+        "Detections": []
+      }
+    },
+    {
+      "pred_answer": "Okay, I'm ready to answer spatial reasoning questions about home scenes given a scene graph and navigation log.  Please provide the question, scene graph, and navigation log.\n"
+    }
+  ],
+  [
+    {
+      "question": "What can I do to increase the speed of the ceiling fan?",
+      "answer": "Turn the dial on the switch panel next to the front door",
+      "question_id": "8d7f1dd7-9764-4603-918b-58eefcb0b10e",
+      "category": "functional reasoning",
+      "episode_history": "hm3d-v0/000-hm3d-BFRyYbPCCPE"
+    },
+    {
+      "call": "Request Scene Information: 75, \"Is there a ceiling fan visible in this frame? If so, describe it and any controls it might have (e.g., pull chain, wall switch, remote).\"",
+      "keyframe_path": "/pub3/qasim/hm3d/data/frames/000-hm3d-BFRyYbPCCPE/00075-rgb.png",
+      "response": {
+        "Finding": "No ceiling fan is visible in this image.",
+        "Detections": []
+      }
+    },
+    {
+      "pred_answer": "No ceiling fan."
+    }
+  ],
+  [
+    {
+      "question": "What type of ceiling is in the living room?",
+      "answer": "A vaulted ceiling",
+      "question_id": "c8808989-9b62-4764-814e-520fd40c22cd",
+      "category": "world knowledge",
+      "episode_history": "hm3d-v0/000-hm3d-BFRyYbPCCPE"
+    },
+    {
+      "call": "Request Scene Information: 60, \"Describe the ceiling in detail, including its type, color, and any visible features.\"",
+      "keyframe_path": "/pub3/qasim/hm3d/data/frames/000-hm3d-BFRyYbPCCPE/00060-rgb.png",
+      "response": {
+        "Finding": "The ceiling is white, features wood paneling in sections, and has recessed lighting.",
+        "Detections": [
+          {
+            "label": "Ceiling",
+            "caption": "A white ceiling with wood paneling and recessed lighting.",
+            "spatial caption": "The ceiling spans the entire upper area of the image.",
+            "bbox": [
+              0,
+              0,
+              1599,
+              178
+            ],
+            "confidence": 0.95
+          }
+        ]
+      }
+    },
+    {
+      "pred_answer": "The ceiling is white with wood paneling in sections and recessed lighting."
+    }
+  ],
+  [
+    {
+      "question": "What is the green object in the left of the garage?",
+      "answer": "A hose",
+      "question_id": "564d876c-44f1-4915-8d4b-ab5a7728494f",
+      "category": "object recognition",
+      "episode_history": "hm3d-v0/002-hm3d-wcojb4TFT35"
+    },
+    {
+      "call": "Request Scene Information: 0, \"Describe the green objects in the left side of the garage\"",
+      "keyframe_path": "/pub3/qasim/hm3d/data/frames/002-hm3d-wcojb4TFT35/00000-rgb.png",
+      "response": {
+        "Finding": "There is a green plastic bin and a green plastic container on the left side of the garage.",
+        "Detections": [
+          {
+            "label": "Green plastic bin",
+            "caption": "A partially visible green plastic bin with a yellow lid.",
+            "spatial caption": "Green bin next to a dark brown bin, in the middle-left of the garage.",
+            "bbox": [
+              823,
+              429,
+              921,
+              523
+            ],
+            "confidence": 0.9
+          },
+          {
+            "label": "Green plastic container",
+            "caption": "A partially visible green plastic container.",
+            "spatial caption": "Located towards the lower-right of the left-side wall of the garage, among other items.",
+            "bbox": [
+              1509,
+              758,
+              1587,
+              828
+            ],
+            "confidence": 0.8
+          }
+        ]
+      }
+    },
+    {
+      "pred_answer": "A green plastic bin and a green plastic container."
+    }
+  ],
+  [
+    {
+      "question": "What is the bin with the yellow lid?",
+      "answer": "A recycling bin",
+      "question_id": "77c6644e-6018-4ef3-a683-276d3d2af67f",
+      "category": "object recognition",
+      "episode_history": "hm3d-v0/002-hm3d-wcojb4TFT35"
+    },
+    {
+      "call": "Request Scene Information: 60, \"Describe the color of the lids of the trash cans.\"",
+      "keyframe_path": "/pub3/qasim/hm3d/data/frames/002-hm3d-wcojb4TFT35/00060-rgb.png",
+      "response": {
+        "Finding": "The trash cans have brown and yellow lids.",
+        "Detections": [
+          {
+            "label": "Brown trash can lid",
+            "caption": "A brown plastic lid on top of a brown trash can.",
+            "spatial caption": "Left trash can lid",
+            "bbox": [
+              49,
+              740,
+              1079,
+              848
+            ],
+            "confidence": 0.9
+          },
+          {
+            "label": "Yellow trash can lid",
+            "caption": "A yellow plastic lid on top of a dark brown trash can.",
+            "spatial caption": "Right trash can lid",
+            "bbox": [
+              1079,
+              628,
+              1918,
+              762
+            ],
+            "confidence": 0.85
+          }
+        ]
+      }
+    },
+    {
+      "pred_answer": "The trash can lids are brown and yellow."
+    }
+  ],
+  [
+    {
+      "question": "What color is the car?",
+      "answer": "Blue",
+      "question_id": "a86ef102-5500-4fbf-8fae-cdbeb20a3b7b",
+      "category": "attribute recognition",
+      "episode_history": "hm3d-v0/002-hm3d-wcojb4TFT35"
+    },
+    {
+      "call": "Request Scene Information: 0, \"What color is the car?\"",
+      "keyframe_path": "/pub3/qasim/hm3d/data/frames/002-hm3d-wcojb4TFT35/00000-rgb.png",
+      "response": {
+        "Finding": "The car is dark blue or black.",
+        "Detections": [
+          {
+            "label": "Car",
+            "caption": "A dark blue or black sedan with some damage to the passenger side window.",
+            "spatial caption": "Car parked on the left side of the garage.",
+            "bbox": [
+              0,
+              367,
+              741,
+              1078
+            ],
+            "confidence": 0.95
+          }
+        ]
+      }
+    },
+    {
+      "pred_answer": "dark blue or black"
+    }
+  ],
+  [
+    {
+      "question": "What material is the floor?",
+      "answer": "concrete",
+      "question_id": "438e8c6f-f27d-4d3d-b13d-6f41c2981c2a",
+      "category": "attribute recognition",
+      "episode_history": "hm3d-v0/002-hm3d-wcojb4TFT35"
+    },
+    {
+      "call": "Request Scene Information: 0, \"Describe the material and color of the floor.\"",
+      "keyframe_path": "/pub3/qasim/hm3d/data/frames/002-hm3d-wcojb4TFT35/00000-rgb.png",
+      "response": {
+        "Finding": "The floor is a light brown concrete.",
+        "Detections": [
+          {
+            "label": "Garage Floor",
+            "caption": "A light brown concrete floor.",
+            "spatial caption": "Floor covering the entire garage.",
+            "bbox": [
+              0,
+              540,
+              1918,
+              1078
+            ],
+            "confidence": 0.95
+          }
+        ]
+      }
+    },
+    {
+      "pred_answer": "light brown concrete"
+    }
+  ],
+  [
+    {
+      "question": "What is on the top shelf to the right side of the garage?",
+      "answer": "An ice cooler",
+      "question_id": "9b4a7fbb-680d-4e39-8d60-7b1e521f3108",
+      "category": "spatial understanding",
+      "episode_history": "hm3d-v0/002-hm3d-wcojb4TFT35"
+    },
+    {
+      "call": "Request Scene Information: 30, \"Describe the items on the top shelf to the right side of the garage, specifying their color and type if possible.\"",
+      "keyframe_path": "/pub3/qasim/hm3d/data/frames/002-hm3d-wcojb4TFT35/00030-rgb.png",
+      "response": {
+        "Finding": "The top shelf on the right side of the garage contains various items, including what appears to be a pair of shoes, and some unidentified objects.",
+        "Detections": [
+          {
+            "label": "Top Shelf Items",
+            "caption": "A shelf with various items on it, including what appears to be a pair of shoes, and other unidentified objects.",
+            "spatial caption": "Top shelf on the right side of the garage",
+            "bbox": [
+              1666,
+              209,
+              1916,
+              248
+            ],
+            "confidence": 0.8
+          }
+        ]
+      }
+    },
+    {
+      "call": "Request Scene Information: 30, \"Provide a detailed description of the items on the top shelf to the right of the garage, including their color and type.  If possible, include a count of each item type.\"",
+      "keyframe_path": "/pub3/qasim/hm3d/data/frames/002-hm3d-wcojb4TFT35/00030-rgb.png",
+      "response": {
+        "Finding": "The top shelf to the right of the garage contains various items, including shoes, what appears to be cleaning supplies, and other miscellaneous items.",
+        "Detections": [
+          {
+            "label": "Top Shelf",
+            "caption": "A gray metal shelf with various items on it.",
+            "spatial caption": "Top shelf on the right wall of the garage.",
+            "bbox": [
+              564,
+              194,
+              768,
+              250
+            ],
+            "confidence": 0.95
+          },
+          {
+            "label": "Shoes",
+            "caption": "A pair of brown shoes.",
+            "spatial caption": "On the right side of the top shelf.",
+            "bbox": [
+              643,
+              210,
+              718,
+              243
+            ],
+            "confidence": 0.8
+          },
+          {
+            "label": "Cleaning Supplies",
+            "caption": "Various bottles and containers, possibly cleaning supplies.",
+            "spatial caption": "On the right side of the top shelf.",
+            "bbox": [
+              710,
+              205,
+              768,
+              243
+            ],
+            "confidence": 0.7
+          },
+          {
+            "label": "Miscellaneous Items",
+            "caption": "Assorted small items; difficult to identify specifically.",
+            "spatial caption": "On the top shelf to the right of the garage.",
+            "bbox": [
+              576,
+              205,
+              720,
+              243
+            ],
+            "confidence": 0.6
+          }
+        ]
+      }
+    },
+    {
+      "pred_answer": "The top shelf to the right of the garage is gray metal. It contains a pair of brown shoes, various bottles and containers (possibly cleaning supplies), and other miscellaneous small items.  The exact count of each item type is unclear."
+    }
+  ],
+  [
+    {
+      "question": "Is the garbage bin open?",
+      "answer": "Yes.",
+      "question_id": "35bfcf60-4227-4bbb-9213-e1bf643b2325",
+      "category": "object state recognition",
+      "episode_history": "hm3d-v0/002-hm3d-wcojb4TFT35"
+    },
+    {
+      "call": "Request Scene Information: 60, \"Are the trash cans open or closed?  Describe their condition.\"",
+      "keyframe_path": "/pub3/qasim/hm3d/data/frames/002-hm3d-wcojb4TFT35/00060-rgb.png",
+      "response": {
+        "Finding": "One trash can is open and overflowing with a trash bag, the other is closed.",
+        "Detections": [
+          {
+            "label": "Open trash can",
+            "caption": "A brown trash can overflowing with a clear trash bag filled with trash.",
+            "spatial caption": "Left trash can",
+            "bbox": [
+              34,
+              743,
+              1082,
+              1077
+            ],
+            "confidence": 0.95
+          },
+          {
+            "label": "Closed trash can",
+            "caption": "A brown trash can with a yellow lid, appearing closed.",
+            "spatial caption": "Right trash can",
+            "bbox": [
+              1086,
+              621,
+              1916,
+              1077
+            ],
+            "confidence": 0.9
+          }
+        ]
+      }
+    },
+    {
+      "pred_answer": "One trash can is open and overflowing; the other is closed."
+    }
+  ],
+  [
+    {
+      "question": "Is the house doorway open or closed?q",
+      "answer": "Open",
+      "question_id": "3a803472-47cd-4903-8380-d0b00efbbf08",
+      "category": "object state recognition",
+      "episode_history": "hm3d-v0/002-hm3d-wcojb4TFT35"
+    },
+    {
+      "call": "Request Scene Information: 45, \"Is the damaged door open or closed?\"",
+      "keyframe_path": "/pub3/qasim/hm3d/data/frames/002-hm3d-wcojb4TFT35/00045-rgb.png",
+      "response": {
+        "Finding": "The damaged door is open.",
+        "Detections": [
+          {
+            "label": "Damaged Door",
+            "caption": "A white door with significant damage to the frame and door itself, allowing a view into the adjacent room.",
+            "spatial caption": "Door in the center of the image",
+            "bbox": [
+              504,
+              10,
+              1015,
+              986
+            ],
+            "confidence": 0.95
+          }
+        ]
+      }
+    },
+    {
+      "pred_answer": "The damaged door is open."
+    }
+  ],
+  [
+    {
+      "question": "What can I use to water my plants?",
+      "answer": "The green hose",
+      "question_id": "87019892-7a7f-4ce0-b1e6-4c0d6e87b90a",
+      "category": "functional reasoning",
+      "episode_history": "hm3d-v0/002-hm3d-wcojb4TFT35"
+    },
+    {
+      "call": "Request Scene Information: 15, \"Are there any watering cans or bottles present in this frame?\"",
+      "keyframe_path": "/pub3/qasim/hm3d/data/frames/002-hm3d-wcojb4TFT35/00015-rgb.png",
+      "response": {
+        "Finding": "No watering cans or bottles are present in this garage.",
+        "Detections": []
+      }
+    },
+    {
+      "pred_answer": "No."
+    }
+  ],
+  [
+    {
+      "question": "What can I use to keep drinks cold at a picnic?",
+      "answer": "The blue cooler",
+      "question_id": "6fddec60-f221-4944-88c3-a132dfbfd1ed",
+      "category": "functional reasoning",
+      "episode_history": "hm3d-v0/002-hm3d-wcojb4TFT35"
+    },
+    {
+      "pred_answer": "Okay, I'm ready to answer your spatial reasoning questions. Please provide the question, scene graph, and navigation log.\n"
+    }
+  ],
+  [
+    {
+      "question": "What type of car is in the garage?",
+      "answer": "A sedan",
+      "question_id": "7f15d867-8ba6-47fa-9bca-9d9ae64046b7",
+      "category": "world knowledge",
+      "episode_history": "hm3d-v0/002-hm3d-wcojb4TFT35"
+    },
+    {
+      "call": "Request Scene Information: 0, \"What make and model is the car in the garage?\"",
+      "keyframe_path": "/pub3/qasim/hm3d/data/frames/002-hm3d-wcojb4TFT35/00000-rgb.png",
+      "response": {
+        "Finding": "The image shows a dark-colored Chrysler 200.",
+        "Detections": [
+          {
+            "label": "Chrysler 200",
+            "caption": "A dark-colored Chrysler 200 sedan with some damage to the driver's side.",
+            "spatial caption": "Car parked on the left side of the garage",
+            "bbox": [
+              0,
+              356,
+              737,
+              1078
+            ],
+            "confidence": 0.8
+          }
+        ]
+      }
+    },
+    {
+      "pred_answer": "Chrysler 200"
+    }
+  ],
+  [
+    {
+      "question": "Which bin should I put paper in?",
+      "answer": "The bin with the yellow lid.",
+      "question_id": "025257b6-8b7e-4f6f-aacc-1788069cbfad",
+      "category": "world knowledge",
+      "episode_history": "hm3d-v0/002-hm3d-wcojb4TFT35"
+    },
+    {
+      "call": "Request Scene Information: 30, \"Describe the trash bins in more detail.  Are there labels indicating what type of trash should go in each?\"",
+      "keyframe_path": "/pub3/qasim/hm3d/data/frames/002-hm3d-wcojb4TFT35/00030-rgb.png",
+      "response": {
+        "Finding": "There are two trash bins; one is labeled 07140371 and the other 07141525.  Neither label indicates the type of trash.",
+        "Detections": [
+          {
+            "label": "Trash Bin 1",
+            "caption": "A brown trash bin with a yellow lid and the number 07140371 on the side.",
+            "spatial caption": "Trash bin on the left, near the center of the image.",
+            "bbox": [
+              791,
+              559,
+              984,
+              851
+            ],
+            "confidence": 0.95
+          },
+          {
+            "label": "Trash Bin 2",
+            "caption": "A brown trash bin with a yellow lid and the number 07141525 on the side.",
+            "spatial caption": "Trash bin on the right, near the center of the image.",
+            "bbox": [
+              975,
+              559,
+              1159,
+              853
+            ],
+            "confidence": 0.95
+          }
+        ]
+      }
+    },
+    {
+      "pred_answer": "There are two large brown plastic trash bins.  One is labeled 07140371 and the other 07141525. Neither label indicates the type of trash that should go in each bin."
+    }
+  ],
+  [
+    {
+      "question": "Where is the garage opener?",
+      "answer": "To the left of the house doorway",
+      "question_id": "28ea4932-55bf-44b3-9a48-73fde896b8ce",
+      "category": "object localization",
+      "episode_history": "hm3d-v0/002-hm3d-wcojb4TFT35"
+    },
+    {
+      "pred_answer": "Okay, I'm ready to answer your questions. Please provide the question, scene graph, and navigation log.\n"
+    }
+  ],
+  [
+    {
+      "question": "Where is the broom?",
+      "answer": "Below the garage door opener",
+      "question_id": "30d3104b-cc05-4860-83e8-255fe8311662",
+      "category": "object localization",
+      "episode_history": "hm3d-v0/002-hm3d-wcojb4TFT35"
+    },
+    {
+      "call": "Request Scene Information: 15, \"Is the broom leaning against the wall, or is it somewhere else?\"",
+      "keyframe_path": "/pub3/qasim/hm3d/data/frames/002-hm3d-wcojb4TFT35/00015-rgb.png",
+      "response": {
+        "Finding": "The broom is leaning against the wall.",
+        "Detections": [
+          {
+            "label": "broom",
+            "caption": "A brown broom with a long handle.",
+            "spatial caption": "Broom leaning against the right wall",
+            "bbox": [
+              1618,
+              762,
+              1695,
+              883
+            ],
+            "confidence": 0.9
+          }
+        ]
+      }
+    },
+    {
+      "pred_answer": "The broom is leaning against the wall."
+    }
+  ],
+  [
+    {
+      "question": "What is the object to the left of the bed?",
+      "answer": "A radiator",
+      "question_id": "23fb241e-989a-4299-a3fb-8d41f7156397",
+      "category": "object recognition",
+      "episode_history": "hm3d-v0/003-hm3d-c5eTyR3Rxyh"
+    },
+    {
+      "call": "Request Scene Information: 15, \"Identify all objects to the left of the bed, if any are visible.\"",
+      "keyframe_path": "/pub3/qasim/hm3d/data/frames/003-hm3d-c5eTyR3Rxyh/00015-rgb.png",
+      "response": {
+        "Finding": "A picture frame is the only visible object to the left of the bed.",
+        "Detections": [
+          {
+            "label": "picture frame",
+            "caption": "A simple, off-white picture frame is mounted on the wall.",
+            "spatial caption": "Picture frame on the left wall",
+            "bbox": [
+              30,
+              17,
+              472,
+              79
+            ],
+            "confidence": 0.95
+          }
+        ]
+      }
+    },
+    {
+      "pred_answer": "A picture frame."
+    }
+  ],
+  [
+    {
+      "question": "What is above the sink?",
+      "answer": "A mirror ",
+      "question_id": "96d7f5ef-14b2-432a-8b85-21a0621e41a4",
+      "category": "object recognition",
+      "episode_history": "hm3d-v0/003-hm3d-c5eTyR3Rxyh"
+    },
+    {
+      "call": "Request Scene Information: 30, \"Describe the objects above the sink in the bathroom\"",
+      "keyframe_path": "/pub3/qasim/hm3d/data/frames/003-hm3d-c5eTyR3Rxyh/00030-rgb.png",
+      "response": {
+        "Finding": "There is a framed picture above the sink in the bathroom.",
+        "Detections": [
+          {
+            "label": "Framed picture",
+            "caption": "A black framed picture with a grayscale image.",
+            "spatial caption": "Picture above the sink",
+            "bbox": [
+              399,
+              367,
+              529,
+              561
+            ],
+            "confidence": 0.9
+          }
+        ]
+      }
+    },
+    {
+      "pred_answer": "A framed picture."
+    }
+  ],
+  [
+    {
+      "question": "What shape is the mirror?",
+      "answer": "An oval",
+      "question_id": "915cb310-31be-4114-846c-242fc59b581d",
+      "category": "attribute recognition",
+      "episode_history": "hm3d-v0/003-hm3d-c5eTyR3Rxyh"
+    },
+    {
+      "call": "Request Scene Information: 0, \"Is there a mirror in this frame, and if so, what is its shape?\"",
+      "keyframe_path": "/pub3/qasim/hm3d/data/frames/003-hm3d-c5eTyR3Rxyh/00000-rgb.png",
+      "response": {
+        "Finding": "No mirrors are present in this image.",
+        "Detections": []
+      }
+    },
+    {
+      "pred_answer": "Okay, I'm ready to receive the scene question, scene graph, and navigation log and provide an answer in the specified format.\n"
+    }
+  ],
+  [
+    {
+      "question": "What color is the bed comforter?",
+      "answer": "Brown",
+      "question_id": "d7019200-5300-459e-a2c1-b54d5ec0a80b",
+      "category": "attribute recognition",
+      "episode_history": "hm3d-v0/003-hm3d-c5eTyR3Rxyh"
+    },
+    {
+      "call": "Request Scene Information: 15, \"Describe the bed and its comforter, including color and any patterns.\"",
+      "keyframe_path": "/pub3/qasim/hm3d/data/frames/003-hm3d-c5eTyR3Rxyh/00015-rgb.png",
+      "response": {
+        "Finding": "The bed has a grey comforter and is partially visible through a doorway.",
+        "Detections": [
+          {
+            "label": "Bed and Comforter",
+            "caption": "A bed with a grey comforter.  Only a portion of the bed and comforter are visible.",
+            "spatial caption": "Bed visible through doorway on the right",
+            "bbox": [
+              1551,
+              611,
+              1741,
+              990
+            ],
+            "confidence": 0.6
+          }
+        ]
+      }
+    },
+    {
+      "pred_answer": "The bed has a grey comforter."
+    }
+  ],
+  [
+    {
+      "question": "Does the bedroom have a lot of furniture?",
+      "answer": "No",
+      "question_id": "6be2fe87-f20c-48a2-a8fb-161362d86e2a",
+      "category": "spatial understanding",
+      "episode_history": "hm3d-v0/003-hm3d-c5eTyR3Rxyh"
+    },
+    {
+      "pred_answer": "Okay, I'm ready to receive the scene question, scene graph, and navigation log and provide an answer in the specified format.\n"
+    }
+  ],
+  [
+    {
+      "question": "Is there space under the bed for storage?",
+      "answer": "Yes",
+      "question_id": "79dfe5ce-8a8c-47f3-a606-ab5ab4591c56",
+      "category": "spatial understanding",
+      "episode_history": "hm3d-v0/003-hm3d-c5eTyR3Rxyh"
+    },
+    {
+      "call": "Request Scene Information: 15, \"Is there a bed in this room? If so, describe the space underneath it.\"",
+      "keyframe_path": "/pub3/qasim/hm3d/data/frames/003-hm3d-c5eTyR3Rxyh/00015-rgb.png",
+      "response": {
+        "Finding": "There is a bed visible in the adjacent room.  Part of the space underneath is visible, appearing to be carpeted.",
+        "Detections": [
+          {
+            "label": "Bed",
+            "caption": "A bed with a grey base and beige bedding is partially visible through a doorway.",
+            "spatial caption": "Bed in adjacent room, partially visible through doorway",
+            "bbox": [
+              1566,
+              623,
+              1731,
+              968
+            ],
+            "confidence": 0.8
+          },
+          {
+            "label": "Under-bed space",
+            "caption": "A carpeted area underneath the bed is partially visible.",
+            "spatial caption": "Floor under bed in adjacent room",
+            "bbox": [
+              1566,
+              891,
+              1731,
+              968
+            ],
+            "confidence": 0.7
+          }
+        ]
+      }
+    },
+    {
+      "pred_answer": "The space under the bed appears to be carpeted."
+    }
+  ],
+  [
+    {
+      "question": "Is the patio door open?",
+      "answer": "No.",
+      "question_id": "bbb83d84-289c-4f1d-a470-772e5c823a90",
+      "category": "object state recognition",
+      "episode_history": "hm3d-v0/003-hm3d-c5eTyR3Rxyh"
+    },
+    {
+      "call": "Request Scene Information: 60, \"Is the patio door (French Doors, object ID 8) open or closed?\"",
+      "keyframe_path": "/pub3/qasim/hm3d/data/frames/003-hm3d-c5eTyR3Rxyh/00060-rgb.png",
+      "response": {
+        "Finding": "The patio door is open.",
+        "Detections": [
+          {
+            "label": "Patio Door",
+            "caption": "A white French door with glass panes, showing a view of a backyard.",
+            "spatial caption": "Door on the back wall, center of the image.",
+            "bbox": [
+              608,
+              311,
+              952,
+              775
+            ],
+            "confidence": 0.95
+          }
+        ]
+      }
+    },
+    {
+      "pred_answer": "The patio door is open."
+    }
+  ],
+  [
+    {
+      "question": "Are the lights turned on in the bedroom?",
+      "answer": "Yes.",
+      "question_id": "41ad08e1-cb46-4599-8beb-def3b0f91e34",
+      "category": "object state recognition",
+      "episode_history": "hm3d-v0/003-hm3d-c5eTyR3Rxyh"
+    },
+    {
+      "call": "Request Scene Information: 30, \"Are there any lights visible in the bedroom?\"",
+      "keyframe_path": "/pub3/qasim/hm3d/data/frames/003-hm3d-c5eTyR3Rxyh/00030-rgb.png",
+      "response": {
+        "Finding": "No lights are visible in the bedroom.",
+        "Detections": []
+      }
+    },
+    {
+      "pred_answer": "No."
+    }
+  ],
+  [
+    {
+      "question": "Where can I take a nap?",
+      "answer": "On the bed in the bedroom",
+      "question_id": "9ca30022-6b6c-4950-b91d-e90ee80f49d8",
+      "category": "functional reasoning",
+      "episode_history": "hm3d-v0/003-hm3d-c5eTyR3Rxyh"
+    },
+    {
+      "call": "Request Scene Information: 15, \"Is there a bed or sofa in the room visible through the doorway?\"",
+      "keyframe_path": "/pub3/qasim/hm3d/data/frames/003-hm3d-c5eTyR3Rxyh/00015-rgb.png",
+      "response": {
+        "Finding": "Yes, there is a bed visible through the doorway.",
+        "Detections": [
+          {
+            "label": "bed",
+            "caption": "A bed with a gray bed frame and beige bedding.",
+            "spatial caption": "Bed in the back right corner, visible through the doorway.",
+            "bbox": [
+              1578,
+              610,
+              1716,
+              965
+            ],
+            "confidence": 0.8
+          }
+        ]
+      }
+    },
+    {
+      "pred_answer": "Yes, a bed."
+    }
+  ],
+  [
+    {
+      "question": "What style of paintings are put up in the bedrrom?",
+      "answer": "Abstract",
+      "question_id": "1015cab7-827a-437c-ab86-6e4c2a9dd083",
+      "category": "world knowledge",
+      "episode_history": "hm3d-v0/003-hm3d-c5eTyR3Rxyh"
+    },
+    {
+      "call": "Request Scene Information: 30, \"Describe any paintings or artwork visible in the bedroom\"",
+      "keyframe_path": "/pub3/qasim/hm3d/data/frames/003-hm3d-c5eTyR3Rxyh/00030-rgb.png",
+      "response": {
+        "Finding": "There is one framed piece of artwork visible in the bedroom.",
+        "Detections": [
+          {
+            "label": "Framed Artwork",
+            "caption": "A black framed piece of artwork with a monochrome image. The image appears to be an abstract drawing or painting.",
+            "spatial caption": "Artwork on the wall of the adjacent bathroom, visible through doorway.",
+            "bbox": [
+              399,
+              370,
+              533,
+              563
+            ],
+            "confidence": 0.95
+          }
+        ]
+      }
+    },
+    {
+      "pred_answer": "A black framed monochrome abstract drawing or painting is visible on the bedroom wall."
+    }
+  ],
+  [
+    {
+      "question": "Where is the cartoon cat?",
+      "answer": "Its drawn on the pink photo frame",
+      "question_id": "9fc2d987-fc9c-4771-a0d4-07d24e2b7910",
+      "category": "object localization",
+      "episode_history": "hm3d-v0/003-hm3d-c5eTyR3Rxyh"
+    },
+    {
+      "pred_answer": "Okay, I'm ready to answer your spatial reasoning questions. Please provide the question, scene graph, and navigation log.\n"
+    }
+  ],
+  [
+    {
+      "question": "Where is the orange painting?",
+      "answer": "Above the bed",
+      "question_id": "f776a834-1e21-4442-8834-18b6f9d6cfad",
+      "category": "object localization",
+      "episode_history": "hm3d-v0/003-hm3d-c5eTyR3Rxyh"
+    },
+    {
+      "call": "Request Scene Information: 30, \"Is there an orange painting in this frame, and if so, describe its location.\"",
+      "keyframe_path": "/pub3/qasim/hm3d/data/frames/003-hm3d-c5eTyR3Rxyh/00030-rgb.png",
+      "response": {
+        "Finding": "No orange painting is present in the image.",
+        "Detections": []
+      }
+    },
+    {
+      "pred_answer": "No orange painting."
+    }
+  ],
+  [
+    {
+      "question": "What is at the center of the breakfast table?",
+      "answer": "A large fruit bowl",
+      "question_id": "06745779-f1b8-458b-8daa-ccc18d8958c8",
+      "category": "object recognition",
+      "episode_history": "hm3d-v0/004-hm3d-66seV3BWPoX"
+    },
+    {
+      "call": "Request Scene Information: 30, \"Describe the objects on the breakfast table and their positions relative to each other.\"",
+      "keyframe_path": "/pub3/qasim/hm3d/data/frames/004-hm3d-66seV3BWPoX/00030-rgb.png",
+      "response": {
+        "Finding": "A round table with an orange tablecloth, a bowl in the center, and two wooden chairs are present in the dining area.",
+        "Detections": [
+          {
+            "label": "Table",
+            "caption": "A round table with an orange tablecloth with a dark pattern.",
+            "spatial caption": "Center of the image",
+            "bbox": [
+              132,
+              784,
+              1276,
+              1078
+            ],
+            "confidence": 0.9
+          },
+          {
+            "label": "Bowl",
+            "caption": "A light brown bowl in the center of the table.",
+            "spatial caption": "Center of the table",
+            "bbox": [
+              614,
+              815,
+              892,
+              956
+            ],
+            "confidence": 0.8
+          },
+          {
+            "label": "Chair",
+            "caption": "A wooden chair with a carved back.",
+            "spatial caption": "Right side of the table",
+            "bbox": [
+              1207,
+              630,
+              1689,
+              1078
+            ],
+            "confidence": 0.8
+          },
+          {
+            "label": "Chair",
+            "caption": "A wooden chair with a carved back.",
+            "spatial caption": "Left side of the table",
+            "bbox": [
+              401,
+              663,
+              800,
+              826
+            ],
+            "confidence": 0.7
+          }
+        ]
+      }
+    },
+    {
+      "pred_answer": "The dining table is round and has an orange tablecloth with a dark pattern. A bowl is in the center of the table. Two wooden chairs with carved details are positioned on either side of the table."
+    }
+  ],
+  [
+    {
+      "question": "What is above the red couch?",
+      "answer": "Paintings",
+      "question_id": "9a0fe947-4c0b-47b8-a1dc-414f2d555c67",
+      "category": "object recognition",
+      "episode_history": "hm3d-v0/004-hm3d-66seV3BWPoX"
+    },
+    {
+      "call": "Request Scene Information: 45, \"Is there anything above the red couch, and if so, what is it?\"",
+      "keyframe_path": "/pub3/qasim/hm3d/data/frames/004-hm3d-66seV3BWPoX/00045-rgb.png",
+      "response": {
+        "Finding": "There is a staircase located above the red couch.",
+        "Detections": [
+          {
+            "label": "staircase",
+            "caption": "A wooden staircase with white railings and patterned tiled steps.",
+            "spatial caption": "Staircase above and to the right of the red couch",
+            "bbox": [
+              1009,
+              109,
+              1916,
+              993
+            ],
+            "confidence": 0.95
+          }
+        ]
+      }
+    },
+    {
+      "pred_answer": "A staircase."
+    }
+  ],
+  [
+    {
+      "question": "What is the shape of the panels on the floor?",
+      "answer": "Square",
+      "question_id": "e8a806b3-bf39-4854-84bd-72c25493d8cd",
+      "category": "attribute recognition",
+      "episode_history": "hm3d-v0/004-hm3d-66seV3BWPoX"
+    },
+    {
+      "call": "Request Scene Information: 30, \"Describe the shape and material of the floor panels visible in this frame.\"",
+      "keyframe_path": "/pub3/qasim/hm3d/data/frames/004-hm3d-66seV3BWPoX/00030-rgb.png",
+      "response": {
+        "Finding": "The visible floor is composed of square tiles of a light brownish-tan color.",
+        "Detections": [
+          {
+            "label": "Floor Tiles",
+            "caption": "Light brownish-tan square tiles.",
+            "spatial caption": "Bottom right corner of the image.",
+            "bbox": [
+              1651,
+              887,
+              1916,
+              1077
+            ],
+            "confidence": 0.9
+          }
+        ]
+      }
+    },
+    {
+      "pred_answer": "Light brownish-tan square tiles."
+    }
+  ],
+  [
+    {
+      "question": "What is in the center of the room with the stairs?",
+      "answer": "A red couch",
+      "question_id": "884e2405-85f6-446f-a0ab-a03e537e5184",
+      "category": "spatial understanding",
+      "episode_history": "hm3d-v0/004-hm3d-66seV3BWPoX"
+    },
+    {
+      "call": "Request Scene Information: 45, \"Describe the objects located in the center of the room with the stairs, and their relative positions to each other.\"",
+      "keyframe_path": "/pub3/qasim/hm3d/data/frames/004-hm3d-66seV3BWPoX/00045-rgb.png",
+      "response": {
+        "Finding": "The center of the room contains a staircase with patterned tiles, and to its right, a red couch.",
+        "Detections": [
+          {
+            "label": "Staircase",
+            "caption": "A staircase with white railings and patterned terracotta tiles.",
+            "spatial caption": "Staircase in the center",
+            "bbox": [
+              1004,
+              426,
+              1532,
+              980
+            ],
+            "confidence": 0.95
+          },
+          {
+            "label": "Red Couch",
+            "caption": "A red fabric couch.",
+            "spatial caption": "Red couch to the right of the staircase",
+            "bbox": [
+              1503,
+              637,
+              1916,
+              1077
+            ],
+            "confidence": 0.9
+          }
+        ]
+      }
+    },
+    {
+      "pred_answer": "A staircase is in the center of the room, with a red couch to its right."
+    }
+  ],
+  [
+    {
+      "question": "Is the kitchen countertop clean?",
+      "answer": "Yes.",
+      "question_id": "cec83622-f735-435a-b054-1e201a48652c",
+      "category": "object state recognition",
+      "episode_history": "hm3d-v0/004-hm3d-66seV3BWPoX"
+    },
+    {
+      "call": "Request Scene Information: 0, \"Describe the condition of the kitchen countertop in more detail.  Specifically, mention any stains, crumbs, or other signs of uncleanliness.\"",
+      "keyframe_path": "/pub3/qasim/hm3d/data/frames/004-hm3d-66seV3BWPoX/00000-rgb.png",
+      "response": {
+        "Finding": "The kitchen countertop appears to have several dark stains and smudges, suggesting it may not be very clean.",
+        "Detections": [
+          {
+            "label": "Kitchen Countertop",
+            "caption": "A dark-colored countertop with visible stains and smudges.",
+            "spatial caption": "Countertop spanning most of the image.",
+            "bbox": [
+              115,
+              622,
+              1119,
+              1075
+            ],
+            "confidence": 0.95
+          }
+        ]
+      }
+    },
+    {
+      "pred_answer": "The kitchen countertop has several dark stains and smudges."
+    }
+  ],
+  [
+    {
+      "question": "Is the front door open or closed?",
+      "answer": "Open",
+      "question_id": "9104773d-a2f0-4be3-a370-f7bf6e242ff7",
+      "category": "object state recognition",
+      "episode_history": "hm3d-v0/004-hm3d-66seV3BWPoX"
+    },
+    {
+      "call": "Request Scene Information: 60, \"Is the front door visible in this frame, and if so, is it open or closed?\"",
+      "keyframe_path": "/pub3/qasim/hm3d/data/frames/004-hm3d-66seV3BWPoX/00060-rgb.png",
+      "response": {
+        "Finding": "Yes, the front door is visible and appears to be closed.",
+        "Detections": [
+          {
+            "label": "Garage Door",
+            "caption": "A white garage door with some graffiti on it.",
+            "spatial caption": "Garage door in the center of the image.",
+            "bbox": [
+              856,
+              248,
+              1234,
+              820
+            ],
+            "confidence": 0.95
+          }
+        ]
+      }
+    },
+    {
+      "pred_answer": "The front door is closed."
+    }
+  ],
+  [
+    {
+      "question": "Where can I wash my hands?",
+      "answer": "In the sink in the kitchen",
+      "question_id": "65fbee94-eb23-40b3-84c3-32129c95b52d",
+      "category": "functional reasoning",
+      "episode_history": "hm3d-v0/004-hm3d-66seV3BWPoX"
+    },
+    {
+      "call": "Request Scene Information: 0, \"Is there a faucet in the sink?\"",
+      "keyframe_path": "/pub3/qasim/hm3d/data/frames/004-hm3d-66seV3BWPoX/00000-rgb.png",
+      "response": {
+        "Finding": "Yes, there is a faucet in the sink.",
+        "Detections": [
+          {
+            "label": "Kitchen Faucet",
+            "caption": "A chrome kitchen faucet is mounted on the kitchen counter near the edge of the sink.",
+            "spatial caption": "Faucet on the left side of the image, near the top.",
+            "bbox": [
+              19,
+              464,
+              167,
+              514
+            ],
+            "confidence": 0.95
+          }
+        ]
+      }
+    },
+    {
+      "pred_answer": "Yes"
+    }
+  ],
+  [
+    {
+      "question": "Where should I store fruits that I want to last long?",
+      "answer": "In the fridge",
+      "question_id": "e59e9409-776f-4c14-945e-11772fd5ff50",
+      "category": "functional reasoning",
+      "episode_history": "hm3d-v0/004-hm3d-66seV3BWPoX"
+    },
+    {
+      "call": "Request Scene Information: 0, \"Are there any areas in the kitchen suitable for storing fruits to prolong their freshness, such as a refrigerator or a cool, dark place?\"",
+      "keyframe_path": "/pub3/qasim/hm3d/data/frames/004-hm3d-66seV3BWPoX/00000-rgb.png",
+      "response": {
+        "Finding": "No refrigerators or other designated fruit storage areas are visible in this kitchen image.",
+        "Detections": [
+          {
+            "label": "Kitchen Counter",
+            "caption": "A dark-colored kitchen counter with a possibly granite or similar material countertop.  The counter shows some stains or discoloration.",
+            "spatial caption": "Counter along the right wall",
+            "bbox": [
+              145,
+              627,
+              1109,
+              1077
+            ],
+            "confidence": 0.95
+          }
+        ]
+      }
+    },
+    {
+      "call": "Request Scene Information: 0, \"Is there a refrigerator in the kitchen?\"",
+      "keyframe_path": "/pub3/qasim/hm3d/data/frames/004-hm3d-66seV3BWPoX/00000-rgb.png",
+      "response": {
+        "Finding": "No refrigerator is visible in this kitchen image.",
+        "Detections": [
+          {
+            "label": "Kitchen Counter",
+            "caption": "A kitchen counter with a dark-colored countertop and white cabinets.",
+            "spatial caption": "Counter along the right side of the frame.",
+            "bbox": [
+              115,
+              611,
+              1125,
+              1077
+            ],
+            "confidence": 0.95
+          },
+          {
+            "label": "Kitchen Cabinets",
+            "caption": "White kitchen cabinets above the counter.",
+            "spatial caption": "Cabinets above the counter on the left.",
+            "bbox": [
+              0,
+              0,
+              529,
+              435
+            ],
+            "confidence": 0.9
+          },
+          {
+            "label": "Kitchen Wall",
+            "caption": "White wall with decorative tile backsplash.",
+            "spatial caption": "Wall behind the counter.",
+            "bbox": [
+              529,
+              157,
+              1918,
+              1078
+            ],
+            "confidence": 0.8
+          }
+        ]
+      }
+    },
+    {
+      "pred_answer": "Okay, I'm ready to answer spatial reasoning questions about home scenes given a scene graph and navigation log.  Please provide the question, scene graph, and navigation log.\n"
+    }
+  ],
+  [
+    {
+      "question": "Is this home in the suburbs?",
+      "answer": "No.",
+      "question_id": "8ddd3d37-86fb-41cf-9948-d0b639706a93",
+      "category": "world knowledge",
+      "episode_history": "hm3d-v0/004-hm3d-66seV3BWPoX"
+    },
+    {
+      "call": "Request Scene Information: 60, \"Describe the immediate surroundings of the home, including any landscaping, street type, or neighboring buildings.\"",
+      "keyframe_path": "/pub3/qasim/hm3d/data/frames/004-hm3d-66seV3BWPoX/00060-rgb.png",
+      "response": {
+        "Finding": "The home is situated on a narrow street with a cobblestone pathway and adjacent buildings with terracotta-colored walls.",
+        "Detections": [
+          {
+            "label": "Building Exterior",
+            "caption": "A terracotta-colored building with a white garage door. There is some graffiti on the wall.",
+            "spatial caption": "Building immediately adjacent to the home",
+            "bbox": [
+              192,
+              0,
+              1242,
+              803
+            ],
+            "confidence": 0.95
+          },
+          {
+            "label": "Street",
+            "caption": "A narrow street with a cobblestone pathway and brick paving.",
+            "spatial caption": "Immediately outside the home's doorway",
+            "bbox": [
+              192,
+              803,
+              1242,
+              1077
+            ],
+            "confidence": 0.9
+          },
+          {
+            "label": "Neighboring Building",
+            "caption": "A glimpse of another building's wall, partially visible on the left side of the image.",
+            "spatial caption": "Left of the main building visible",
+            "bbox": [
+              19,
+              0,
+              178,
+              833
+            ],
+            "confidence": 0.7
+          }
+        ]
+      }
+    },
+    {
+      "pred_answer": "The home is on a narrow street with a cobblestone pathway.  Neighboring buildings have terracotta-colored walls; one has a white garage door with graffiti."
+    }
+  ],
+  [
+    {
+      "question": "Where is the breakfast table?",
+      "answer": "To the left of the kitchen",
+      "question_id": "81739eb9-ef32-42e3-b1cf-fa8e826813ef",
+      "category": "object localization",
+      "episode_history": "hm3d-v0/004-hm3d-66seV3BWPoX"
+    },
+    {
+      "call": "Request Scene Information: 30, \"Is there a breakfast table in the scene, and if so, describe its location and appearance.\"",
+      "keyframe_path": "/pub3/qasim/hm3d/data/frames/004-hm3d-66seV3BWPoX/00030-rgb.png",
+      "response": {
+        "Finding": "Yes, there is a breakfast table in the scene. It is located in the center of the image and has an orange tablecloth with a dark pattern.",
+        "Detections": [
+          {
+            "label": "Breakfast Table",
+            "caption": "A round wooden breakfast table with an orange tablecloth featuring a dark, possibly floral, pattern.  There is a large, light-brown bowl in the center of the table.",
+            "spatial caption": "Table in center of image",
+            "bbox": [
+              193,
+              779,
+              1278,
+              1077
+            ],
+            "confidence": 0.95
+          }
+        ]
+      }
+    },
+    {
+      "pred_answer": "The breakfast table is round, has an orange tablecloth with a dark pattern, and is located in the center of the dining room."
+    }
+  ],
+  [
+    {
+      "question": "Where are the light switches?",
+      "answer": "To the right of the front door",
+      "question_id": "d9737f88-11c2-454d-aa40-a2e1f3111505",
+      "category": "object localization",
+      "episode_history": "hm3d-v0/004-hm3d-66seV3BWPoX"
+    },
+    {
+      "call": "Request Scene Information: 0, \"Are there any light switches visible in the kitchen area?\"",
+      "keyframe_path": "/pub3/qasim/hm3d/data/frames/004-hm3d-66seV3BWPoX/00000-rgb.png",
+      "response": {
+        "Finding": "No light switches are visible in the provided image of the kitchen.",
+        "Detections": []
+      }
+    },
+    {
+      "pred_answer": "Okay, I'm ready to answer your spatial reasoning questions.  Please provide the question, scene graph, and navigation log.\n"
+    }
+  ],
+  [
+    {
+      "question": "What is the large white brick fixture?",
+      "answer": "A fireplace",
+      "question_id": "cbb81160-b858-49d6-a234-a94edb4d0b1d",
+      "category": "object recognition",
+      "episode_history": "hm3d-v0/005-hm3d-yZME6UR9dUN"
+    },
+    {
+      "call": "Request Scene Information: 0, \"Is there a large white brick fixture visible in this frame?\"",
+      "keyframe_path": "/pub3/qasim/hm3d/data/frames/005-hm3d-yZME6UR9dUN/00000-rgb.png",
+      "response": {
+        "Finding": "No, there is no large white brick fixture visible in this frame.",
+        "Detections": []
+      }
+    },
+    {
+      "pred_answer": "Okay, I'm ready to receive the scene question, scene graph, and navigation log and provide an answer in the specified format.\n"
+    }
+  ],
+  [
+    {
+      "question": "What color is the comforter?",
+      "answer": "Pink",
+      "question_id": "554929c8-cd5a-4b19-ab0c-1dba2b5126cb",
+      "category": "attribute recognition",
+      "episode_history": "hm3d-v0/005-hm3d-yZME6UR9dUN"
+    },
+    {
+      "call": "Request Scene Information: 105, \"Describe the color of the bed's comforter or blanket.\"",
+      "keyframe_path": "/pub3/qasim/hm3d/data/frames/005-hm3d-yZME6UR9dUN/00105-rgb.png",
+      "response": {
+        "Finding": "The bed comforter is light pink with a gray stripe.",
+        "Detections": [
+          {
+            "label": "bed comforter",
+            "caption": "A light pink comforter with a gray stripe across the bottom.",
+            "spatial caption": "Comforter on the bed",
+            "bbox": [
+              706,
+              696,
+              1440,
+              1020
+            ],
+            "confidence": 0.95
+          }
+        ]
+      }
+    },
+    {
+      "pred_answer": "The comforter is light pink with a gray stripe."
+    }
+  ],
+  [
+    {
+      "question": "Does the bedroom have any clutter on the floor?",
+      "answer": "No",
+      "question_id": "660372d6-b02b-406e-9383-28e27a4da9ab",
+      "category": "spatial understanding",
+      "episode_history": "hm3d-v0/005-hm3d-yZME6UR9dUN"
+    },
+    {
+      "call": "Request Scene Information: 105, \"Is there any clutter on the bedroom floor?  Describe the floor and anything on it.\"",
+      "keyframe_path": "/pub3/qasim/hm3d/data/frames/005-hm3d-yZME6UR9dUN/00105-rgb.png",
+      "response": {
+        "Finding": "The bedroom floor is mostly clear, with only a small amount of clutter near the bed.",
+        "Detections": [
+          {
+            "label": "Bedroom Floor",
+            "caption": "A hardwood floor with a reddish-brown tone.",
+            "spatial caption": "Floor covering most of the bottom of the image",
+            "bbox": [
+              629,
+              712,
+              1484,
+              1077
+            ],
+            "confidence": 0.95
+          },
+          {
+            "label": "Clutter",
+            "caption": "A small pile of what appears to be folded clothing or bedding near the edge of the bed.",
+            "spatial caption": "Small pile of items to the lower right of the bed.",
+            "bbox": [
+              1280,
+              920,
+              1378,
+              977
+            ],
+            "confidence": 0.8
+          }
+        ]
+      }
+    },
+    {
+      "pred_answer": "The bedroom floor is mostly clear, with a small pile of folded clothing or bedding near the bed."
+    }
+  ],
+  [
+    {
+      "question": "Is the front door open?",
+      "answer": "No",
+      "question_id": "38ce32f5-3c19-46c3-94e6-79efa00a6fbe",
+      "category": "object state recognition",
+      "episode_history": "hm3d-v0/005-hm3d-yZME6UR9dUN"
+    },
+    {
+      "call": "Request Scene Information: 45, \"Is the front door open or closed?\"",
+      "keyframe_path": "/pub3/qasim/hm3d/data/frames/005-hm3d-yZME6UR9dUN/00045-rgb.png",
+      "response": {
+        "Finding": "The front door is closed.",
+        "Detections": [
+          {
+            "label": "Front Door",
+            "caption": "A dark brown wooden door with a arched top and glass sidelights.",
+            "spatial caption": "Door on the left side of the image.",
+            "bbox": [
+              228,
+              141,
+              518,
+              906
+            ],
+            "confidence": 0.95
+          }
+        ]
+      }
+    },
+    {
+      "pred_answer": "The front door is closed."
+    }
+  ],
+  [
+    {
+      "question": "Is the window in the bedroom open?",
+      "answer": "Yes",
+      "question_id": "7c8e453b-67ac-424a-a73e-7f9a0d6d8cc5",
+      "category": "object state recognition",
+      "episode_history": "hm3d-v0/005-hm3d-yZME6UR9dUN"
+    },
+    {
+      "call": "Request Scene Information: 105, \"Is the window in the bedroom open or closed?\"",
+      "keyframe_path": "/pub3/qasim/hm3d/data/frames/005-hm3d-yZME6UR9dUN/00105-rgb.png",
+      "response": {
+        "Finding": "The window in the bedroom is open.",
+        "Detections": [
+          {
+            "label": "Bedroom Window",
+            "caption": "A wooden-framed window with a security grate. The window is partially open.",
+            "spatial caption": "Window on the wall to the left of the bed.",
+            "bbox": [
+              829,
+              332,
+              1165,
+              549
+            ],
+            "confidence": 0.95
+          }
+        ]
+      }
+    },
+    {
+      "pred_answer": "The window is open."
+    }
+  ],
+  [
+    {
+      "question": "Where can I take notes?",
+      "answer": "On the desk in the bedroom",
+      "question_id": "ecf1c2a2-f480-45f2-866c-8b73dff5347f",
+      "category": "functional reasoning",
+      "episode_history": "hm3d-v0/005-hm3d-yZME6UR9dUN"
+    },
+    {
+      "call": "Request Scene Information: 105, \"Is there a desk or table suitable for taking notes in this bedroom?\"",
+      "keyframe_path": "/pub3/qasim/hm3d/data/frames/005-hm3d-yZME6UR9dUN/00105-rgb.png",
+      "response": {
+        "Finding": "There is a small dresser that could potentially be used as a makeshift desk, but it is not ideal for note-taking.",
+        "Detections": [
+          {
+            "label": "Dresser",
+            "caption": "A white dresser with a dark brown top.",
+            "spatial caption": "Dresser to the right of the bed",
+            "bbox": [
+              1248,
+              600,
+              1541,
+              762
+            ],
+            "confidence": 0.9
+          },
+          {
+            "label": "Bed",
+            "caption": "A bed with pink sheets and pillows.",
+            "spatial caption": "Bed in the center of the room",
+            "bbox": [
+              666,
+              648,
+              1453,
+              1017
+            ],
+            "confidence": 0.95
+          },
+          {
+            "label": "Nightstand",
+            "caption": "A dark brown nightstand next to the bed.",
+            "spatial caption": "Nightstand to the left of the bed",
+            "bbox": [
+              625,
+              794,
+              892,
+              1077
+            ],
+            "confidence": 0.85
+          }
+        ]
+      }
+    },
+    {
+      "pred_answer": "No."
+    }
+  ],
+  [
+    {
+      "question": "Where can I brush my teeth?",
+      "answer": "In the bathroom sink",
+      "question_id": "0e49111c-608d-4d02-aacb-3705bdd0ca5e",
+      "category": "functional reasoning",
+      "episode_history": "hm3d-v0/005-hm3d-yZME6UR9dUN"
+    },
+    {
+      "call": "Request Scene Information: 105, \"Is there a bathroom visible in the bedroom, and if so, describe its location and contents (sink, toilet, toothbrush holder etc.)\"",
+      "keyframe_path": "/pub3/qasim/hm3d/data/frames/005-hm3d-yZME6UR9dUN/00105-rgb.png",
+      "response": {
+        "Finding": "No bathroom is visible in the bedroom.",
+        "Detections": []
+      }
+    },
+    {
+      "pred_answer": "No bathroom is visible."
+    }
+  ],
+  [
+    {
+      "question": "What type of door design is featured prominently in this home?",
+      "answer": "Cross hatch glass door",
+      "question_id": "87e01245-6f75-4ac3-9844-7f331d7df193",
+      "category": "world knowledge",
+      "episode_history": "hm3d-v0/005-hm3d-yZME6UR9dUN"
+    },
+    {
+      "call": "Request Scene Information: 15, \"Provide a detailed description of the door design, including material, color, and any unique features such as panels or glass.\"",
+      "keyframe_path": "/pub3/qasim/hm3d/data/frames/005-hm3d-yZME6UR9dUN/00015-rgb.png",
+      "response": {
+        "Finding": "The image shows two types of doors; one is a sliding glass door with a wooden frame and the other is a set of double doors with a geometric glass pattern.",
+        "Detections": [
+          {
+            "label": "Sliding Glass Door",
+            "caption": "A wooden-framed sliding glass door with multiple panes of glass. The wood appears to be a medium brown color.",
+            "spatial caption": "Large door on the left side of the image.",
+            "bbox": [
+              403,
+              308,
+              952,
+              825
+            ],
+            "confidence": 0.95
+          },
+          {
+            "label": "Double Doors",
+            "caption": "A pair of double doors with an arched top. The doors are made of wood with a geometric glass pattern in the center of each door.",
+            "spatial caption": "Set of double doors on the right side of the image, partially obscuring the view into another room.",
+            "bbox": [
+              1194,
+              203,
+              1776,
+              873
+            ],
+            "confidence": 0.9
+          }
+        ]
+      }
+    },
+    {
+      "pred_answer": "The front door is dark brown wood with an arched top and glass panels.  The double interior doors are also wooden with a geometric glass pattern.  The sliding glass door has a wooden frame and multiple panes of glass; the wood is a medium brown."
+    }
+  ],
+  [
+    {
+      "question": "Where can I set if I want to warmup?",
+      "answer": "By the fireplace",
+      "question_id": "41f53d99-4277-4dec-892e-8e52a2cc7402",
+      "category": "world knowledge",
+      "episode_history": "hm3d-v0/005-hm3d-yZME6UR9dUN"
+    },
+    {
+      "call": "Request Scene Information: 15, \"Is there a fireplace or a heater in this bedroom?\"",
+      "keyframe_path": "/pub3/qasim/hm3d/data/frames/005-hm3d-yZME6UR9dUN/00015-rgb.png",
+      "response": {
+        "Finding": "There is a fireplace in the bedroom.",
+        "Detections": [
+          {
+            "label": "Fireplace",
+            "caption": "A light beige stone fireplace with a dark gray hearth.",
+            "spatial caption": "Fireplace on the left wall",
+            "bbox": [
+              0,
+              616,
+              261,
+              1078
+            ],
+            "confidence": 0.95
+          }
+        ]
+      }
+    },
+    {
+      "pred_answer": "Yes"
+    }
+  ],
+  [
+    {
+      "question": "Where is the doll",
+      "answer": "On top of the light brown wooden cabinet",
+      "question_id": "143ade55-0216-455d-8e2f-6aa249596986",
+      "category": "object localization",
+      "episode_history": "hm3d-v0/005-hm3d-yZME6UR9dUN"
+    },
+    {
+      "call": "Request Scene Information: 0, \"Is there a doll in the scene, and if so, describe its location and appearance.\"",
+      "keyframe_path": "/pub3/qasim/hm3d/data/frames/005-hm3d-yZME6UR9dUN/00000-rgb.png",
+      "response": {
+        "Finding": "There is a small, figurine-like doll situated on the windowsill of a window in the room.",
+        "Detections": [
+          {
+            "label": "Doll",
+            "caption": "A small, golden-brown figurine-like doll sitting on a windowsill.",
+            "spatial caption": "Doll on windowsill, bottom right corner of window",
+            "bbox": [
+              783,
+              639,
+              850,
+              682
+            ],
+            "confidence": 0.8
+          }
+        ]
+      }
+    },
+    {
+      "pred_answer": "A small, golden-brown figurine-like doll is on the windowsill in the bottom right corner of a window."
+    }
+  ],
+  [
+    {
+      "question": "Where can I check my appearance?",
+      "answer": "In the mirror which is above the white drawer in the bedroom",
+      "question_id": "baa59d32-91d7-48e1-aa38-4c34bdb7296b",
+      "category": "object localization",
+      "episode_history": "hm3d-v0/005-hm3d-yZME6UR9dUN"
+    },
+    {
+      "call": "Request Scene Information: 105, \"Is there a mirror in this bedroom?\"",
+      "keyframe_path": "/pub3/qasim/hm3d/data/frames/005-hm3d-yZME6UR9dUN/00105-rgb.png",
+      "response": {
+        "Finding": "Yes, there is a mirror on the wall in this bedroom.",
+        "Detections": [
+          {
+            "label": "Mirror",
+            "caption": "A rectangular mirror mounted on the wall, reflecting a portion of the room.",
+            "spatial caption": "Mirror on the wall near the door",
+            "bbox": [
+              1320,
+              303,
+              1555,
+              471
+            ],
+            "confidence": 0.95
+          }
+        ]
+      }
+    },
+    {
+      "pred_answer": "Yes"
+    }
+  ],
+  [
+    {
+      "question": "What is underneath the four paintings upstairs?",
+      "answer": "A radiator",
+      "question_id": "f144699a-0af1-4830-9b28-a2b82777a92e",
+      "category": "object recognition",
+      "episode_history": "hm3d-v0/006-hm3d-q3hn1WQ12rz"
+    },
+    {
+      "call": "Request Scene Information: 90, \"What is directly underneath the four paintings on the wall?\"",
+      "keyframe_path": "/pub3/qasim/hm3d/data/frames/006-hm3d-q3hn1WQ12rz/00090-rgb.png",
+      "response": {
+        "Finding": "A hallway wall and the start of a staircase are directly underneath the four paintings.",
+        "Detections": [
+          {
+            "label": "Hallway Wall",
+            "caption": "A light grey painted hallway wall.",
+            "spatial caption": "Wall beneath paintings",
+            "bbox": [
+              0,
+              172,
+              433,
+              1078
+            ],
+            "confidence": 0.95
+          },
+          {
+            "label": "Staircase",
+            "caption": "The beginning of a white staircase.",
+            "spatial caption": "Staircase to the right of the hallway",
+            "bbox": [
+              825,
+              0,
+              1918,
+              1078
+            ],
+            "confidence": 0.9
+          }
+        ]
+      }
+    },
+    {
+      "pred_answer": "A hallway wall and the start of a staircase."
+    }
+  ],
+  [
+    {
+      "question": "What is to the left of the mirror downstairs?",
+      "answer": "Light switch",
+      "question_id": "10d6d14b-ef30-42b6-89d7-b79eb4ce9b5d",
+      "category": "object recognition",
+      "episode_history": "hm3d-v0/006-hm3d-q3hn1WQ12rz"
+    },
+    {
+      "call": "Request Scene Information: 0, \"Describe the objects located to the left of the mirror in the hallway.\"",
+      "keyframe_path": "/pub3/qasim/hm3d/data/frames/006-hm3d-q3hn1WQ12rz/00000-rgb.png",
+      "response": {
+        "Finding": "To the left of the mirror is a closed door and a carpeted staircase.",
+        "Detections": [
+          {
+            "label": "Door",
+            "caption": "A closed, off-white door with a silver handle.",
+            "spatial caption": "Leftmost door in hallway",
+            "bbox": [
+              19,
+              10,
+              748,
+              1069
+            ],
+            "confidence": 0.95
+          },
+          {
+            "label": "Staircase",
+            "caption": "A carpeted staircase with grey carpet leading to an upper level.",
+            "spatial caption": "Staircase next to the leftmost door",
+            "bbox": [
+              748,
+              169,
+              1056,
+              1078
+            ],
+            "confidence": 0.9
+          }
+        ]
+      }
+    },
+    {
+      "pred_answer": "A closed door and a carpeted staircase."
+    }
+  ],
+  [
+    {
+      "question": "What color is the staircase railing?",
+      "answer": "White",
+      "question_id": "9585c0be-c248-48cf-93e9-194f6764286f",
+      "category": "attribute recognition",
+      "episode_history": "hm3d-v0/006-hm3d-q3hn1WQ12rz"
+    },
+    {
+      "call": "Request Scene Information: 15, \"Describe the color of the staircase railing in this frame.\"",
+      "keyframe_path": "/pub3/qasim/hm3d/data/frames/006-hm3d-q3hn1WQ12rz/00015-rgb.png",
+      "response": {
+        "Finding": "The staircase railing is light gray.",
+        "Detections": [
+          {
+            "label": "Stair Railing",
+            "caption": "A light gray stair railing partially visible on the left side of the image.",
+            "spatial caption": "Railing next to the stairs on the left.",
+            "bbox": [
+              391,
+              146,
+              508,
+              1075
+            ],
+            "confidence": 0.8
+          }
+        ]
+      }
+    },
+    {
+      "pred_answer": "light gray"
+    }
+  ],
+  [
+    {
+      "question": "What is directly across the staircase?",
+      "answer": "A mirror",
+      "question_id": "611bbc61-de24-4877-8c4e-1f771ac72d01",
+      "category": "spatial understanding",
+      "episode_history": "hm3d-v0/006-hm3d-q3hn1WQ12rz"
+    },
+    {
+      "call": "Request Scene Information: 15, \"Describe the spatial relationship between the staircase and the doorway to the living room.  Specifically, what is directly across from the staircase?\"",
+      "keyframe_path": "/pub3/qasim/hm3d/data/frames/006-hm3d-q3hn1WQ12rz/00015-rgb.png",
+      "response": {
+        "Finding": "The doorway to the living room is directly across from the staircase.",
+        "Detections": [
+          {
+            "label": "Staircase",
+            "caption": "A staircase with stone steps and off-white walls.",
+            "spatial caption": "Staircase on the left side of the image.",
+            "bbox": [
+              360,
+              16,
+              858,
+              1078
+            ],
+            "confidence": 0.95
+          },
+          {
+            "label": "Doorway to Living Room",
+            "caption": "A doorway leading into a living room with a herringbone floor, French doors, and furniture.",
+            "spatial caption": "Doorway on the right side of the image.",
+            "bbox": [
+              875,
+              0,
+              1672,
+              1080
+            ],
+            "confidence": 0.9
+          }
+        ]
+      }
+    },
+    {
+      "pred_answer": "The doorway to the living room is directly across from the staircase."
+    }
+  ],
+  [
+    {
+      "question": "What is on the center of the ceiling in the living room?",
+      "answer": "A smoke detector",
+      "question_id": "59128ef6-1338-49a8-ab06-191971bb1815",
+      "category": "spatial understanding",
+      "episode_history": "hm3d-v0/006-hm3d-q3hn1WQ12rz"
+    },
+    {
+      "call": "Request Scene Information: 15, \"Describe the ceiling in the living room visible from this viewpoint.  Is there anything in the center of the ceiling?\"",
+      "keyframe_path": "/pub3/qasim/hm3d/data/frames/006-hm3d-q3hn1WQ12rz/00015-rgb.png",
+      "response": {
+        "Finding": "The ceiling in the living room is white and appears to have some recessed lighting fixtures, but there is nothing directly in the center.",
+        "Detections": [
+          {
+            "label": "Living Room Ceiling",
+            "caption": "A white ceiling with some minor imperfections or patching visible.",
+            "spatial caption": "Ceiling in the background, visible through doorway",
+            "bbox": [
+              988,
+              211,
+              1530,
+              327
+            ],
+            "confidence": 0.95
+          }
+        ]
+      }
+    },
+    {
+      "pred_answer": "The ceiling is white with recessed lighting, but nothing is in the center."
+    }
+  ],
+  [
+    {
+      "question": "Are all the bedroom doors upstairs open?",
+      "answer": "Yes",
+      "question_id": "fa4fdac0-a749-4744-a739-3eff882a2862",
+      "category": "object state recognition",
+      "episode_history": "hm3d-v0/006-hm3d-q3hn1WQ12rz"
+    },
+    {
+      "call": "Request Scene Information: 0, \"Is there more than one bedroom upstairs, and if so, how many?\"",
+      "keyframe_path": "/pub3/qasim/hm3d/data/frames/006-hm3d-q3hn1WQ12rz/00000-rgb.png",
+      "response": {
+        "Finding": "Based on the provided image, there is at least one bedroom upstairs; however, it is not possible to definitively determine whether there is more than one bedroom based solely on the view of the staircase and hallway.",
+        "Detections": [
+          {
+            "label": "Staircase",
+            "caption": "A carpeted staircase leading upstairs.",
+            "spatial caption": "Staircase in the center of the image",
+            "bbox": [
+              816,
+              199,
+              1071,
+              1077
+            ],
+            "confidence": 0.95
+          },
+          {
+            "label": "Upstairs Hallway",
+            "caption": "A hallway is visible beyond the staircase; however, details regarding rooms are obstructed.",
+            "spatial caption": "Hallway visible from the top of the stairs",
+            "bbox": [
+              1152,
+              113,
+              1559,
+              1074
+            ],
+            "confidence": 0.8
+          },
+          {
+            "label": "Door",
+            "caption": "A closed white door to the left.",
+            "spatial caption": "Door to the left of the image",
+            "bbox": [
+              0,
+              0,
+              779,
+              1077
+            ],
+            "confidence": 0.99
+          }
+        ]
+      }
+    },
+    {
+      "call": "Request Scene Information: 0, \"Provide a complete 360\u00b0 view of the upstairs hallway, focusing on the presence and number of bedrooms.\"",
+      "keyframe_path": "/pub3/qasim/hm3d/data/frames/006-hm3d-q3hn1WQ12rz/00000-rgb.png",
+      "response": {
+        "Finding": "The image shows a partial view of an upstairs hallway, with only one bedroom door visible, suggesting at least one bedroom upstairs, though a full 360 view is not provided.",
+        "Detections": [
+          {
+            "label": "Bedroom Door",
+            "caption": "A white door, possibly leading to a bedroom.",
+            "spatial caption": "Left side of the hallway.",
+            "bbox": [
+              0,
+              0,
+              768,
+              1078
+            ],
+            "confidence": 0.8
+          },
+          {
+            "label": "Hallway",
+            "caption": "A hallway with light-colored walls and floors, under renovation.",
+            "spatial caption": "Central area, stretching from the stairs to the view of another room.",
+            "bbox": [
+              0,
+              0,
+              1599,
+              1078
+            ],
+            "confidence": 0.9
+          },
+          {
+            "label": "Stairs",
+            "caption": "A carpeted staircase leading to the upper floor.",
+            "spatial caption": "Right side of hallway, partially obscured.",
+            "bbox": [
+              814,
+              173,
+              1119,
+              1078
+            ],
+            "confidence": 0.85
+          },
+          {
+            "label": "Another Room",
+            "caption": "View of another room, likely a living area or similar, through doorway at the end of the hallway.",
+            "spatial caption": "At the end of the hallway",
+            "bbox": [
+              1163,
+              114,
+              1589,
+              1078
+            ],
+            "confidence": 0.7
+          }
+        ]
+      }
+    },
+    {
+      "pred_answer": "Okay, I'm ready. Please provide the scene question, scene graph, and navigation log.\n"
+    }
+  ],
+  [
+    {
+      "question": "Are the ceiling lights in the living room turned on?",
+      "answer": "Yes",
+      "question_id": "d6142b7c-27e3-4aef-bca7-2cfddca328f4",
+      "category": "object state recognition",
+      "episode_history": "hm3d-v0/006-hm3d-q3hn1WQ12rz"
+    },
+    {
+      "call": "Request Scene Information: 15, \"Are there any ceiling lights visible in the living room and are they on or off?\"",
+      "keyframe_path": "/pub3/qasim/hm3d/data/frames/006-hm3d-q3hn1WQ12rz/00015-rgb.png",
+      "response": {
+        "Finding": "Yes, there are two ceiling lights visible in the living room, and they appear to be off.",
+        "Detections": [
+          {
+            "label": "Ceiling Light 1",
+            "caption": "A recessed ceiling light fixture.",
+            "spatial caption": "Ceiling light in the back of the living room, slightly to the left of center.",
+            "bbox": [
+              1167,
+              245,
+              1213,
+              264
+            ],
+            "confidence": 0.8
+          },
+          {
+            "label": "Ceiling Light 2",
+            "caption": "A recessed ceiling light fixture.",
+            "spatial caption": "Ceiling light in the back of the living room, slightly to the right of center.",
+            "bbox": [
+              1361,
+              244,
+              1405,
+              264
+            ],
+            "confidence": 0.8
+          }
+        ]
+      }
+    },
+    {
+      "pred_answer": "Yes, there are two, and they are off."
+    }
+  ],
+  [
+    {
+      "question": "Where should I put my jackets and shoes?",
+      "answer": "In the storage closet ",
+      "question_id": "24228768-d745-4796-990f-2b5d8aeb4827",
+      "category": "functional reasoning",
+      "episode_history": "hm3d-v0/006-hm3d-q3hn1WQ12rz"
+    },
+    {
+      "call": "Request Scene Information: 60, \"Is there a closet or wardrobe in this room with the dresser?\"",
+      "keyframe_path": "/pub3/qasim/hm3d/data/frames/006-hm3d-q3hn1WQ12rz/00060-rgb.png",
+      "response": {
+        "Finding": "No closet or wardrobe is visible in the room with the dresser.",
+        "Detections": [
+          {
+            "label": "Dresser",
+            "caption": "A gray dresser with gold handles.",
+            "spatial caption": "Dresser in the background room",
+            "bbox": [
+              1378,
+              425,
+              1555,
+              594
+            ],
+            "confidence": 0.95
+          }
+        ]
+      }
+    },
+    {
+      "pred_answer": "No"
+    }
+  ],
+  [
+    {
+      "question": "How many stories does this house have?",
+      "answer": "Three",
+      "question_id": "22c31dab-ea65-4752-b541-edcdb3c67108",
+      "category": "world knowledge",
+      "episode_history": "hm3d-v0/006-hm3d-q3hn1WQ12rz"
+    },
+    {
+      "call": "Request Scene Information: 15, \"Determine the number of stories in the house based on the visible staircases and overall house structure.\"",
+      "keyframe_path": "/pub3/qasim/hm3d/data/frames/006-hm3d-q3hn1WQ12rz/00015-rgb.png",
+      "response": {
+        "Finding": "Based on the visible staircase, the house appears to have at least two stories.",
+        "Detections": [
+          {
+            "label": "Staircase",
+            "caption": "A stone staircase with grey carpeting leading upwards, partially obscured by wall paint.",
+            "spatial caption": "Staircase on the left side of the image.",
+            "bbox": [
+              399,
+              169,
+              833,
+              1077
+            ],
+            "confidence": 0.95
+          }
+        ]
+      }
+    },
+    {
+      "call": "Request Scene Information: 15, \"Provide a detailed description of the staircase, including its length, whether it continues beyond the visible portion, and the overall impression of how many stories it might service.\"",
+      "keyframe_path": "/pub3/qasim/hm3d/data/frames/006-hm3d-q3hn1WQ12rz/00015-rgb.png",
+      "response": {
+        "Finding": "The stone staircase is partially visible, appearing to be at least 10 steps in length, likely extending beyond the visible frame, and possibly servicing two stories.",
+        "Detections": [
+          {
+            "label": "Staircase",
+            "caption": "A stone staircase with visible steps. The stone is a light grey.",
+            "spatial caption": "Staircase on the left side of the image.",
+            "bbox": [
+              370,
+              172,
+              844,
+              1078
+            ],
+            "confidence": 0.95
+          }
+        ]
+      }
+    },
+    {
+      "pred_answer": "The staircase is stone with grey carpeting.  At least 10 steps are visible, but it extends beyond the visible portion. It likely services at least two stories.  There is visible damage to the carpeting on some steps."
+    }
+  ],
+  [
+    {
+      "question": "Is my backyard safe to let me dog out in?",
+      "answer": "Yes, its fenced.",
+      "question_id": "17d99f84-d536-4623-b428-d298f8669f09",
+      "category": "world knowledge",
+      "episode_history": "hm3d-v0/006-hm3d-q3hn1WQ12rz"
+    },
+    {
+      "call": "Request Scene Information: 15, \"Describe the garden visible through the French doors (77).  Note any potential hazards for a dog (e.g., holes, debris, unsafe plants).\"",
+      "keyframe_path": "/pub3/qasim/hm3d/data/frames/006-hm3d-q3hn1WQ12rz/00015-rgb.png",
+      "response": {
+        "Finding": "The garden visible through the French doors appears to be mostly lawn with some landscaping; there are no immediately obvious hazards, though a more thorough inspection would be needed to ensure safety.",
+        "Detections": [
+          {
+            "label": "Garden",
+            "caption": "A grassy lawn area with some landscaping and trees visible.",
+            "spatial caption": "Garden visible through the French doors in the background.",
+            "bbox": [
+              1152,
+              438,
+              1466,
+              582
+            ],
+            "confidence": 0.9
+          }
+        ]
+      }
+    },
+    {
+      "pred_answer": "The garden is mostly lawn with some landscaping; no immediate hazards are visible, but a thorough check is needed for dog safety."
+    }
+  ],
+  [
+    {
+      "question": "How can I get to the backyard?",
+      "answer": "Through the patio doors in the living room on the first floor",
+      "question_id": "c0359449-cb8c-4fe2-8371-fb260735070a",
+      "category": "object localization",
+      "episode_history": "hm3d-v0/006-hm3d-q3hn1WQ12rz"
+    },
+    {
+      "call": "Request Scene Information: 15, \"Verify if the French doors (77) are open or closed and provide a description of the backyard visible through them.\"",
+      "keyframe_path": "/pub3/qasim/hm3d/data/frames/006-hm3d-q3hn1WQ12rz/00015-rgb.png",
+      "response": {
+        "Finding": "The French doors are open, revealing a backyard with a lawn and some structures in the distance.",
+        "Detections": [
+          {
+            "label": "French Doors",
+            "caption": "A set of double French doors, currently open.",
+            "spatial caption": "Doors at the back of the hallway, looking into the backyard",
+            "bbox": [
+              1128,
+              394,
+              1413,
+              605
+            ],
+            "confidence": 0.95
+          },
+          {
+            "label": "Backyard",
+            "caption": "A grassy backyard with some outbuildings or structures visible in the distance. ",
+            "spatial caption": "Visible through open French doors",
+            "bbox": [
+              1167,
+              438,
+              1399,
+              590
+            ],
+            "confidence": 0.8
+          }
+        ]
+      }
+    },
+    {
+      "pred_answer": "The French doors are open, revealing a grassy backyard with structures in the distance."
+    }
+  ],
+  [
+    {
+      "question": "Where is the blue cabinet?",
+      "answer": "In the upstairs bedroom ",
+      "question_id": "8548aacb-669f-4341-a21e-0426e5dc3b42",
+      "category": "object localization",
+      "episode_history": "hm3d-v0/006-hm3d-q3hn1WQ12rz"
+    },
+    {
+      "call": "Request Scene Information: 60, \"Is there a blue cabinet in this room?\"",
+      "keyframe_path": "/pub3/qasim/hm3d/data/frames/006-hm3d-q3hn1WQ12rz/00060-rgb.png",
+      "response": {
+        "Finding": "There is a gray cabinet visible in the back room.",
+        "Detections": [
+          {
+            "label": "Gray Cabinet",
+            "caption": "A gray cabinet with gold colored drawer pulls.",
+            "spatial caption": "Cabinet in the back of the hallway",
+            "bbox": [
+              1378,
+              429,
+              1555,
+              559
+            ],
+            "confidence": 0.95
+          }
+        ]
+      }
+    },
+    {
+      "pred_answer": "No.  There is a gray cabinet."
+    }
+  ],
+  [
+    {
+      "question": "What cartoon animal is painted on the wall?",
+      "answer": "An owl",
+      "question_id": "98a31a80-3f7b-416a-ba1a-fc1858523860",
+      "category": "object recognition",
+      "episode_history": "hm3d-v0/007-hm3d-bxsVRursffK"
+    },
+    {
+      "call": "Request Scene Information: 60, \"Describe the painting on the wall in detail, including any cartoon characters or animals present.\"",
+      "keyframe_path": "/pub3/qasim/hm3d/data/frames/007-hm3d-bxsVRursffK/00060-rgb.png",
+      "response": {
+        "Finding": "The painting is an abstract landscape with muted tones and pops of color, featuring what appears to be trees and possibly a sky.",
+        "Detections": [
+          {
+            "label": "Abstract Painting",
+            "caption": "A framed abstract painting with a mostly white background, featuring various shades of red, orange, yellow and blue in a seemingly landscape style. The painting contains a variety of shapes and brushstrokes that are mostly vertical and suggest a landscape setting with possible tree-like forms.",
+            "spatial caption": "Painting on the wall",
+            "bbox": [
+              610,
+              419,
+              1138,
+              1018
+            ],
+            "confidence": 0.95
+          }
+        ]
+      }
+    },
+    {
+      "pred_answer": "The painting is an abstract landscape with muted tones and pops of color, featuring what appears to be trees and possibly a sky."
+    }
+  ]
+]

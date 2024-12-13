@@ -11,17 +11,17 @@ from omegaconf import DictConfig
 from PIL import Image
 from tqdm import trange
 
-import pointcloud
-import utils
-from datasets import get_dataset
-from scenegraph import SceneGraph
-from utils import MappingTracker, cfg_to_dict, process_cfg
+import scene_graph.pointcloud as pointcloud
+import scene_graph.utils as utils
+from scene_graph.datasets import get_dataset
+from scene_graph.semantic_tree import SemanticTree
+from scene_graph.utils import MappingTracker, cfg_to_dict, process_cfg
 
 
 # A logger for this file
 @hydra.main(
     version_base=None,
-    config_path="configs/mapping",
+    config_path="scene_graph/configs/mapping",
     config_name="hm3d_mapping",
 )
 # @profile
@@ -45,7 +45,7 @@ def main_geometry(cfg: DictConfig):
         # relative_pose=True
     )
     # cam_K = dataset.get_cam_K()
-    scene_graph = SceneGraph()
+    scene_graph = SemanticTree()
 
     exit_early_flag = False
     counter = 0
