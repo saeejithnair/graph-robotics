@@ -74,7 +74,7 @@ class Track:
         return local_pcd
 
     def merge_detection(self, object: Object, keyframe_id):
-        self.captions.append(object.caption)
+        self.captions.append(object.visual_caption)
         self.keyframe_ids.append(keyframe_id)
         self.masks.append(object.mask)
         self.bboxes.append(object.bbox)
@@ -210,12 +210,19 @@ def load_tracks(save_dir):
     return tracks
 
 
+def get_trackid_by_name(tracks, name):
+    for id in tracks.keys():
+        if tracks[id].name == name:
+            return id
+    return None
+
+
 def object_to_track(object: Object, keyframe_id, global_pcd):
     global track_counter
     node = Track(
         id=track_counter,
         label=object.label,
-        captions=[object.caption],
+        captions=[object.visual_caption],
         features=object.features,
         masks=[object.mask],
         bboxes=[object.bbox],

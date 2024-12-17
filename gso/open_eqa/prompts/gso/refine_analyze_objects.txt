@@ -1,0 +1,10 @@
+Given a scene and a specific query, your task is to analyze the objects in the scene and their spatial relationships. As you examine the scene, carefully document your observations, insights, and reasoning by updating the "your notes" key associated with each detection. The goal is to create a rich, informative annotation that helps answer the query.
+
+
+Return a JSON list, where each entry contains the following keys:
+name: The name of the object. The name should correspond exactly to a detection in the provided list of detections.
+your notes: A refined and expanded version of the original notes provided in the input detections. This field should contain a query-focused description of the object, its relationships, and any other relevant information that can aid in answering the query.
+
+Detections: {detections}
+
+Query: {query}

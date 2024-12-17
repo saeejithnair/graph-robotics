@@ -15,7 +15,7 @@ from tqdm import trange
 import scene_graph.pointcloud as pointcloud
 import scene_graph.utils as utils
 from scene_graph.datasets import get_dataset
-from scene_graph.perception import Perceptor
+from scene_graph.perception import GenericMapper
 from scene_graph.relationship_scorer import FeatureComputer, RelationshipScorer
 from scene_graph.semantic_tree import SemanticTree
 from scene_graph.track import save_tracks
@@ -61,7 +61,7 @@ def main_semantictree(cfg: DictConfig):
 
     semantic_tree = SemanticTree()
     semantic_tree.load_pcd(folder=result_dir)
-    perceptor = Perceptor(device=device)
+    perceptor = GenericMapper(device=device)
     feature_computer = FeatureComputer(device)
     relationship_scorer = RelationshipScorer(downsample_voxel_size=0.02)
     perceptor.init()
@@ -108,16 +108,14 @@ def main_semantictree(cfg: DictConfig):
             image_rgb, semantic_tree.geometry_map, detections
         )
 
-        det_matched, matched_tracks = relationship_scorer.associate_dets_to_tracks(
+        is_matched, matched_trackidx = relationship_scorer.associate_dets_to_tracks(
             detections, semantic_tree.get_tracks()
         )
 
-        matched_track_names = semantic_tree.integrate_detections(
-            detections, det_matched, matched_tracks, frame_idx
+        semantic_tree.integrate_detections(
+            detections, is_matched, matched_trackidx, frame_idx
         )
-        semantic_tree.integrate_generic_log(
-            llm_response, matched_track_names, frame_idx
-        )
+        semantic_tree.integrate_generic_log(llm_response, detections, frame_idx)
 
         perceptor.save_results(
             llm_response, detections, perception_result_dir, frame_idx
@@ -173,18 +171,18 @@ if __name__ == "__main__":
 
     # scene_ids = os.listdir("/pub3/qasim/hm3d/data/concept-graphs/with_edges")
     scene_ids = [
-        "000-hm3d-BFRyYbPCCPE",
+        # "000-hm3d-BFRyYbPCCPE",
         "002-hm3d-wcojb4TFT35",
-        "003-hm3d-c5eTyR3Rxyh",
-        "004-hm3d-66seV3BWPoX",
-        "005-hm3d-yZME6UR9dUN",
-        "006-hm3d-q3hn1WQ12rz",
-        "007-hm3d-bxsVRursffK",
-        "011-hm3d-bzCsHPLDztK",
-        "012-hm3d-XB4GS9ShBRE",
-        "013-hm3d-svBbv1Pavdk",
-        "014-hm3d-rsggHU7g7dh",
-        "015-hm3d-5jp3fCRSRjc",
+        # "003-hm3d-c5eTyR3Rxyh",
+        # "004-hm3d-66seV3BWPoX",
+        # "005-hm3d-yZME6UR9dUN",
+        # "006-hm3d-q3hn1WQ12rz",
+        # "007-hm3d-bxsVRursffK",
+        # "011-hm3d-bzCsHPLDztK",
+        # "012-hm3d-XB4GS9ShBRE",
+        # "013-hm3d-svBbv1Pavdk",
+        # "014-hm3d-rsggHU7g7dh",
+        # "015-hm3d-5jp3fCRSRjc",
     ]
     sorted(scene_ids)
     for id in scene_ids:

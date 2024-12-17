@@ -28,22 +28,26 @@ class Object:
         mask=None,
         crop=None,
         label=None,
-        caption=None,
+        visual_caption=None,
+        spatial_caption=None,
         bbox=None,
         confidence=None,
         local_points=None,
         local_pcd_idxs=None,
+        matched_track_name=None,
         features: Features = None,
     ):
         self.mask = mask
         self.crop = crop
         self.label = label
-        self.caption = caption
+        self.visual_caption = visual_caption
+        self.spatial_caption = spatial_caption
         self.bbox = bbox
         self.confidence = confidence
         self.local_points = local_points
         self.local_pcd_idxs = local_pcd_idxs
         self.features = features
+        self.matched_track_name = matched_track_name
 
     def extract_local_pcd(
         self, depth_cloud, img_rgb, global_pcd, trans_pose=None, obj_pcd_max_points=5000
@@ -137,9 +141,11 @@ class ObjectList:
 
             data = {
                 "label": obj.label,
-                "caption": obj.caption,
+                "visual caption": obj.visual_caption,
+                "spatial caption": obj.spatial_caption,
                 "bbox": obj.bbox,
                 "confidence": obj.confidence,
+                "track name": obj.matched_track_name,
             }
             # if obj.local_pcd_idxs:
             #     data['local_pcd_idxs'] = obj.local_pcd_idxs
@@ -195,9 +201,11 @@ def load_objects(result_dir, frame):
                 mask=masks[i],
                 crop=crops[i],
                 label=json_data[i]["label"],
-                caption=json_data[i]["caption"],
+                visual_caption=json_data[i]["visual caption"],
+                spatial_caption=json_data[i]["visual caption"],
                 bbox=json_data[i]["bbox"],
                 confidence=json_data[i]["confidence"],
+                matched_track_name=json_data[i]["track name"],
                 local_pcd_idxs=local_pcd_idxs["arr_" + str(i)],
             )
         )

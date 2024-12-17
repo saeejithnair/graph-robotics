@@ -3,6 +3,7 @@ import json
 import os
 import time
 import traceback
+from collections import OrderedDict
 from pathlib import Path
 from typing import Optional
 
@@ -16,8 +17,10 @@ import vertexai
 from omegaconf import DictConfig
 from vertexai.generative_models import GenerativeModel, Part
 
-import ask_question
+import open_eqa.reasoning_loop as reasoning_loop
 import scene_graph.utils as utils
+from open_eqa.api import API_GraphAPI, API_TextualQA
+from open_eqa.reasoning_loop import reasoning_loop_only_graph
 from scene_graph.datasets import get_dataset
 
 
@@ -27,7 +30,7 @@ def parse_args() -> argparse.Namespace:
         "--questions",
         type=Path,
         default="data/open-eqa-v0.json",
-        help="path to EQA questions (default: data/open-eqa-v0.json)",
+        help="path to EQ3A questions (default: data/open-eqa-v0.json)",
     )
     parser.add_argument(
         "--graph-dir",
@@ -150,7 +153,17 @@ def main(cfg: DictConfig):
     scenes_available = os.listdir(cfg.questions_graph_dir)
 
     device = "cuda:2"
-    api = ask_question.API_NoStructure(device)
+    # api = API_TextualQA(
+    #     "open_eqa/prompts/gso/flat_graph_v3.txt",
+    #     "open_eqa/prompts/gso/flat_graph_final.txt",
+    #     device,
+    # )
+    api = API_GraphAPI(
+        "open_eqa/prompts/gso/flat_graph_v4.txt",
+        "open_eqa/prompts/gso/flat_graph_final.txt",
+        device,
+    )
+
     # process data
     for idx, item in enumerate(tqdm.tqdm(questions)):
         if cfg.questions_dry_run and idx >= 5:
@@ -182,25 +195,38 @@ def main(cfg: DictConfig):
 
         # generate answer
         question = item["question"]
-        answer, debuglog = ask_question.flat_graph(
+        answer, api_logs = reasoning_loop.reasoning_loop_only_graph(
             question=question,
             api=api,
             dataset=dataset,
-            graph_path=Path(cfg.questions_graph_dir) / scene_id,
+            graph_result_path=Path(cfg.questions_graph_dir) / scene_id,
+            perception_result_path=Path(cfg.result_root)
+            / scene_id
+            / f"{cfg.detections_exp_suffix}",
             obj_pcd_max_points=cfg.obj_pcd_max_points,
             gemini_model=cfg.questions_model,
         )
 
         # store results
-        debuglog[0]["answer"] = item["answer"]
-        debuglog[0]["pred_answer"] = answer
-        debuglog[0]["question_id"] = question_id
-        debuglog[0]["category"] = item["category"]
-        debuglog[0]["episode_history"] = item["episode_history"]
+        debuglog = OrderedDict(
+            {
+                "question": question,
+                "answer": item["answer"],
+                "pred_answer": answer["answer"],
+                "pred_answer_evidence": answer["evidence"],
+                "pred_answer_justification": answer["justification"],
+            }
+        )
+        if "explain_info_sufficiency" in answer:
+            debuglog["explain_info_sufficiency"] = answer["explain_info_sufficiency"]
+        debuglog["question_id"] = (question_id,)
+        debuglog["category"] = item["category"]
+        debuglog["episode_history"] = item["episode_history"]
+        debuglog["api_logs"] = api_logs
         debuglogs.append(debuglog)
         with open(debuglog_path, "w") as f:
             json.dump(debuglogs, f, indent=2)
-        results.append({"question_id": question_id, "answer": answer})
+        results.append({"question_id": question_id, "answer": answer["answer"]})
         with open(output_path, "w") as f:
             json.dump(results, f, indent=2)
 

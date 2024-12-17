@@ -14,10 +14,8 @@ import vertexai
 from vertexai.generative_models import GenerativeModel, Part
 
 import read_graphs
-from scene_graph.perception import Perceptor
-from scene_graph.pointcloud import create_depth_cloud
-from scene_graph.relationship_scorer import FeatureComputer, RelationshipScorer
-from scene_graph.semantic_tree import SemanticTree
+
+from .api import API, extract_scene_prompts
 
 
 def parse_output(output: str) -> str:
@@ -44,11 +42,12 @@ def call_gemini(model, prompt):
     return response
 
 
-def flat_graph(
+def reasoning_loop_only_graph(
     question: str,
-    api,
+    api: API,
     dataset,
-    graph_path: str,
+    graph_result_path: str,
+    perception_result_path: str,
     obj_pcd_max_points=5000,
     gemini_model: str = "gemini-1.5-flash-latest",
     gemini_seed: int = 1234,
@@ -57,14 +56,11 @@ def flat_graph(
     force: bool = False,
 ) -> Optional[str]:
 
-    semantic_tree = read_graphs.read_hamsg_flatgraph(graph_path)
-    graph, navigation_log, valid_keyframes = (
-        semantic_tree.get_summary_for_questionanswer()
-    )
-    with open("open_eqa/prompts/structure/flat_graph_v3.txt", "r") as f:
+    semantic_tree = read_graphs.read_hamsg_flatgraph(graph_result_path)
+    with open(api.prompt_reasoning_loop, "r") as f:
         text_prompt_template = f.read().strip()
-    with open("open_eqa/prompts/structure/flat_graph_final.txt", "r") as f:
-        text_prompt_final = f.read().strip()
+    with open(api.prompt_reasoning_final, "r") as f:
+        text_prompt_final_template = f.read().strip()
 
     # vertexai.init(project='302560724657', location="northamerica-northeast2")
     # model = GenerativeModel(model_name=gemini_model)
@@ -75,106 +71,44 @@ def flat_graph(
     model = genai.GenerativeModel(model_name=gemini_model)
 
     answer = None
-    debuglog = [dict(question=question)]
+    api_logs = []
     for i in range(6):
+        graph_prompt, navigation_log_prompt = extract_scene_prompts(semantic_tree)
         text_prompt = text_prompt_template.format(
             question=question,
-            graph=json.dumps(graph, indent=4),
-            navigation_log=json.dumps(navigation_log, indent=4),
+            graph=json.dumps(graph_prompt, indent=4),
+            navigation_log=json.dumps(navigation_log_prompt, indent=4),
         )
         response = call_gemini(model, [text_prompt]).strip()
-        if response.startswith("Answer:"):
-            answer = response.removeprefix("Answer: ")
+        response = json.loads(response.replace("```json", "").replace("```", ""))
+        if response["type"] == "answer_question":
+            answer = response
             break
         else:
             try:
-                api_log = dict()
-                api_log["call"] = response
-                response = response.split(": ")[1].strip()
-                response = response.split(",")
-                keyframe = int(response[0].strip())
-                assert keyframe in valid_keyframes
-                question = (
-                    ",".join(response[1:]).replace("'", "").replace('"', "").strip()
+                semantic_tree, response, api_log = api.call(
+                    response,
+                    dataset,
+                    perception_result_path,
+                    semantic_tree,
+                    obj_pcd_max_points,
                 )
-                semantic_tree, response = api.call(
-                    keyframe, question, dataset, semantic_tree, obj_pcd_max_points
-                )
-                api_log["keyframe_path"] = dataset.color_paths[keyframe]
-                api_log["response"] = response
-                debuglog.append(api_log)
+                api_logs.append(api_log)
             except Exception as e:
                 print("Refinement:", e)
                 traceback.print_exc()
                 continue
 
     if answer == None:
+        # Bug, this prompt should return a JSON
+        text_prompt_final = text_prompt_final_template.format(
+            question=question,
+            graph=json.dumps(graph_prompt, indent=4),
+            navigation_log=json.dumps(navigation_log_prompt, indent=4),
+        )
         answer = call_gemini(model, [text_prompt_final])
-    return answer.strip(), debuglog
-
-
-class API_NoStructure:
-    def __init__(self, device="cuda:2"):
-        self.perceptor = Perceptor(
-            prompt_file="open_eqa/prompts/api/api_no_structure.txt", device=device
-        )
-        self.feature_computer = FeatureComputer(device)
-        self.perceptor.init()
-        self.feature_computer.init()
-        self.relationship_scorer = RelationshipScorer(downsample_voxel_size=0.02)
-
-    def call(
-        self,
-        keyframe_id,
-        request,
-        dataset,
-        semantic_tree: SemanticTree,
-        obj_pcd_max_points,
-    ):
-        text_prompt = self.perceptor.text_prompt_template
-        text_prompt = text_prompt.format(request=request)
-        color_tensor, depth_tensor, intrinsics, *_ = dataset[keyframe_id]
-        depth_tensor = depth_tensor[..., 0]
-        depth_array = depth_tensor.cpu().numpy()
-        depth_cloud = create_depth_cloud(depth_array, dataset.get_cam_K())
-        unt_pose = dataset.poses[keyframe_id]
-        trans_pose = unt_pose.cpu().numpy()
-        color_np = color_tensor.cpu().numpy()  # (H, W, 3)
-        image_rgb = (color_np).astype(np.uint8)  # (H, W, 3)
-        assert image_rgb.max() > 1, "Image is not in range [0, 255]"
-
-        detections, response = self.perceptor.refine(color_np, text_prompt)
-        detections.extract_local_pcd(
-            depth_cloud,
-            color_np,
-            semantic_tree.geometry_map,
-            trans_pose,
-            obj_pcd_max_points,
-        )
-        self.feature_computer.compute_features(
-            image_rgb, semantic_tree.geometry_map, detections
-        )
-
-        det_matched, matched_tracks = self.relationship_scorer.associate_dets_to_tracks(
-            detections, semantic_tree.get_tracks()
-        )
-
-        semantic_tree.integrate_detections(
-            detections, det_matched, matched_tracks, keyframe_id
-        )
-
-        navigation_log_refinement = dict(Request=request)
-        navigation_log_refinement.update(response)
-        semantic_tree.integrate_refinement_log(
-            request, navigation_log_refinement, keyframe_id
-        )
-
-        # perceptor.save_results(
-        #     llm_response, detections, perception_result_dir, frame_idx
-        # )
-        # detections.save(perception_result_dir / str(frame_idx), perceptor.img)
-
-        return semantic_tree, response
+        answer = json.loads(answer.replace("```json", "").replace("```", ""))
+    return answer, api_logs
 
 
 def images_and_graph(

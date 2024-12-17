@@ -9,7 +9,7 @@ from scipy.spatial import ConvexHull
 from transformers import AutoModel, AutoProcessor, AutoTokenizer
 
 from . import pointcloud
-from .object import Features, ObjectList, load_objects
+from .object import Features, ObjectList
 from .utils import get_crop
 
 
@@ -35,7 +35,9 @@ class FeatureComputer:
             return
 
         visual_features = self.compute_clip_features_avg(img, objects.get_field("mask"))
-        caption_features = self.compute_sentence_features(objects.get_field("caption"))
+        caption_features = self.compute_sentence_features(
+            objects.get_field("visual_caption")
+        )
         centroids = []
         bboxes_3d = []
         for i in range(len(objects)):
@@ -248,10 +250,10 @@ class RelationshipScorer:
         )
 
         # Compute the matches
-        matched = np.max(score_matrix, 1) > 0.5
-        matched_nodes = np.argmax(score_matrix, 1)
+        is_matched = np.max(score_matrix, 1) > 0.5
+        matched_trackidx = np.argmax(score_matrix, 1)
 
-        return matched, matched_nodes
+        return is_matched, matched_trackidx
 
     def find_neighbours(self, current_tracks, distance_threshold=1):
         track_ids = list(current_tracks.keys())
@@ -459,14 +461,16 @@ class RelationshipScorer:
 
 
 if __name__ == "__main__":
-    from perception import Perceptor
+    from perception import GenericMapper
 
     from scene_graph.semantic_tree import SemanticTree
+
+    from .object import load_objects
 
     scene_graph = SemanticTree()
     scene_graph.load_pcd(folder="/pub3/qasim/hm3d/data/ham-sg/000-hm3d-BFRyYbPCCPE")
 
-    perceptor = Perceptor()
+    perceptor = GenericMapper()
     similarity = FeatureComputer()
 
     img1, objects1 = load_objects(

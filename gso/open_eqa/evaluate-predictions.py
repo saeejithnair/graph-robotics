@@ -104,7 +104,7 @@ def main(args: argparse.Namespace):
         # pre-process answers
         if result["answer"]:
             # remove anything after the last period
-            end_idx = result["answer"].rfind(".")
+            end_idx = result["answer"]["answer"].rfind(".")
             if end_idx >= 0 and end_idx + 1 < len(result["answer"]):
                 result["answer"] = result["answer"][: end_idx + 1]
 

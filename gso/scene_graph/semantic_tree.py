@@ -7,6 +7,7 @@ import numpy as np
 import open3d as o3d
 import torch
 
+from .object import ObjectList
 from .pointcloud import dynamic_downsample, find_nearest_points, pcd_denoise_dbscan
 from .track import load_tracks, object_to_track
 from .visualizer import Visualizer2D, Visualizer3D
@@ -45,22 +46,6 @@ class SemanticTree:
         )
         self.tracks = load_tracks(save_dir / "tracks")
         self.load_pcd(folder=save_dir)
-
-    def get_summary_for_questionanswer(self):
-        valid_keyframes = set()
-        graph = []
-        for i in self.track_ids:
-            graph.append(
-                {
-                    "Name": self.tracks[i].name,
-                    "Caption": self.tracks[i].captions[0],
-                    "Caption": self.tracks[i].captions[0],
-                    "Times_scene": self.tracks[i].times_scene,
-                    "Centroid": self.tracks[i].features.centroid.tolist(),
-                }
-            )
-            valid_keyframes.update(self.tracks[i].keyframe_ids)
-        return graph, self.navigation_log, valid_keyframes
 
     def add_pcd(self, pcd):
         self.geometry_map += pcd
@@ -153,14 +138,14 @@ class SemanticTree:
             else:
                 return i
 
-    def integrate_generic_log(self, llm_response, matched_track_names, frame_idx):
+    def integrate_generic_log(self, llm_response, detections, frame_idx):
         i = self.get_navigation_log_idx(frame_idx)
         self.navigation_log[i]["Generic Mapping"] = {
             "Relative Motion": llm_response["Relative Motion"],
             "Current Location": llm_response["Current Location"],
             "View": llm_response["View"],
             "Novelty": llm_response["Novelty"],
-            "Detections": matched_track_names,
+            "Detections": [d.matched_track_name for d in detections],
         }
 
     def integrate_refinement_log(self, request, llm_response, keyframe_id):
@@ -168,26 +153,25 @@ class SemanticTree:
         i = self.get_navigation_log_idx(keyframe_id)
         self.navigation_log[i]["Focused Analyses and Search"].append(refinement_log)
 
-    def integrate_detections(self, detections, det_matched, matched_tracks, frame_idx):
+    def integrate_detections(
+        self, detections: ObjectList, is_matched, matched_trackidx, frame_idx
+    ):
         # Either merge each detection with its matched track, or initialize the detection as a new track
         track_ids = list(self.tracks.keys())
         self.track_ids = track_ids
-        matched_track_names = []
         for i in range(len(detections)):
-            if det_matched[i]:
-                self.tracks[track_ids[matched_tracks[i]]].merge_detection(
+            if is_matched[i]:
+                self.tracks[track_ids[matched_trackidx[i]]].merge_detection(
                     detections[i], frame_idx
                 )
-                matched_track_names.append(
-                    self.tracks[track_ids[matched_tracks[i]]].name
-                )
+                matched_track_name = self.tracks[track_ids[matched_trackidx[i]]].name
+                detections[i].matched_track_name = matched_track_name
             else:
                 new_track = object_to_track(detections[i], frame_idx, self.geometry_map)
                 assert not new_track.id in self.tracks.keys()
                 self.tracks[new_track.id] = new_track
                 self.track_ids = list(self.tracks.keys())
-                matched_track_names.append(new_track.name)
-        return matched_track_names
+                detections[i].matched_track_name = new_track.name
 
     def _get_children_ids(self, id):
         index = self.track_ids.index(id)

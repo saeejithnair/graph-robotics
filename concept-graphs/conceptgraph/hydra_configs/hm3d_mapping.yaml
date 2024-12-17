@@ -49,7 +49,7 @@ obj_min_points: 0
 obj_min_detections: 1
 
 # For merge_overlap_objects() function
-use_rerun: !!bool False
+use_rerun: !!bool True
 save_rerun: !!bool False
 
 # hydra:

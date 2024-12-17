@@ -4,6 +4,7 @@ import math
 import os
 import time
 import traceback
+from abc import ABC
 from pathlib import Path
 from typing import Optional
 
@@ -24,14 +25,18 @@ from .. import utils
 from ..object import Object, ObjectList
 
 
-class Perceptor:
+class Perceptor(ABC):
     def __init__(
         self,
+        json_detection_key="Detections",
+        json_other_keys=[],
         device="cuda:0",
         sam_model_type="vit_h",
         sam_checkpoint_path="checkpoints/sam_vit_h_4b8939.pth",
         prompt_file="scene_graph/perception/prompts/generic_spatial_mapping_localize.txt",
     ):
+        self.json_detection_key = json_detection_key
+        self.json_other_keys = json_other_keys
         self.device = device
         self.sam = sam_model_registry[sam_model_type](checkpoint=sam_checkpoint_path)
         self.sam.to(device=device)
@@ -53,6 +58,9 @@ class Perceptor:
         self.past_pose = None
         self.past_response = None
 
+    def perceive(self, img, pose=None):
+        raise NotImplementedError()
+
     def format_objects_response(self, response, img_size, img=None):
         bboxes = [d["bbox"] for d in response]
         width, height = img_size[1], img_size[0]
@@ -73,190 +81,6 @@ class Perceptor:
 
             response[i]["bbox"] = bbox
         return response
-
-    def verify_response(self, response, detection_key, other_keys):
-        assert "```json" in response
-        response = response.replace("```json", "")
-        response = response.replace("```", "")
-        response = response.strip()
-        response = json.loads(response)
-        for key in other_keys:
-            assert key in response
-        assert detection_key in response
-        for obj in response[detection_key]:
-            assert "label" in obj
-            assert "caption" in obj
-            assert "spatial caption" in obj
-            assert "bbox" in obj
-            assert "confidence" in obj
-            assert len(obj["bbox"]) == 4
-            assert not ("/" in obj["label"])
-        return response
-
-    def ask_question_gemini(
-        self,
-        img,
-        text_prompt,
-        img_size,
-        detection_key,
-        other_keys,
-        gemini_model: str = "gemini-1.5-flash-latest",
-    ) -> Optional[str]:
-
-        # vertexai.init(project='302560724657', location="northamerica-northeast2")
-        # model = GenerativeModel(model_name=gemini_model)
-        model = genai.GenerativeModel(model_name=gemini_model)
-
-        # text_prompt = Part.from_text(text_prompt)
-        # image_prompt = [Part.from_image(vertexai.generative_models.Image.load_from_file(i)) for i in init_images]
-        # prompt = [text_prompt] + image_prompt
-        # navigation_prompt = json.dumps(navigation_log)
-        # navigation_prompt = [
-        #     "Here is a navigation log you created, containing all the information from all the previous frames you have seen"
-        #     + navigation_prompt
-        # ]
-        if isinstance(img, (np.ndarray, np.generic)):
-            img = Image.fromarray(np.uint8(img))
-        image_prompt = [img.resize((1000, 1000))]
-        prompt = [text_prompt] + image_prompt
-
-        llm_response, object_detections = None, None
-        for _ in range(6):
-            try:
-                response = utils.call_gemini(model, prompt)
-                llm_response = self.verify_response(response, detection_key, other_keys)
-                object_detections = self.format_objects_response(
-                    llm_response["Detections"], img_size, img=img
-                )
-                break
-            except AssertionError as e:
-                print("VLM Error:", e)
-                traceback.print_exc()
-                continue
-        if llm_response is None:
-            raise Exception("Model could not generate bounding boxes")
-        return (
-            object_detections,
-            llm_response,
-        )  # .removeprefix('Answer: ').strip()
-
-    def perceive(self, img, pose=None):
-        self.img = np.uint8(img)
-        response = {}
-
-        if not (pose is None):
-            if self.past_pose is None:
-                relative_pose = np.zeros(pose.shape)
-            else:
-                relative_pose = pose - self.past_pose
-            self.past_pose = pose
-            response["Relative Motion"] = self.categorize_pose(relative_pose)
-
-        text_prompt = self.text_prompt_template
-        if not (self.past_response is None):
-            text_prompt += (
-                "Here was your response on the previous frame:\n"
-                + json.dumps(self.past_response)
-            )
-
-        object_detections, llm_response = self.ask_question_gemini(
-            self.img,
-            text_prompt,
-            self.img.shape,
-            "Detections",
-            ["Current Location", "View", "Novelty"],
-        )
-        response.update(llm_response)
-
-        self.past_response = llm_response
-
-        self.num_detections = len(object_detections)
-
-        self.mask_predictor.set_image(np.uint8(img))
-        object_list = ObjectList()
-        for i in range(self.num_detections):
-            box = object_detections[i]["bbox"]
-            sam_masks, iou_preds, _ = self.mask_predictor.predict(
-                box=np.array(box), multimask_output=False
-            )
-            crop = utils.get_crop(self.img, box)
-            if iou_preds < 0.7 or crop.shape[-2:] < (2, 2):
-                continue
-
-            object_list.add_object(
-                Object(
-                    mask=sam_masks[0],
-                    crop=crop,
-                    label=object_detections[i]["label"],
-                    caption=object_detections[i]["caption"],
-                    bbox=box,
-                    confidence=object_detections[i]["confidence"],
-                )
-            )
-
-        return object_list, response
-
-    def refine(self, img, text_prompt):
-        self.img = np.uint8(img)
-        response = {}
-
-        object_detections, llm_response = self.ask_question_gemini(
-            self.img, text_prompt, self.img.shape, "Detections", ["Finding"]
-        )
-        response.update(llm_response)
-
-        self.num_detections = len(object_detections)
-
-        self.mask_predictor.set_image(np.uint8(img))
-        object_list = ObjectList()
-        for i in range(self.num_detections):
-            box = object_detections[i]["bbox"]
-            sam_masks, iou_preds, _ = self.mask_predictor.predict(
-                box=np.array(box), multimask_output=False
-            )
-            if iou_preds < 0.7:
-                continue
-            object_list.add_object(
-                Object(
-                    mask=sam_masks[0],
-                    crop=utils.get_crop(self.img, box),
-                    label=object_detections[i]["label"],
-                    caption=object_detections[i]["caption"],
-                    bbox=box,
-                    confidence=object_detections[i]["confidence"],
-                )
-            )
-        return object_list, response
-
-    def get_object(self, i: int):
-        return dict(
-            mask=self.objects["masks"][i],
-            crop=self.objects["crops"][i],
-            label=self.objects["labels"][i],
-            caption=self.objects["captions"][i],
-            bbox=self.objects["bboxes"][i],
-            confidence=self.objects["confidences"][i],
-        )
-
-    def save_results(self, llm_response, object_list, result_dir, frame):
-        frame_dir = Path(result_dir) / str(frame)
-        os.makedirs(frame_dir, exist_ok=True)
-        json_path = frame_dir / "llm_response.txt"
-        annotated_img_path = frame_dir / "annotated_llm_detections.png"
-        img_path = frame_dir / "input_image.png"
-        with open(json_path, "w") as f:
-            json.dump(llm_response, f, indent=4)
-
-        img = np.copy(self.img)
-        plt.imsave(img_path, np.uint8(img))
-
-        if len(object_list) > 0:
-            annotated_img = utils.annotate_img_boxes(
-                img,
-                object_list.get_field("bbox"),
-                object_list.get_field("label"),
-            )
-            plt.imsave(annotated_img_path, np.uint8(annotated_img))
 
     def categorize_pose(self, pose_matrix):
         """
@@ -333,75 +157,149 @@ class Perceptor:
         # Join actions descriptively
         return ", ".join(actions) if actions else "stationary"
 
-    # def save_results(self, result_dir, frame):
+    def ask_question_gemini(
+        self,
+        img,
+        text_prompt,
+        img_size,
+        gemini_model: str = "gemini-1.5-flash-latest",
+    ) -> Optional[str]:
 
-    #     frame_dir = Path(result_dir) / str(frame)
-    #     os.makedirs(frame_dir, exist_ok=True)
-    #     json_path = frame_dir / "llm_detections.txt"
-    #     annotated_img_path = frame_dir / "annotated_llm_detections.png"
-    #     img_path = frame_dir / "input_img.png"
-    #     mask_path = frame_dir / "masks.npz"
+        # vertexai.init(project='302560724657', location="northamerica-northeast2")
+        # model = GenerativeModel(model_name=gemini_model)
+        model = genai.GenerativeModel(model_name=gemini_model)
 
-    #     json_data = []
+        # text_prompt = Part.from_text(text_prompt)
+        # image_prompt = [Part.from_image(vertexai.generative_models.Image.load_from_file(i)) for i in init_images]
+        # prompt = [text_prompt] + image_prompt
+        # navigation_prompt = json.dumps(navigation_log)
+        # navigation_prompt = [
+        #     "Here is a navigation log you created, containing all the information from all the previous frames you have seen"
+        #     + navigation_prompt
+        # ]
+        if isinstance(img, (np.ndarray, np.generic)):
+            img = Image.fromarray(np.uint8(img))
+        image_prompt = [img.resize((1000, 1000))]
+        prompt = [text_prompt] + image_prompt
 
-    #     for i in range(self.num_detections):
-    #         obj = self.get_object(i)
+        object_detections, llm_response = [], None
+        for _ in range(6):
+            try:
+                response = utils.call_gemini(model, prompt)
+                llm_response = self.verify_and_format_response(response)
+                if self.json_detection_key:
+                    object_detections = self.format_objects_response(
+                        llm_response[self.json_detection_key], img_size, img=img
+                    )
+                break
+            except AssertionError as e:
+                print("VLM Error:", e)
+                traceback.print_exc()
+                continue
+        if llm_response is None:
+            raise Exception("Model could not generate bounding boxes")
+        return (
+            object_detections,
+            llm_response,
+        )  # .removeprefix('Answer: ').strip()
 
-    #         mask = np.array(obj["mask"])
-    #         crop = self.annotate_img(
-    #             np.copy(obj["crop"]), self.get_crop(mask, obj["bbox"])
-    #         )
-    #         plt.imsave(
-    #             frame_dir
-    #             / ("annotated_bbox_crop-" + str(i) + "-" + obj["label"] + ".png"),
-    #             np.uint8(crop),
-    #         )
+    def verify_and_format_response(self, response):
+        assert "```json" in response
+        response = response.replace("```json", "")
+        response = response.replace("```", "")
+        response = response.strip()
+        response = json.loads(response)
+        for key in self.json_other_keys:
+            assert key in response
+        if self.json_detection_key:
+            assert self.json_detection_key in response
+            for obj in response[self.json_detection_key]:
+                assert "label" in obj
+                assert "visual caption" in obj
+                assert "spatial caption" in obj
+                assert "bbox" in obj
+                assert "confidence" in obj
+                assert len(obj["bbox"]) == 4
+                assert not ("/" in obj["label"])
+        return response
 
-    #         data = {
-    #             "label": obj["label"],
-    #             "caption": obj["caption"],
-    #             "bbox": obj["bbox"],
-    #             "confidence": obj["confidence"],
-    #         }
-    #         json_data.append(data)
 
-    #     np.savez(mask_path, masks=self.objects["masks"])
-    #     with open(json_path, "w") as f:
-    #         json.dump(json_data, f, indent=4)
-    #     annotated_image = self.annotate_img(self.img, self.objects["masks"])
-    #     plt.imsave(annotated_img_path, np.uint8(annotated_image))
-    #     plt.imsave(img_path, np.uint8(self.img))
+class GenericMapper(Perceptor):
 
-    # def load_results(self, result_dir, frame):
-    #     frame_dir = Path(result_dir) / str(frame)
-    #     json_path = frame_dir / "llm_detections.txt"
-    #     masks_path = frame_dir / "masks.npz"
-    #     img_path = frame_dir / "input_img.png"
+    def perceive(self, img, pose=None):
+        self.img = np.uint8(img)
+        response = {}
 
-    #     if not frame_dir.exists():
-    #         raise FileNotFoundError(f"Frame directory {frame_dir} does not exist.")
-    #     if not json_path.exists() or not masks_path.exists():
-    #         raise FileNotFoundError(f"Detection files not found in {frame_dir}.")
+        if not (pose is None):
+            if self.past_pose is None:
+                relative_pose = np.zeros(pose.shape)
+            else:
+                relative_pose = pose - self.past_pose
+            self.past_pose = pose
+            response["Relative Motion"] = self.categorize_pose(relative_pose)
 
-    #     self.img = PIL.Image.open(img_path).convert("RGB")
-    #     with open(json_path, "r") as f:
-    #         json_data = json.load(f)
-    #     self.num_detections = len(json_data)
+        text_prompt = self.text_prompt_template
+        if not (self.past_response is None):
+            text_prompt += (
+                "Here was your response on the previous frame:\n"
+                + json.dumps(self.past_response)
+            )
 
-    #     crops = []
-    #     img_np = np.asarray(self.img)
-    #     for i in range(self.num_detections):
-    #         box = json_data[i]["bbox"]
-    #         crops.append(self.get_crop(img_np, box))
+        object_detections, llm_response = self.ask_question_gemini(
+            self.img,
+            text_prompt,
+            self.img.shape,
+        )
+        response.update(llm_response)
 
-    #     self.objects = dict(
-    #         masks=np.load(masks_path)["masks"],
-    #         crops=crops,
-    #         labels=[o["label"] for o in json_data],
-    #         captions=[o["caption"] for o in json_data],
-    #         bboxes=[o["bbox"] for o in json_data],
-    #         confidences=[o["confidence"] for o in json_data],
-    #     )
+        self.past_response = llm_response
+
+        self.num_detections = len(object_detections)
+
+        self.mask_predictor.set_image(np.uint8(img))
+        object_list = ObjectList()
+        for i in range(self.num_detections):
+            box = object_detections[i]["bbox"]
+            sam_masks, iou_preds, _ = self.mask_predictor.predict(
+                box=np.array(box), multimask_output=False
+            )
+            crop = utils.get_crop(self.img, box)
+            if iou_preds < 0.7 or crop.shape[0] <= 1 or crop.shape[1] <= 1:
+                continue
+
+            object_list.add_object(
+                Object(
+                    mask=sam_masks[0],
+                    crop=crop,
+                    label=object_detections[i]["label"],
+                    visual_caption=object_detections[i]["visual caption"],
+                    spatial_caption=object_detections[i]["spatial caption"],
+                    bbox=box,
+                    confidence=object_detections[i]["confidence"],
+                )
+            )
+
+        return object_list, response
+
+    def save_results(self, llm_response, object_list, result_dir, frame):
+        frame_dir = Path(result_dir) / str(frame)
+        os.makedirs(frame_dir, exist_ok=True)
+        json_path = frame_dir / "llm_response.txt"
+        annotated_img_path = frame_dir / "annotated_llm_detections.png"
+        img_path = frame_dir / "input_image.png"
+        with open(json_path, "w") as f:
+            json.dump(llm_response, f, indent=4)
+
+        img = np.copy(self.img)
+        plt.imsave(img_path, np.uint8(img))
+
+        if len(object_list) > 0:
+            annotated_img = utils.annotate_img_boxes(
+                img,
+                object_list.get_field("bbox"),
+                object_list.get_field("label"),
+            )
+            plt.imsave(annotated_img_path, np.uint8(annotated_img))
 
 
 if __name__ == "__main__":
@@ -427,7 +325,7 @@ if __name__ == "__main__":
 
     # Testing loading function
 
-    perceptor = Perceptor()
+    perceptor = GenericMapper()
     perceptor.load_results(
         "/pub3/qasim/hm3d/data/ham-sg/000-hm3d-BFRyYbPCCPE/detections", 1
     )

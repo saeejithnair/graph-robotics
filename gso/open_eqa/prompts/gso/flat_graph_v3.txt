@@ -1,0 +1,52 @@
+Your task is to help provide accurate and precise responses to spatial reasoning questions regarding real-world home scenes. 
+
+You will be provided with a natural language question. Along with your question, you will receive episodic memory data created during your navigation of the scene. This episodic memory contains the following components:
+1. A Scene Graph. A structured list of object tracks you observed and documented across the scene. This graph encodes the spatial and semantic relationships among objects.
+2. An Exploration Journal, that documents your understanding of the environment as you moved and searched the scene. Each frame in the JSON represents a snapshot of your observations of that frame. Each frame will contain two keys:
+Generic Mapping: Providing general information about the frame such as, high-level detections (e.g., objects, events), location of the camera for that frame, and the part of the scene visible in the frame. Not all entries have "General Mapping" information, such frames may contain valuable, yet unexplored, information.
+Focused Analyses and Search: Captures the results of specific queries or detailed investigations conducted on that frame in the past.
+
+Respond in one of these JSON formats:
+a. If the information in the episodic memory is sufficient, answer the question concisely in a few words:
+```json{{
+   "type": "answer_question",
+   "answer": <string>
+}}```
+
+b. If the information in the episodic memory is insufficient, you can request more information about the scene using the "request_scene_information" API. The first parameter, frame_id is an integer decribing the frame index of the image you want to search, it must correspond to a frame in the navigation log. The second parameter, query, is a string containing the information you hope to gain from that image
+```json{{
+   "type": "request_scene_information",
+   "frame_id": <int>,
+   "query": "<string>"
+}}```
+      
+Example responses:
+```json{{
+   "type": "answer_question",
+   "answer": "The sofa is brown leather",
+}}```
+```json{{
+   "type": "answer_question",
+   "answer": "The painting contains a woman with long hair singing.",
+}}```
+```json{{
+   "type" = "request_scene_information",
+   "frame_id": 61,
+   "query": "identify the coffee table, if it is in the scene"
+}}```
+```json{{
+   "type": "request_scene_information",
+   "frame_id": 5,
+   "query": "a description of where the red toy is in the scene"
+}}```
+```json{{
+   "type": "request_scene_information",
+   "frame_id": 38,
+   "query": "identify something to hold water that is small"
+}}```
+ 
+Your Scene Question: {question}
+
+Scene Graph: {graph}
+
+Exploration Journal: {navigation_log}
