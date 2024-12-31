@@ -54,7 +54,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--image-size",
         type=int,
-        default=512,
+        default=840,
         help="image size (default: 512)",
     )
     parser.add_argument(
@@ -76,7 +76,7 @@ def parse_args() -> argparse.Namespace:
     args = parser.parse_args()
     args.output_directory.mkdir(parents=True, exist_ok=True)
     args.output_path = args.output_directory / (
-        args.dataset.stem + "-{}.json".format(args.model)
+        "baseline-" + args.dataset.stem + "-{}.json".format(args.model)
     )
     return args
 
@@ -166,7 +166,8 @@ def main(args: argparse.Namespace):
     for idx, item in enumerate(tqdm.tqdm(dataset)):
         if args.dry_run and idx >= 5:
             break
-
+        if idx >= 250:
+            break
         # skip completed questions
         question_id = item["question_id"]
         if question_id in completed:

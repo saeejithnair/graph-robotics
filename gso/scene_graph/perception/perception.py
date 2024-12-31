@@ -22,7 +22,7 @@ from segment_anything import SamPredictor, sam_model_registry
 from vertexai.generative_models import GenerativeModel, Part
 
 from .. import utils
-from ..object import Object, ObjectList
+from ..detection import Detection, DetectionList, Edge
 
 
 class Perceptor(ABC):
@@ -30,13 +30,17 @@ class Perceptor(ABC):
         self,
         json_detection_key="Detections",
         json_other_keys=[],
+        with_edges=False,
         device="cuda:0",
         sam_model_type="vit_h",
         sam_checkpoint_path="checkpoints/sam_vit_h_4b8939.pth",
-        prompt_file="scene_graph/perception/prompts/generic_spatial_mapping_localize.txt",
+        prompt_file="scene_graph/perception/prompts/generic_mapping_localize_edges_v2.txt",
+        edge_types=["inside", "on", "part of"],
     ):
         self.json_detection_key = json_detection_key
         self.json_other_keys = json_other_keys
+        self.with_edges = with_edges
+        self.edge_types = edge_types
         self.device = device
         self.sam = sam_model_registry[sam_model_type](checkpoint=sam_checkpoint_path)
         self.sam.to(device=device)
@@ -61,7 +65,7 @@ class Perceptor(ABC):
     def perceive(self, img, pose=None):
         raise NotImplementedError()
 
-    def format_objects_response(self, response, img_size, img=None):
+    def format_objects_bbox(self, response, img_size, img=None):
         bboxes = [d["bbox"] for d in response]
         width, height = img_size[1], img_size[0]
         for i, box in enumerate(bboxes):
@@ -183,16 +187,16 @@ class Perceptor(ABC):
         prompt = [text_prompt] + image_prompt
 
         object_detections, llm_response = [], None
-        for _ in range(6):
+        for _ in range(10):
             try:
                 response = utils.call_gemini(model, prompt)
-                llm_response = self.verify_and_format_response(response)
+                llm_response = self.verify_json_response(response)
                 if self.json_detection_key:
-                    object_detections = self.format_objects_response(
+                    object_detections = self.format_objects_bbox(
                         llm_response[self.json_detection_key], img_size, img=img
                     )
                 break
-            except AssertionError as e:
+            except Exception as e:
                 print("VLM Error:", e)
                 traceback.print_exc()
                 continue
@@ -203,7 +207,7 @@ class Perceptor(ABC):
             llm_response,
         )  # .removeprefix('Answer: ').strip()
 
-    def verify_and_format_response(self, response):
+    def verify_json_response(self, response):
         assert "```json" in response
         response = response.replace("```json", "")
         response = response.replace("```", "")
@@ -221,7 +225,36 @@ class Perceptor(ABC):
                 assert "confidence" in obj
                 assert len(obj["bbox"]) == 4
                 assert not ("/" in obj["label"])
+                if self.with_edges:
+                    assert "relationships" in obj
+                    for rel in obj["relationships"]:
+                        assert "related_object_label" in rel
+                        assert "relationship_type" in rel
+                        assert rel["relationship_type"].lower() in self.edge_types
         return response
+
+    def save_results(self, object_list, result_dir, frame, llm_response=None):
+        frame_dir = Path(result_dir) / str(frame)
+        os.makedirs(frame_dir, exist_ok=True)
+        annotated_img_path = frame_dir / "annotated_llm_detections.png"
+        img_path = frame_dir / "input_image.png"
+        if llm_response:
+            llm_response_path = frame_dir / "llm_response.json"
+            with open(llm_response_path, "w") as f:
+                json.dump(llm_response, f, indent=2)
+
+        img = np.copy(self.img)
+        plt.imsave(img_path, np.uint8(img))
+
+        if len(object_list) > 0:
+            annotated_img = utils.annotate_img_boxes(
+                img,
+                object_list.get_field("bbox"),
+                object_list.get_field("label"),
+            )
+            plt.imsave(annotated_img_path, np.uint8(annotated_img))
+
+        object_list.save(result_dir / str(frame), self.img)
 
 
 class GenericMapper(Perceptor):
@@ -236,16 +269,24 @@ class GenericMapper(Perceptor):
             else:
                 relative_pose = pose - self.past_pose
             self.past_pose = pose
-            response["Relative Motion"] = self.categorize_pose(relative_pose)
+            relative_motion = self.categorize_pose(relative_pose)
+            response["Relative Motion"] = relative_motion
 
         text_prompt = self.text_prompt_template
         if not (self.past_response is None):
+            if relative_motion:
+                text_prompt += "Your current frame is {relative_motion}  relative to the previous frame. "
+            past_detections = []
+            for det in self.past_response[self.json_detection_key]:
+                past_detections.append(
+                    {"label": det["label"], "visual caption": det["visual caption"]}
+                )
             text_prompt += (
-                "Here was your response on the previous frame:\n"
-                + json.dumps(self.past_response)
+                "Track objects if they were present in the previous frame. Here were your detections on the previous frame: \n"
+                + json.dumps(past_detections, indent=2)
             )
 
-        object_detections, llm_response = self.ask_question_gemini(
+        detections, llm_response = self.ask_question_gemini(
             self.img,
             text_prompt,
             self.img.shape,
@@ -254,12 +295,12 @@ class GenericMapper(Perceptor):
 
         self.past_response = llm_response
 
-        self.num_detections = len(object_detections)
+        self.num_detections = len(detections)
 
         self.mask_predictor.set_image(np.uint8(img))
-        object_list = ObjectList()
+        detection_list = DetectionList()
         for i in range(self.num_detections):
-            box = object_detections[i]["bbox"]
+            box = detections[i]["bbox"]
             sam_masks, iou_preds, _ = self.mask_predictor.predict(
                 box=np.array(box), multimask_output=False
             )
@@ -267,39 +308,38 @@ class GenericMapper(Perceptor):
             if iou_preds < 0.7 or crop.shape[0] <= 1 or crop.shape[1] <= 1:
                 continue
 
-            object_list.add_object(
-                Object(
+            edges = []
+            for rel in detections[i]["relationships"]:
+                edges.append(
+                    Edge(
+                        rel["relationship_type"].lower(),
+                        detections[i]["label"].lower(),
+                        rel["related_object_label"].lower(),
+                        (
+                            rel["related_object_spatial_caption"]
+                            if "related_object_spatial_caption" in rel
+                            else None
+                        ),
+                    )
+                )
+
+            detection_list.add_object(
+                Detection(
                     mask=sam_masks[0],
                     crop=crop,
-                    label=object_detections[i]["label"],
-                    visual_caption=object_detections[i]["visual caption"],
-                    spatial_caption=object_detections[i]["spatial caption"],
+                    label=detections[i]["label"].lower(),
+                    visual_caption=detections[i]["visual caption"],
+                    spatial_caption=detections[i]["spatial caption"],
                     bbox=box,
-                    confidence=object_detections[i]["confidence"],
+                    confidence=detections[i]["confidence"],
+                    edges=edges,
                 )
             )
 
-        return object_list, response
+        detection_names = detection_list.get_field("label")
+        detection_list.filter_edges(self.edge_types, detection_names)
 
-    def save_results(self, llm_response, object_list, result_dir, frame):
-        frame_dir = Path(result_dir) / str(frame)
-        os.makedirs(frame_dir, exist_ok=True)
-        json_path = frame_dir / "llm_response.txt"
-        annotated_img_path = frame_dir / "annotated_llm_detections.png"
-        img_path = frame_dir / "input_image.png"
-        with open(json_path, "w") as f:
-            json.dump(llm_response, f, indent=4)
-
-        img = np.copy(self.img)
-        plt.imsave(img_path, np.uint8(img))
-
-        if len(object_list) > 0:
-            annotated_img = utils.annotate_img_boxes(
-                img,
-                object_list.get_field("bbox"),
-                object_list.get_field("label"),
-            )
-            plt.imsave(annotated_img_path, np.uint8(annotated_img))
+        return detection_list, response
 
 
 if __name__ == "__main__":

@@ -60,14 +60,10 @@ def pcd_denoise_dbscan(pcd: o3d.geometry.PointCloud, eps=0.02, min_points=10):
 
 
 def find_nearest_points(
-    local_points: np.ndarray, global_points: np.ndarray, k: int = 1
+    local_points: np.ndarray,
+    global_points: np.ndarray,
+    radius: float = 0.02,
 ):
-    """
-    k : Number of nearest neighbors to find (default: 1)
-    --------
-    distances : Squared distances to nearest neighbors, shape (N, k)
-    indices : Indices of nearest neighbors in global_points, shape (N, k)
-    """
     # Ensure points are float32 (required by FAISS)
     local_points = np.ascontiguousarray(local_points.astype("float32"))
     global_points = np.ascontiguousarray(global_points.astype("float32"))
@@ -80,7 +76,14 @@ def find_nearest_points(
     index.add(global_points)
 
     # Search for nearest neighbors
-    distances, indices = index.search(local_points, k)
+    # distances, indices = index.search(local_points, k)
+    lims, distances, indices = index.range_search(local_points, radius**2)
+    
+    # lims is a one-dimensional array containing indices that define the boundaries of the nearest neighbors found for each local point.
+    # Convert to a more user-friendly format (list of lists)
+    # results = [
+    #     indices[lims[i] : lims[i + 1]].tolist() for i in range(len(local_points))
+    # ]
 
     return distances, indices
 
@@ -334,3 +337,15 @@ def union_bounding_boxes(bb1, bb2):
         return union_bb
     else:
         raise ValueError("Unsupported bounding box types")
+
+def denoise_pcd(pcd, downsample_voxel_size, dbscan_remove_noise, dbscan_eps, dbscan_min_points, run_dbscan=True):
+    pcd = pcd.voxel_down_sample(voxel_size=downsample_voxel_size)
+    
+    if dbscan_remove_noise and run_dbscan:
+        pcd = pcd_denoise_dbscan(
+            pcd, 
+            eps=dbscan_eps, 
+            min_points=dbscan_min_points
+        )
+        
+    return pcd

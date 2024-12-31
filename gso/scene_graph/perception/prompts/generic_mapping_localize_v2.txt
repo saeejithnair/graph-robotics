@@ -1,0 +1,18 @@
+Detect items, localize your position and describe your field of view within the environment.
+
+When detecting items, focus on semantic and functional groupings (e.g., "group of chairs") rather than individual instances. Exclude background elements (walls, floors), very small objects, and large areas like rooms (hallways, kitchens). Include items critical for navigation, interaction, or scene understanding
+
+Return a JSON with the following keys:
+
+Current Location: The current room or area (e.g., "washroom," "hallway," "stairs," "kitchen").
+View:  A description of the visible portion of the scene (e.g., "left side of the garage"). Avoid camera angle descriptions.
+Novelty: New or noteworthy observations (e.g., "spotted a vase on the table").
+Detections: An array of JSON objects, each describing a detected object or group. 
+
+Each detection within your "Detections" list should be a JSON with five keys:
+label: A concise, few word identifier (e.g. "kitchen counter"). 
+visual caption: A description of the object's visual appearence. An example of a valid caption would be "A kitchen counter with a granite countertop".
+spatial caption: A spatial description of the objects location in the current frame or view. The caption should uniquely identify the object within the frame. Example include "Table in center", "Remote on Sofa", "Leftmost counter", "Flower in bottom right".
+bbox: A 1D array of four integers representing the bounding box: [ymin, xmin, ymax, xmax].
+confidence: A confidence score between 0 and 1.
+

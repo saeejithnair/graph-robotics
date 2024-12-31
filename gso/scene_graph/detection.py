@@ -2,27 +2,60 @@ import json
 import os
 import pickle
 from pathlib import Path
+from typing import List
 
 import matplotlib.pyplot as plt
 import numpy as np
 import open3d as o3d
 import PIL
+from transformers import AutoModel, AutoProcessor, AutoTokenizer
 
 from . import utils
-from .pointcloud import dynamic_downsample, find_nearest_points
+from .features import Features
+from .pointcloud import denoise_pcd, dynamic_downsample, find_nearest_points
+from .utils import get_crop
 
 
-class Features:
+class Edge:
     def __init__(
-        self, visual_emb=None, caption_emb=None, centroid=None, bbox_3d=None
-    ) -> None:
-        self.visual_emb = np.array(visual_emb)
-        self.caption_emb = np.array(caption_emb)
-        self.centroid = np.array(centroid)
-        self.bbox_3d = bbox_3d
+        self, type: str, subject, related_object, keyframe=None, explanation=None
+    ):
+        self.type = type
+        self.subject = subject
+        self.related_object = related_object
+        self.keyframe = keyframe
+        self.explanation = explanation
+
+    def verify(self, valid_types, valid_object_names):
+        valid_types = [i.lower() for i in valid_types]
+        valid_object_names = [i.lower() for i in valid_object_names]
+        if not (self.type.lower() in valid_types):
+            return False
+        if not self.subject.lower() in valid_object_names:
+            return False
+        if not self.related_object.lower() in valid_object_names:
+            return False
+        return True
+
+    def json(self):
+        return {
+            "type": self.type,
+            "subject": self.subject,
+            "related object": self.related_object,
+        }
+
+    def __str__(self):
+        return json.dumps(
+            {
+                "type": self.type,
+                "subject": self.subject,
+                "related object": self.related_object,
+            },
+            indent=2,
+        )
 
 
-class Object:
+class Detection:
     def __init__(
         self,
         mask=None,
@@ -32,10 +65,12 @@ class Object:
         spatial_caption=None,
         bbox=None,
         confidence=None,
-        local_points=None,
+        local_pcd=None,
         local_pcd_idxs=None,
         matched_track_name=None,
         features: Features = None,
+        notes="",
+        edges: List[Edge] = [],
     ):
         self.mask = mask
         self.crop = crop
@@ -44,13 +79,26 @@ class Object:
         self.spatial_caption = spatial_caption
         self.bbox = bbox
         self.confidence = confidence
-        self.local_points = local_points
+        self.local_pcd = local_pcd
         self.local_pcd_idxs = local_pcd_idxs
         self.features = features
         self.matched_track_name = matched_track_name
+        self.edges = edges
+        self.notes = notes
 
-    def extract_local_pcd(
-        self, depth_cloud, img_rgb, global_pcd, trans_pose=None, obj_pcd_max_points=5000
+    def extract_pcd(
+        self,
+        depth_cloud,
+        img_rgb,
+        global_pcd,
+        downsample_voxel_size,
+        dbscan_remove_noise,
+        dbscan_eps,
+        dbscan_min_points,
+        run_dbscan=True,
+        trans_pose=None,
+        obj_pcd_max_points=5000,
+        neighbour_radius=0.02,
     ):
         downsampled_points, downsampled_colors = dynamic_downsample(
             depth_cloud[self.mask],
@@ -62,16 +110,26 @@ class Object:
         if downsampled_colors is not None:
             local_pcd.colors = o3d.utility.Vector3dVector(downsampled_colors)
 
+        local_pcd = denoise_pcd(
+            local_pcd,
+            downsample_voxel_size=downsample_voxel_size,
+            dbscan_remove_noise=dbscan_remove_noise,
+            dbscan_eps=dbscan_eps,
+            dbscan_min_points=dbscan_min_points,
+            run_dbscan=run_dbscan,
+        )
+
         if trans_pose is not None:
             local_pcd.transform(
                 trans_pose
             )  # Apply transformation directly to the point cloud
 
-        self.local_points = local_pcd
+        self.local_pcd = local_pcd
         _, self.local_pcd_idxs = find_nearest_points(
-            np.array(self.local_points.points), np.array(global_pcd.points)
+            np.array(self.local_pcd.points),
+            np.array(global_pcd.points),
+            radius=neighbour_radius,
         )
-        self.local_pcd_idxs = self.local_pcd_idxs.squeeze(-1)
 
     def compute_local_pcd(self, full_pcd):
         local_pcd = o3d.geometry.PointCloud()
@@ -84,8 +142,8 @@ class Object:
         return local_pcd
 
 
-class ObjectList:
-    def __init__(self, objects: Object = None):
+class DetectionList:
+    def __init__(self, objects: List[Detection] = None):
         if objects == None:
             objects = []
         self.objects = objects
@@ -96,12 +154,41 @@ class ObjectList:
     def get_field(self, field: str):
         return [getattr(o, field) for o in self.objects]
 
-    def extract_local_pcd(
-        self, depth_cloud, img_rgb, global_pcd, trans_pose=None, obj_pcd_max_points=5000
+    def filter_edges(self, valid_types, valid_object_names):
+        for obj in self.objects:
+            valid_edges = []
+            for i in range(len(obj.edges)):
+                if obj.edges[i].verify(valid_types, valid_object_names):
+                    valid_edges.append(obj.edges[i])
+            obj.edges = valid_edges
+
+    def extract_pcd(
+        self,
+        depth_cloud,
+        img_rgb,
+        global_pcd,
+        downsample_voxel_size,
+        dbscan_remove_noise,
+        dbscan_eps,
+        dbscan_min_points,
+        trans_pose=None,
+        obj_pcd_max_points=5000,
+        neighbour_radius=0.02,
     ):
+
         for object in self.objects:
-            object.extract_local_pcd(
-                depth_cloud, img_rgb, global_pcd, trans_pose, obj_pcd_max_points
+            object.extract_pcd(
+                depth_cloud,
+                img_rgb,
+                global_pcd,
+                downsample_voxel_size=downsample_voxel_size,
+                dbscan_remove_noise=dbscan_remove_noise,
+                dbscan_eps=dbscan_eps,
+                dbscan_min_points=dbscan_min_points,
+                run_dbscan=True,
+                trans_pose=trans_pose,
+                obj_pcd_max_points=obj_pcd_max_points,
+                neighbour_radius=neighbour_radius,
             )
 
     def __iter__(self):
@@ -121,7 +208,7 @@ class ObjectList:
 
     def save(self, dir, img):
         os.makedirs(dir, exist_ok=True)
-        json_path = dir / "object_list.txt"
+        json_path = dir / "detections.json"
         annotated_img_path = dir / "annotated_masks.png"
         mask_path = dir / "masks.npz"
         pcd_path = dir / "local_pcd_idxs.npz"
@@ -146,6 +233,7 @@ class ObjectList:
                 "bbox": obj.bbox,
                 "confidence": obj.confidence,
                 "track name": obj.matched_track_name,
+                "edges": [edge.json() for edge in obj.edges],
             }
             # if obj.local_pcd_idxs:
             #     data['local_pcd_idxs'] = obj.local_pcd_idxs
@@ -158,7 +246,7 @@ class ObjectList:
         np.savez(mask_path, masks=masks)
 
         with open(json_path, "w") as f:
-            json.dump(json_data, f, indent=4)
+            json.dump(json_data, f, indent=2)
         annotated_image = utils.annotate_img_masks(
             img, self.get_field("mask"), self.get_field("label")
         )
@@ -169,16 +257,16 @@ class ObjectList:
 
 
 def load_objects(result_dir, frame):
-    frame_dir = Path(result_dir) / str(frame)
-    json_path = frame_dir / "object_list.txt"
-    masks_path = frame_dir / "masks.npz"
-    pcd_path = frame_dir / "local_pcd_idxs.npz"
-    img_path = frame_dir / "input_image.png"
+    dir = Path(result_dir) / "detections" / str(frame)
+    json_path = dir / "detections.json"
+    masks_path = dir / "masks.npz"
+    pcd_path = dir / "local_pcd_idxs.npz"
+    img_path = dir / "input_image.png"
 
-    if not frame_dir.exists():
-        raise FileNotFoundError(f"Frame directory {frame_dir} does not exist.")
+    if not dir.exists():
+        raise FileNotFoundError(f"Frame directory {dir} does not exist.")
     if not json_path.exists() or not masks_path.exists():
-        raise FileNotFoundError(f"Detection files not found in {frame_dir}.")
+        raise FileNotFoundError(f"Detection files not found in {dir}.")
 
     img = PIL.Image.open(img_path).convert("RGB")
     with open(json_path, "r") as f:
@@ -194,10 +282,21 @@ def load_objects(result_dir, frame):
     masks = np.load(masks_path)["masks"]
     local_pcd_idxs = np.load(pcd_path)
     num_detections = masks.shape[0]
-    object_list = ObjectList()
+    object_list = DetectionList()
     for i in range(num_detections):
+
+        edges_i = []
+        for edge in json_data[i]["edges"]:
+            edges_i.append(
+                Edge(
+                    edge["type"],
+                    edge["subject"],
+                    edge["related object"],
+                )
+            )
+
         object_list.add_object(
-            Object(
+            Detection(
                 mask=masks[i],
                 crop=crops[i],
                 label=json_data[i]["label"],
@@ -207,6 +306,7 @@ def load_objects(result_dir, frame):
                 confidence=json_data[i]["confidence"],
                 matched_track_name=json_data[i]["track name"],
                 local_pcd_idxs=local_pcd_idxs["arr_" + str(i)],
+                edges=edges_i,
             )
         )
 

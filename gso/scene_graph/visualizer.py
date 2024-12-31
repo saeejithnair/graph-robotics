@@ -98,6 +98,7 @@ class Visualizer2D:
         labels,
         levels,
         hierarchy_matrix,
+        hierarchy_type_matrix=None,
         in_matrix=None,
         on_matrix=None,
     ):
@@ -114,7 +115,7 @@ class Visualizer2D:
                 if (not on_matrix is None) and on_matrix[i][j] > 0:
                     self.on_graph.add_edge(labels[i], labels[j], weight=on_matrix[i][j])
                 if hierarchy_matrix[i][j] > 0:
-                    self.hierarchy_graph.add_edge(labels[i], labels[j])
+                    self.hierarchy_graph.add_edge(labels[i], labels[j], title=','.join(hierarchy_type_matrix[i][j]))
         if not in_matrix is None:
             self.in_graph.save_graph(folder)
         if not on_matrix is None:
@@ -219,9 +220,13 @@ class pyvisGraph:
         color = self.level2color[level]
         self.G.add_node(label, label=label, color=color, level=level)
 
-    def add_edge(self, parent, child, weight=None):
-        if weight:
+    def add_edge(self, parent, child, title=None, weight=None):
+        if not (weight is None) and not (title is None):
+            self.G.add_edge(parent, child, title=title, value=weight)
+        elif weight:
             self.G.add_edge(parent, child, title=f"Weight: {weight}", value=weight)
+        elif title:
+            self.G.add_edge(parent, child, title=title)
         else:
             self.G.add_edge(parent, child)
 

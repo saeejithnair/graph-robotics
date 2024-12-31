@@ -47,8 +47,9 @@ def reasoning_loop_only_graph(
     api: API,
     dataset,
     graph_result_path: str,
-    perception_result_path: str,
+    result_path: str,
     obj_pcd_max_points=5000,
+    downsample_voxel_size=0.02,
     gemini_model: str = "gemini-1.5-flash-latest",
     gemini_seed: int = 1234,
     gemini_max_tokens: int = 128,
@@ -57,6 +58,7 @@ def reasoning_loop_only_graph(
 ) -> Optional[str]:
 
     semantic_tree = read_graphs.read_hamsg_flatgraph(graph_result_path)
+    semantic_tree.compute_node_levels()
     with open(api.prompt_reasoning_loop, "r") as f:
         text_prompt_template = f.read().strip()
     with open(api.prompt_reasoning_final, "r") as f:
@@ -73,11 +75,13 @@ def reasoning_loop_only_graph(
     answer = None
     api_logs = []
     for i in range(6):
-        graph_prompt, navigation_log_prompt = extract_scene_prompts(semantic_tree)
+        graph_prompt, navigation_log_prompt = extract_scene_prompts(
+            semantic_tree, dataset
+        )
         text_prompt = text_prompt_template.format(
             question=question,
-            graph=json.dumps(graph_prompt, indent=4),
-            navigation_log=json.dumps(navigation_log_prompt, indent=4),
+            graph=json.dumps(graph_prompt, indent=2),
+            navigation_log=json.dumps(navigation_log_prompt, indent=2),
         )
         response = call_gemini(model, [text_prompt]).strip()
         response = json.loads(response.replace("```json", "").replace("```", ""))
@@ -89,22 +93,26 @@ def reasoning_loop_only_graph(
                 semantic_tree, response, api_log = api.call(
                     response,
                     dataset,
-                    perception_result_path,
+                    result_path,
                     semantic_tree,
                     obj_pcd_max_points,
+                    downsample_voxel_size=downsample_voxel_size,
                 )
                 api_logs.append(api_log)
             except Exception as e:
-                print("Refinement:", e)
+                print("API Call Error:", e)
                 traceback.print_exc()
                 continue
 
     if answer == None:
+        graph_prompt, navigation_log_prompt = extract_scene_prompts(
+            semantic_tree, dataset
+        )
         # Bug, this prompt should return a JSON
         text_prompt_final = text_prompt_final_template.format(
             question=question,
-            graph=json.dumps(graph_prompt, indent=4),
-            navigation_log=json.dumps(navigation_log_prompt, indent=4),
+            graph=json.dumps(graph_prompt, indent=2),
+            navigation_log=json.dumps(navigation_log_prompt, indent=2),
         )
         answer = call_gemini(model, [text_prompt_final])
         answer = json.loads(answer.replace("```json", "").replace("```", ""))

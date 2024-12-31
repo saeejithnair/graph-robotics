@@ -186,15 +186,25 @@ def save_oriented_bounding_boxes(bbox_list, file_path):
     """
     data = []
     for bbox in bbox_list:
-        bbox_data = {
-            "center": bbox.center.tolist(),
-            "extent": bbox.extent.tolist(),
-            "R": bbox.R.tolist(),  # Rotation matrix
-        }
-        data.append(bbox_data)
+        try:
+            # open3d.cuda.pybind.geometry.OrientedBoundingBox
+            bbox_data = {
+                "center": bbox.center.tolist(),
+                "extent": bbox.extent.tolist(),
+                "R": bbox.R.tolist(),  # Rotation matrix
+            }
+            data.append(bbox_data)
+        except:
+            # open3d.cuda.pybind.geometry.AxisAlignedBoundingBox
+            bbox_data = {
+                "center": bbox.get_center().tolist(),
+                "extent": bbox.get_extent().tolist(),
+                "R": np.identity(3).tolist(),  # Rotation matrix
+            }
+            data.append(bbox_data)
 
     with open(file_path, "w") as f:
-        json.dump(data, f, indent=4)
+        json.dump(data, f, indent=2)
 
 
 def load_oriented_bounding_boxes(file_path):

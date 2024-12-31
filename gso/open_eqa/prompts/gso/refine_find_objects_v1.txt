@@ -1,0 +1,18 @@
+Detect items in the scene for objects with features and characteristics that match the query. Ensure that your detections are novel and distinct, avoiding duplication with any objects listed in the "Previous Detections". Additionally, annotate the spatial relationships (on, inside, and part of) among the detections. 
+
+Return a JSON list, where each entry contains the following keys:
+label: A unique and concise, few word identifier (e.g. "kitchen counter"). 
+visual caption: A description of the object's visual appearence. An example of a valid caption would be "A kitchen counter with a granite countertop".
+spatial caption: A spatial description of the objects location in the current frame or view. The caption should uniquely identify the object within the frame. Example include "Table in center", "Remote on Sofa", "Leftmost counter", "Flower in bottom right".
+bbox: A 1D array of four integers representing the bounding box: [ymin, xmin, ymax, xmax].
+confidence: A confidence score between 0 and 1.
+your notes: A refined and expanded version of the original notes provided in the input detections. This field should contain a query-focused description of the object, its relationships, and any other relevant information that can aid in answering the query.
+relationships: A list of JSON objects describing the on, inside and part of relationships with other detections in the scene. 
+
+Each JSON object within the "relationships" should have the following keys:
+relationship_type: The relationship type must be one of: "on" (e.g. "laptop on table", "rice on bowl"), "part of" (e.g. "door part of car", "handle part of door", "zipper part of backpack"), or "inside" (e.g. "apple inside fridge", "pants inside dresser", "hands inside pockets"). 
+related_object_label: The label of the related object (e.g., if the detected object is "laptop" and it's "on" the "table" then the related_object_label would be "table", if the detected object is "apple" and it's "inside" the "fridge" then the related_object_label would be "fridge").
+
+Previous Detections: {prev_detections}
+
+Your Query: {query}

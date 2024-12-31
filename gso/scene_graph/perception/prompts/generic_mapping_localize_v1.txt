@@ -13,3 +13,4 @@ visual caption: A description of the objects visual appearence. An example of a 
 spatial caption: A spatial description of the where the object is in the current frame or location in the scene. The caption should uniquely identify the object within the frame. Example include "Table in center", "Remote on Sofa", "Leftmost counter", "Flower in bottom right".
 bbox: The bounding boxes should be a singular 1-dimensional array of 4 elements, with format [ymin, xmin, ymax, xmax]. Each of the elements should be an integer.
 confidence: A probability between 0 and 1 indicating your confidence in the detection.
+

@@ -15,10 +15,11 @@ from tqdm import trange
 import scene_graph.pointcloud as pointcloud
 import scene_graph.utils as utils
 from scene_graph.datasets import get_dataset
+from scene_graph.features import FeatureComputer
 from scene_graph.perception import GenericMapper
-from scene_graph.relationship_scorer import FeatureComputer, RelationshipScorer
+from scene_graph.relationship_scorer import RelationshipScorer
 from scene_graph.semantic_tree import SemanticTree
-from scene_graph.track import save_tracks
+from scene_graph.track import associate_dets_to_tracks, save_tracks
 from scene_graph.visualizer import Visualizer2D, Visualizer3D
 
 
@@ -70,6 +71,7 @@ def main_semantictree(cfg: DictConfig):
     exit_early_flag = False
     counter = 0
     for frame_idx in range(0, len(dataset), 7):  # len(dataset)
+
         # Check if we should exit early only if the flag hasn't been set yet
         if not exit_early_flag and utils.should_exit_early(cfg.exit_early_file):
             print("Exit early signal detected. Skipping to the final frame...")
@@ -77,7 +79,6 @@ def main_semantictree(cfg: DictConfig):
         # If exit early flag is set and we're not at the last frame, skip this iteration
         if exit_early_flag and frame_idx < len(dataset) - 1:
             continue
-
         tracker.curr_frame_idx = frame_idx
         counter += 1
 
@@ -96,48 +97,76 @@ def main_semantictree(cfg: DictConfig):
         depth_cloud = pointcloud.create_depth_cloud(depth_array, dataset.get_cam_K())
 
         detections, llm_response = perceptor.perceive(color_np, pose=trans_pose)
-        detections.extract_local_pcd(
+        detections.extract_pcd(
             depth_cloud,
             color_np,
             semantic_tree.geometry_map,
-            trans_pose,
-            cfg.obj_pcd_max_points,
+            downsample_voxel_size=cfg["downsample_voxel_size"],
+            dbscan_remove_noise=cfg["dbscan_remove_noise"],
+            dbscan_eps=cfg["dbscan_eps"],
+            dbscan_min_points=cfg["dbscan_min_points"],
+            trans_pose=trans_pose,
+            obj_pcd_max_points=cfg["obj_pcd_max_points"],
+            neighbour_radius=cfg["neighbour_radius"],
         )
 
         feature_computer.compute_features(
             image_rgb, semantic_tree.geometry_map, detections
         )
 
-        is_matched, matched_trackidx = relationship_scorer.associate_dets_to_tracks(
-            detections, semantic_tree.get_tracks()
+        is_matched, matched_trackidx = associate_dets_to_tracks(
+            detections,
+            semantic_tree.get_tracks(),
+            semantic_tree.geometry_map,
+            downsample_voxel_size=cfg["downsample_voxel_size"],
         )
 
-        semantic_tree.integrate_detections(
+        detections = semantic_tree.integrate_detections(
             detections, is_matched, matched_trackidx, frame_idx
         )
         semantic_tree.integrate_generic_log(llm_response, detections, frame_idx)
 
         perceptor.save_results(
-            llm_response, detections, perception_result_dir, frame_idx
+            detections, perception_result_dir, frame_idx, llm_response=llm_response
         )
-        detections.save(perception_result_dir / str(frame_idx), perceptor.img)
 
-    neighbour_matrix, in_matrix, on_matrix, hierarchy_matrix = (
-        relationship_scorer.infer_hierarchy_relationships(
-            semantic_tree.tracks, semantic_tree.geometry_map
-        )
+        # Periodically denoise the point clouds
+        if (
+            cfg["denoise_interval"] > 0
+            and (frame_idx + 1) % cfg["denoise_interval"] == 0
+        ):
+            for id in semantic_tree.track_ids:
+                semantic_tree.tracks[id].denoise(
+                    semantic_tree.geometry_map,
+                    downsample_voxel_size=cfg["downsample_voxel_size"],
+                    dbscan_remove_noise=cfg["dbscan_remove_noise"],
+                    dbscan_eps=cfg["dbscan_eps"],
+                    dbscan_min_points=cfg["dbscan_min_points"],
+                    neighbour_radius=cfg["neighbour_radius"],
+                )
+
+    if cfg["run_filter_final_frame"]:
+        for id in semantic_tree.track_ids:
+            semantic_tree.tracks[id].denoise(
+                semantic_tree.geometry_map,
+                downsample_voxel_size=cfg["downsample_voxel_size"],
+                dbscan_remove_noise=cfg["dbscan_remove_noise"],
+                dbscan_eps=cfg["dbscan_eps"],
+                dbscan_min_points=cfg["dbscan_min_points"],
+                neighbour_radius=cfg["neighbour_radius"],
+            )
+
+    # hierarchy_matrix, hierarchy_type_matrix = relationship_scorer.infer_hierarchy_heuristics(
+    #         semantic_tree.tracks, semantic_tree.geometry_map
+    #     )
+    hierarchy_matrix, hierarchy_type_matrix = relationship_scorer.infer_hierarchy_vlm(
+        semantic_tree.tracks
     )
 
-    semantic_tree.process_hierarchy(
-        neighbour_matrix, in_matrix, on_matrix, hierarchy_matrix
-    )
+    semantic_tree.compute_node_levels(hierarchy_matrix, hierarchy_type_matrix)
 
     semantic_tree.save(
-        semantic_tree_result_dir,
-        neighbour_matrix,
-        in_matrix,
-        on_matrix,
-        hierarchy_matrix,
+        semantic_tree_result_dir, hierarchy_matrix, hierarchy_type_matrix
     )
     save_tracks(semantic_tree.tracks, tracks_result_dir)
 
@@ -160,7 +189,7 @@ def main_semantictree(cfg: DictConfig):
     visualizer2d = Visualizer2D(level2color)
     visualizer2d.init()
     semantic_tree.visualize_2d(
-        visualizer2d, result_dir, hierarchy_matrix, in_matrix, on_matrix
+        visualizer2d, result_dir, hierarchy_matrix, hierarchy_type_matrix
     )
 
     print("Complete")
@@ -172,17 +201,17 @@ if __name__ == "__main__":
     # scene_ids = os.listdir("/pub3/qasim/hm3d/data/concept-graphs/with_edges")
     scene_ids = [
         # "000-hm3d-BFRyYbPCCPE",
-        "002-hm3d-wcojb4TFT35",
+        # "002-hm3d-wcojb4TFT35",
         # "003-hm3d-c5eTyR3Rxyh",
-        # "004-hm3d-66seV3BWPoX",
-        # "005-hm3d-yZME6UR9dUN",
-        # "006-hm3d-q3hn1WQ12rz",
-        # "007-hm3d-bxsVRursffK",
-        # "011-hm3d-bzCsHPLDztK",
-        # "012-hm3d-XB4GS9ShBRE",
-        # "013-hm3d-svBbv1Pavdk",
-        # "014-hm3d-rsggHU7g7dh",
-        # "015-hm3d-5jp3fCRSRjc",
+        "004-hm3d-66seV3BWPoX",
+        "005-hm3d-yZME6UR9dUN",
+        "006-hm3d-q3hn1WQ12rz",
+        "007-hm3d-bxsVRursffK",
+        "011-hm3d-bzCsHPLDztK",
+        "012-hm3d-XB4GS9ShBRE",
+        "013-hm3d-svBbv1Pavdk",
+        "014-hm3d-rsggHU7g7dh",
+        "015-hm3d-5jp3fCRSRjc",
     ]
     sorted(scene_ids)
     for id in scene_ids:

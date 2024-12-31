@@ -9,136 +9,9 @@ from scipy.spatial import ConvexHull
 from transformers import AutoModel, AutoProcessor, AutoTokenizer
 
 from . import pointcloud
-from .object import Features, ObjectList
+from .detection import DetectionList, Features
+from .track import get_trackid_by_name
 from .utils import get_crop
-
-
-class FeatureComputer:
-    def __init__(self, device="cuda") -> None:
-        os.environ["HF_HOME"] = os.path.join(os.getcwd(), "checkpoints")
-        self.device = device
-
-    def init(self):
-        self.clip_processor = AutoProcessor.from_pretrained(
-            "google/siglip-base-patch16-224"
-        )
-        self.clip_model = AutoModel.from_pretrained(
-            "google/siglip-base-patch16-224"
-        ).to(self.device)
-        self.sentence_tokenizer = AutoTokenizer.from_pretrained(
-            "BAAI/bge-small-en-v1.5"
-        )
-        self.sentence_model = AutoModel.from_pretrained("BAAI/bge-small-en-v1.5")
-
-    def compute_features(self, img, full_pcd, objects: ObjectList):
-        if len(objects) == 0:
-            return
-
-        visual_features = self.compute_clip_features_avg(img, objects.get_field("mask"))
-        caption_features = self.compute_sentence_features(
-            objects.get_field("visual_caption")
-        )
-        centroids = []
-        bboxes_3d = []
-        for i in range(len(objects)):
-            local_pcd = objects[i].compute_local_pcd(full_pcd)
-            centroids.append(np.mean(local_pcd.points, 0))
-            bboxes_3d.append(self.get_bounding_box(local_pcd))
-
-        for i in range(len(objects)):
-            objects[i].features = Features(
-                visual_features[i], caption_features[i], centroids[i], bboxes_3d[i]
-            )
-
-    def get_bounding_box(self, pcd):
-        try:
-            return pcd.get_oriented_bounding_box(robust=True)
-        except RuntimeError as e:
-            print(f"Met {e}, use axis aligned bounding box instead")
-            return pcd.get_axis_aligned_bounding_box()
-
-    def compute_sentence_features(self, captions):
-        encoded_input = self.sentence_tokenizer(
-            captions, padding=True, truncation=True, return_tensors="pt"
-        )
-
-        # Compute token embeddings
-        with torch.no_grad():
-            model_output = self.sentence_model(**encoded_input)
-            # Perform pooling. In this case, cls pooling.
-            sentence_embeddings = model_output[0][:, 0]
-        # normalize embeddings
-        sentence_embeddings = torch.nn.functional.normalize(
-            sentence_embeddings, p=2, dim=1
-        )
-        return sentence_embeddings
-
-    def compute_clip_features(self, image, image_crops=None, bboxes=None, padding=5):
-        if image_crops == None:
-            image_crops = []
-            for idx in range(len(bboxes)):
-                x_min, y_min, x_max, y_max = bboxes[idx]
-                image_width, image_height = image.size
-                left_padding = min(padding, x_min)
-                top_padding = min(padding, y_min)
-                right_padding = min(padding, image_width - x_max)
-                bottom_padding = min(padding, image_height - y_max)
-
-                x_min -= left_padding
-                y_min -= top_padding
-                x_max += right_padding
-                y_max += bottom_padding
-
-                cropped_image = get_crop(image, (x_min, y_min, x_max, y_max))
-
-                image_crops.append(cropped_image)
-
-        # Convert lists to batches
-        preprocessed_images_batch = self.clip_processor(
-            images=image_crops, return_tensors="pt"
-        ).to(self.device)
-
-        # Batch inference
-        with torch.no_grad():
-            image_features = self.clip_model.get_image_features(
-                **preprocessed_images_batch
-            )
-            image_features /= image_features.norm(dim=-1, keepdim=True)
-            # text_features = clip_model.encode_text(text_tokens_batch)
-            # text_features /= text_features.norm(dim=-1, keepdim=True)
-
-        # Convert to numpy
-        image_feats = image_features.detach().cpu().numpy()
-        # text_feats = text_features.cpu().numpy()
-        # image_feats = []
-
-        return image_crops, image_feats
-
-    def compute_clip_features_avg(self, image, masks, bbox_crops=None):
-        bbox_masks = sv.mask_to_xyxy(np.array(masks))
-        masks_crops = []
-        masks_crops_nocontext = []
-        for i in range(len(masks)):
-            mask_box = bbox_masks[i]
-            mask_crop = get_crop(image, mask_box)
-            mask = get_crop(masks[i], mask_box)
-            # mask = sv.crop_image(masks[i], mask_box)
-
-            mask_crop_nocontext = np.where(mask[:, :, np.newaxis], mask_crop, 0)
-
-            masks_crops.append(mask_crop)
-            masks_crops_nocontext.append(mask_crop_nocontext)
-
-        feats = [
-            self.compute_clip_features(image, image_crops=masks_crops)[1],
-            self.compute_clip_features(image, image_crops=masks_crops_nocontext)[1],
-        ]
-
-        if bbox_crops:
-            feats.append(self.compute_clip_features(image, image_crops=bbox_crops))
-
-        feat_vector = np.mean(np.stack(feats, 0), 0)
-        return feat_vector
 
 
 class RelationshipScorer:
@@ -213,48 +86,6 @@ class RelationshipScorer:
     #     new_hull = ConvexHull(new_points)
     #     return np.array_equal(hull.vertices, new_hull.vertices)
 
-    def associate_dets_to_tracks(self, new_objects: ObjectList, current_tracks):
-        if len(current_tracks) == 0:
-            return np.zeros((len(new_objects))), np.zeros(len(new_objects))
-        elif len(new_objects) == 0:
-            return [], []
-        # Compute the score matrix
-
-        visual_scores = np.zeros((len(new_objects), len(current_tracks)))
-        caption_scores = np.zeros((len(new_objects), len(current_tracks)))
-        centroid_scores = np.zeros((len(new_objects), len(current_tracks)))
-        for i in range(len(new_objects)):
-            for j in range(len(current_tracks)):
-                visual_scores[i][j] = np.dot(
-                    new_objects[i].features.visual_emb,
-                    current_tracks[j].features.visual_emb,
-                )
-                caption_scores[i][j] = np.dot(
-                    new_objects[i].features.caption_emb,
-                    current_tracks[j].features.caption_emb,
-                )
-                centroid_scores[i][j] = np.linalg.norm(
-                    new_objects[i].features.centroid
-                    - current_tracks[j].features.centroid
-                )
-
-        score_matrix = np.mean(
-            np.stack(
-                [
-                    np.where(visual_scores > 0.8, 1, 0),
-                    np.where(caption_scores > 0.8, 1, 0),
-                    np.where(centroid_scores < 0.4, 1, 0),
-                ]
-            ),
-            0,
-        )
-
-        # Compute the matches
-        is_matched = np.max(score_matrix, 1) > 0.5
-        matched_trackidx = np.argmax(score_matrix, 1)
-
-        return is_matched, matched_trackidx
-
     def find_neighbours(self, current_tracks, distance_threshold=1):
         track_ids = list(current_tracks.keys())
         track_values = list(current_tracks.values())
@@ -271,7 +102,37 @@ class RelationshipScorer:
                 neighbours[i][j] = neighbours[j][i] = int(distance < distance_threshold)
         return neighbours
 
-    def infer_hierarchy_relationships(
+    def infer_hierarchy_vlm(self, current_tracks):
+        track_ids = list(current_tracks.keys())
+        n_tracks = len(track_ids)
+        hierarchy_matrix = {}
+        hierarchy_type_matrix = {}
+        for i in current_tracks.keys():
+            hierarchy_matrix[i] = {}
+            hierarchy_type_matrix[i] = {}
+            for j in current_tracks.keys():
+                hierarchy_matrix[i][j] = 0
+                hierarchy_type_matrix[i][j] = ""
+        for subject_id in track_ids:
+            for edge in current_tracks[subject_id].edges:
+                related_object = edge.related_object
+                related_object_id = get_trackid_by_name(current_tracks, related_object)
+                print(
+                    "Debug: subject_id",
+                    subject_id,
+                    "related_object_id",
+                    related_object_id,
+                    "edge.type",
+                    edge.type,
+                )
+                assert not (related_object_id is None)
+                assert not (subject_id == edge.subject)
+                # Parent object = related_object_id, Child object = subject_id
+                hierarchy_matrix[related_object_id][subject_id] += 1
+                hierarchy_type_matrix[related_object_id][subject_id] = edge.type
+        return hierarchy_matrix, hierarchy_type_matrix
+
+    def infer_hierarchy_heuristics(
         self,
         current_tracks,
         full_pcd,
@@ -287,6 +148,7 @@ class RelationshipScorer:
         neighbour_matrix = self.find_neighbours(current_tracks, neighbour_thresh)
         in_matrix = np.zeros((n_tracks, n_tracks))
         on_matrix = np.zeros((n_tracks, n_tracks))
+        hierarchy_type_matrix = [["" for i in range(n_tracks)] for i in range(n_tracks)]
 
         # Convert the point clouds into numpy arrays and then into FAISS indices for efficient search
         track_pcds = [
@@ -299,13 +161,13 @@ class RelationshipScorer:
 
         track_top_pcds = [
             pointcloud.get_top_points(
-                np.asarray(trk.compute_local_pcd(full_pcd).points)
+                np.asarray(trk.compute_local_pcd(full_pcd).points, dtype=np.float32)
             )
             for trk in track_values
         ]
         track_bottom_pcds = [
             pointcloud.get_bottom_points(
-                np.asarray(trk.compute_local_pcd(full_pcd).points)
+                np.asarray(trk.compute_local_pcd(full_pcd).points, dtype=np.float32)
             )
             for trk in track_values
         ]
@@ -318,24 +180,30 @@ class RelationshipScorer:
                 if not neighbour_matrix[i][j]:
                     continue
 
-                # Probability track_i is in track_j
-                D, I = indices[j].search(track_pcds[i], 1)
+                # Probability track_j is in track_i
+                D, I = indices[i].search(track_pcds[j], 1)
                 overlap = (
                     D < downsample_voxel_size**2
                 ).sum()  # D is the squared distance
-                in_matrix[i, j] = overlap / len(track_pcds[i])
+                in_matrix[i, j] = overlap / len(track_pcds[j])
 
-                # Probability track_i is on track_j
-                D, I = top_indices[j].search(track_bottom_pcds[i], 1)
+                # Probability track_j is on track_i
+                D, I = top_indices[i].search(track_bottom_pcds[j], 1)
                 overlap = (
                     D < downsample_voxel_size**2
                 ).sum()  # D is the squared distance
-                on_matrix[i, j] = overlap / len(track_bottom_pcds[i])
+                on_matrix[i, j] = overlap / len(track_bottom_pcds[j])
 
         in_matrix = np.where(in_matrix > in_threshold, in_matrix, 0)
         on_matrix = np.where(on_matrix > on_threshold, on_matrix, 0)
+        for i in range(n_tracks):
+            for j in range(n_tracks):
+                if in_matrix[i][j]:
+                    hierarchy_type_matrix[i][j] = "inside"
+                if on_matrix[i][j]:
+                    hierarchy_type_matrix[i][j] = "on"
         hierarchy_matrix = np.logical_or(on_matrix, in_matrix)
-        return neighbour_matrix, in_matrix, on_matrix, hierarchy_matrix
+        return hierarchy_matrix, hierarchy_type_matrix
 
     # def infer_hierarchy_relationships(self, current_tracks, full_pcd):
     #     ontop_matrix = self.compute_ontop_matrix(current_tracks, full_pcd)
@@ -465,7 +333,7 @@ if __name__ == "__main__":
 
     from scene_graph.semantic_tree import SemanticTree
 
-    from .object import load_objects
+    from .detection import load_objects
 
     scene_graph = SemanticTree()
     scene_graph.load_pcd(folder="/pub3/qasim/hm3d/data/ham-sg/000-hm3d-BFRyYbPCCPE")

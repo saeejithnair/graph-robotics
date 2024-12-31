@@ -1,15 +1,16 @@
 import copy
+import csv
 import json
 import os
+import pickle
 
-import networkx as nx
 import numpy as np
 import open3d as o3d
 import torch
 
-from .object import ObjectList
-from .pointcloud import dynamic_downsample, find_nearest_points, pcd_denoise_dbscan
-from .track import load_tracks, object_to_track
+from .detection import DetectionList, Edge
+from .pointcloud import pcd_denoise_dbscan
+from .track import get_trackid_by_name, load_tracks, object_to_track
 from .visualizer import Visualizer2D, Visualizer3D
 
 
@@ -17,10 +18,8 @@ class SemanticTree:
     def __init__(self, device="cuda"):
         self.geometry_map = o3d.geometry.PointCloud()
         self.device = device
-
-        self.in_matrix = None
-        self.on_matrix = None
         self.hierarchy_matrix = None
+        self.hierarchy_type_matrix = None
         self.track_ids = []
 
         self.tracks = {}
@@ -33,14 +32,25 @@ class SemanticTree:
         with open(navigation_log_path) as f:
             self.navigation_log = json.load(f)
 
-        self.hierarchy_matrix = np.loadtxt(
-            save_dir / "semantic_tree/hierarchy.txt", np.float32
-        )
-        self.neighbour_matrix = np.loadtxt(
-            save_dir / "semantic_tree/neighbours.txt", np.float32
-        )
-        self.in_matrix = np.loadtxt(save_dir / "semantic_tree/in.txt", np.float32)
-        self.on_matrix = np.loadtxt(save_dir / "semantic_tree/on.txt", np.float32)
+        with open(save_dir / "semantic_tree/hierarchy_matrix.json") as f:
+            json_data = json.load(f)
+            hierarchy_matrix = {}
+            for i in json_data.keys():
+                hierarchy_matrix[int(i)] = {}
+                for j in json_data[i].keys():
+                    hierarchy_matrix[int(i)][int(j)] = json_data[i][j]
+            self.hierarchy_matrix = hierarchy_matrix
+        with open(save_dir / "semantic_tree/hierarchy_type_matrix.json") as f:
+            json_data = json.load(f)
+            hierarchy_type_matrix = {}
+            for i in json_data.keys():
+                hierarchy_type_matrix[int(i)] = {}
+                for j in json_data[i].keys():
+                    hierarchy_type_matrix[int(i)][int(j)] = json_data[i][j]
+            self.hierarchy_type_matrix = hierarchy_type_matrix
+        # self.neighbour_matrix = np.loadtxt(
+        #     save_dir / "semantic_tree/neighbours.txt", np.float32
+        # )
         self.track_ids = np.loadtxt(
             save_dir / "semantic_tree/track_ids.txt", np.float32
         )
@@ -76,8 +86,7 @@ class SemanticTree:
         visualizer2d: Visualizer2D,
         folder,
         hierarchy_matrix,
-        in_matrix,
-        on_matrix,
+        hierarchy_type_matrix,
     ):
         labels = [self.tracks[id].label for id in self.track_ids]
         levels = [self.tracks[id].level for id in self.track_ids]
@@ -88,8 +97,7 @@ class SemanticTree:
             labels,
             levels,
             hierarchy_matrix,
-            in_matrix,
-            on_matrix,
+            hierarchy_type_matrix=hierarchy_type_matrix,
         )
 
     def visualize_3d(self, visualizer3d: Visualizer3D):
@@ -106,7 +114,7 @@ class SemanticTree:
 
         # Visualize tracks
         for id in self.tracks.keys():
-            children_ids = self._get_children_ids(id)
+            children_ids = self.get_children_ids(id, self.hierarchy_matrix)
             visualizer3d.add_semanticnode(
                 id=self.tracks[id].id,
                 label=self.tracks[id].label,
@@ -140,12 +148,18 @@ class SemanticTree:
 
     def integrate_generic_log(self, llm_response, detections, frame_idx):
         i = self.get_navigation_log_idx(frame_idx)
+
+        edges_in_frame = []
+        for det in detections:
+            edges_in_frame += [edge for edge in det.edges]
+
         self.navigation_log[i]["Generic Mapping"] = {
             "Relative Motion": llm_response["Relative Motion"],
             "Current Location": llm_response["Current Location"],
             "View": llm_response["View"],
             "Novelty": llm_response["Novelty"],
             "Detections": [d.matched_track_name for d in detections],
+            "Edges": [edge.json() for edge in edges_in_frame],
         }
 
     def integrate_refinement_log(self, request, llm_response, keyframe_id):
@@ -154,11 +168,12 @@ class SemanticTree:
         self.navigation_log[i]["Focused Analyses and Search"].append(refinement_log)
 
     def integrate_detections(
-        self, detections: ObjectList, is_matched, matched_trackidx, frame_idx
+        self, detections: DetectionList, is_matched, matched_trackidx, frame_idx
     ):
         # Either merge each detection with its matched track, or initialize the detection as a new track
         track_ids = list(self.tracks.keys())
         self.track_ids = track_ids
+        detlabel2trkname = {}
         for i in range(len(detections)):
             if is_matched[i]:
                 self.tracks[track_ids[matched_trackidx[i]]].merge_detection(
@@ -166,27 +181,40 @@ class SemanticTree:
                 )
                 matched_track_name = self.tracks[track_ids[matched_trackidx[i]]].name
                 detections[i].matched_track_name = matched_track_name
+                detlabel2trkname[detections[i].label] = matched_track_name
             else:
-                new_track = object_to_track(detections[i], frame_idx, self.geometry_map)
+                new_track = object_to_track(detections[i], frame_idx, edges=[])
                 assert not new_track.id in self.tracks.keys()
                 self.tracks[new_track.id] = new_track
                 self.track_ids = list(self.tracks.keys())
                 detections[i].matched_track_name = new_track.name
+                detlabel2trkname[detections[i].label] = detections[i].matched_track_name
 
-    def _get_children_ids(self, id):
-        index = self.track_ids.index(id)
-        children = np.where(self.hierarchy_matrix[:, index])[0]
-        children_ids = [self.track_ids[i] for i in children]
+        # Replace the names of the edges from the detection names to the track names. Then add the edges into the track list.
+        for i in range(len(detections)):
+            det = detections[i]
+            for edge in det.edges:
+                subject_trkname = detlabel2trkname[edge.subject]
+                object_trkname = detlabel2trkname[edge.related_object]
+                subject_trkid = get_trackid_by_name(self.tracks, subject_trkname)
+
+                self.tracks[subject_trkid].edges.append(
+                    Edge(edge.type, subject_trkname, object_trkname, keyframe=frame_idx)
+                )
+
+        return detections
+
+    def get_children_ids(self, id, hierarchy_matrix):
+        children_ids = [
+            key for key, value in hierarchy_matrix[id].items() if value >= 1
+        ]
         return children_ids
 
-    def process_hierarchy(
-        self, neighbour_matrix, in_matrix, on_matrix, hierarchy_matrix
-    ):
-        self.neighbour_matrix = neighbour_matrix
-        self.on_matrix = on_matrix
-        self.in_matrix = in_matrix
-        self.hierarchy_matrix = hierarchy_matrix
-
+    def compute_node_levels(self, hierarchy_matrix=None, hierarchy_type_matrix=None):
+        if not (hierarchy_matrix is None):
+            self.hierarchy_matrix = hierarchy_matrix
+        if not (hierarchy_type_matrix is None):
+            self.hierarchy_type_matrix = hierarchy_type_matrix
         # Re-compute all levels
         unknown_levels = set(self.track_ids)
         known_levels = set()
@@ -196,14 +224,15 @@ class SemanticTree:
         while len(unknown_levels) > 0:
             if level == 0:
                 for id in unknown_levels:
-                    children_ids = self._get_children_ids(id)
+                    children_ids = self.get_children_ids(id, self.hierarchy_matrix)
                     if len(children_ids) == 0:
                         self.tracks[id].level = level
                         known_levels.add(id)
+                        any_update = True
             else:
                 any_update = False
                 for id in unknown_levels:
-                    children_ids = self._get_children_ids(id)
+                    children_ids = self.get_children_ids(id, self.hierarchy_matrix)
                     children_levels = [self.tracks[id].level for id in children_ids]
                     if None in children_levels:
                         continue
@@ -222,16 +251,17 @@ class SemanticTree:
                     known_levels.add(id)
                 unknown_levels = unknown_levels - known_levels
 
-    def save(self, save_dir, neighbour_matrix, in_matrix, on_matrix, hierarchy_matrix):
+    def save(self, save_dir, hierarchy_matrix, hierarchy_type_matrix):
         os.makedirs(save_dir, exist_ok=True)
         # Save Navigation Log
         navigation_log_path = os.path.join(save_dir, "navigation_log.json")
         with open(navigation_log_path, "w") as f:
-            json.dump(self.navigation_log, f, indent=4)
+            json.dump(self.navigation_log, f, indent=2)
 
         # Save Semantic Tree
-        np.savetxt(save_dir / "hierarchy.txt", hierarchy_matrix, fmt="%.4f")
-        np.savetxt(save_dir / "neighbours.txt", neighbour_matrix, fmt="%.4f")
-        np.savetxt(save_dir / "in.txt", in_matrix, fmt="%.4f")
-        np.savetxt(save_dir / "on.txt", on_matrix, fmt="%.4f")
+        with open(save_dir / "hierarchy_matrix.json", "w") as f:
+            json.dump(hierarchy_matrix, f)
+        with open(save_dir / "hierarchy_type_matrix.json", "w") as f:
+            json.dump(hierarchy_type_matrix, f)
+        # np.savetxt(save_dir / "neighbours.txt", neighbour_matrix, fmt="%.4f")
         np.savetxt(save_dir / "track_ids.txt", np.array(self.track_ids, dtype=np.int32))

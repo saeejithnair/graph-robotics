@@ -2,14 +2,16 @@ import json
 import os
 import pickle
 from pathlib import Path
+from typing import List
 
+import faiss
 import matplotlib.pyplot as plt
 import numpy as np
 import open3d as o3d
 
 from . import utils
-from .object import Features, Object
-from .pointcloud import union_bounding_boxes
+from .detection import Detection, DetectionList, Edge, Features
+from .pointcloud import denoise_pcd, find_nearest_points, union_bounding_boxes
 
 track_counter = 0
 
@@ -19,30 +21,33 @@ class Track:
         self,
         id,
         label: str,
-        captions: list,
+        captions: List[str],
         features: Features,
-        keyframe_ids,
+        keyframe_ids: List[int],
         masks: list,
         bboxes: list,
         local_pcd_idxs,
         crops: list,
         level=None,
         times_scene=0,
+        notes="",
+        edges: List[Edge] = [],
     ) -> None:
         self.id = id
         self.label = label
         self.name = str(id) + " " + label
-
         self.captions = list(captions)
         self.masks = list(masks)
         self.bboxes = list(bboxes)
         self.crops = list(crops)
+        self.edges = edges
         self.features = features
         self.times_scene = times_scene
         self.local_pcd_idxs = local_pcd_idxs
+        self.local_pcd = None
         self.level = level
         self.keyframe_ids = list(keyframe_ids)
-        self.notes = ""
+        self.notes = notes
 
     def compute_vis_centroid(self, global_pcd, level=None, height_by_level=False):
         mean_pcd = np.mean(np.asarray(global_pcd.points)[self.local_pcd_idxs], 0)
@@ -60,20 +65,21 @@ class Track:
     def add_local_pcd_idxs(self, local_pcd_idxs):
         self.local_pcd_idxs = np.concatenate((self.local_pcd_idxs, local_pcd_idxs))
 
-    def get_points_at_idxs(self, full_pcd):
-        return np.asarray(full_pcd.points)[self.local_pcd_idxs]
+    def get_points_at_idxs(self, global_pcd):
+        return np.asarray(global_pcd.points)[self.local_pcd_idxs]
 
-    def compute_local_pcd(self, full_pcd):
+    def compute_local_pcd(self, global_pcd):
         local_pcd = o3d.geometry.PointCloud()
         local_pcd.points = o3d.utility.Vector3dVector(
-            np.array(full_pcd.points)[self.local_pcd_idxs]
+            np.array(global_pcd.points)[self.local_pcd_idxs]
         )
         local_pcd.colors = o3d.utility.Vector3dVector(
-            np.array(full_pcd.colors)[self.local_pcd_idxs]
+            np.array(global_pcd.colors)[self.local_pcd_idxs]
         )
+        self.local_pcd = local_pcd
         return local_pcd
 
-    def merge_detection(self, object: Object, keyframe_id):
+    def merge_detection(self, object: Detection, keyframe_id):
         self.captions.append(object.visual_caption)
         self.keyframe_ids.append(keyframe_id)
         self.masks.append(object.mask)
@@ -92,11 +98,41 @@ class Track:
 
         self.add_local_pcd_idxs(object.local_pcd_idxs)
 
+        if not (object.notes == ""):
+            self.notes = object.notes
+
         self.features.bbox_3d = union_bounding_boxes(
             self.features.bbox_3d, object.features.bbox_3d
         )
 
         self.times_scene += 1
+
+    def denoise(
+        self,
+        global_pcd,
+        downsample_voxel_size,
+        dbscan_remove_noise,
+        dbscan_eps,
+        dbscan_min_points,
+        run_dbscan=True,
+        neighbour_radius=0.02,
+    ):
+        local_pcd = self.compute_local_pcd(global_pcd)
+
+        self.local_pcd = denoise_pcd(
+            local_pcd,
+            downsample_voxel_size=downsample_voxel_size,
+            dbscan_remove_noise=dbscan_remove_noise,
+            dbscan_eps=dbscan_eps,
+            dbscan_min_points=dbscan_min_points,
+            run_dbscan=run_dbscan,
+        )
+
+        _, self.local_pcd_idxs = find_nearest_points(
+            np.array(self.local_pcd.points),
+            np.array(global_pcd.points),
+            radius=neighbour_radius,
+        )
 
 
 def save_tracks(track_list, save_dir):
@@ -129,6 +165,7 @@ def save_tracks(track_list, save_dir):
                 "times_scene": trk.times_scene,
                 "keyframe_ids": trk.keyframe_ids,
                 "centroid": trk.features.centroid.tolist(),
+                "edges": [edge.json() for edge in trk.edges],
             }
         )
         local_pcd_idxs.append(trk.local_pcd_idxs)
@@ -154,7 +191,7 @@ def save_tracks(track_list, save_dir):
         pickle.dump(crops, f)
 
     with open(json_path, "w") as f:
-        json.dump(json_data, f, indent=4)
+        json.dump(json_data, f, indent=2)
     # Reset track counter
     reset_track_counter()
 
@@ -202,6 +239,14 @@ def load_tracks(save_dir):
             crops=crops[i],
             level=data["level"],
             times_scene=data["times_scene"],
+            edges=[
+                Edge(
+                    type=e["type"],
+                    subject=e["subject"],
+                    related_object=e["related object"],
+                )
+                for e in data["edges"]
+            ],
         )
         tracks[data["id"]] = trk
         max_id = max(max_id, data["id"])
@@ -217,7 +262,7 @@ def get_trackid_by_name(tracks, name):
     return None
 
 
-def object_to_track(object: Object, keyframe_id, global_pcd):
+def object_to_track(object: Detection, keyframe_id, edges=[]):
     global track_counter
     node = Track(
         id=track_counter,
@@ -229,9 +274,71 @@ def object_to_track(object: Object, keyframe_id, global_pcd):
         keyframe_ids=[keyframe_id],
         local_pcd_idxs=object.local_pcd_idxs,
         crops=[object.crop],
+        notes=object.notes,
+        edges=edges,
     )
     track_counter += 1
     return node
+
+
+def associate_dets_to_tracks(
+    new_objects: DetectionList, current_tracks, full_pcd, downsample_voxel_size
+):
+    if len(current_tracks) == 0:
+        return np.zeros((len(new_objects))), np.zeros(len(new_objects))
+    elif len(new_objects) == 0:
+        return [], []
+
+    track_pcds = [
+        np.asarray(trk.compute_local_pcd(full_pcd).points, dtype=np.float32)
+        for trk in current_tracks
+    ]
+    indices = [faiss.IndexFlatL2(arr.shape[1]) for arr in track_pcds]
+    for index, arr in zip(indices, track_pcds):
+        index.add(arr)
+
+    # Compute the score matrix
+    visual_scores = np.zeros((len(new_objects), len(current_tracks)))
+    caption_scores = np.zeros((len(new_objects), len(current_tracks)))
+    geometry_scores = np.zeros((len(new_objects), len(current_tracks)))
+    for i in range(len(new_objects)):
+        new_obj_pcd = np.array(
+            new_objects[i].compute_local_pcd(full_pcd).points, dtype=np.float32
+        )
+        for j in range(len(current_tracks)):
+            visual_scores[i][j] = np.dot(
+                new_objects[i].features.visual_emb,
+                current_tracks[j].features.visual_emb,
+            )
+            caption_scores[i][j] = np.dot(
+                new_objects[i].features.caption_emb,
+                current_tracks[j].features.caption_emb,
+            )
+
+            D, I = indices[j].search(new_obj_pcd, 1)
+            overlap = (D < downsample_voxel_size**2).sum()  # D is the squared distance
+
+            geometry_scores[i][j] = overlap / len(new_obj_pcd)
+            # geometry_scores[i][j] = np.linalg.norm(
+            #     new_objects[i].features.centroid - current_tracks[j].features.centroid
+            # )
+
+    score_matrix = np.mean(
+        np.stack(
+            [
+                np.where(visual_scores > 0.7, 1, 0),
+                np.where(caption_scores > 0.8, 1, 0),
+                np.where(geometry_scores > 0.4, 1, 0),
+            ]
+        ),
+        0,
+    )
+
+    # Compute the matches
+    is_matched = np.max(score_matrix, 1) > 0.5
+    matched_trackidx = np.argmax(score_matrix, 1)
+
+    return is_matched, matched_trackidx
 
 
 # class Detection:
@@ -313,7 +420,7 @@ def object_to_track(object: Object, keyframe_id, global_pcd):
 #     masks = [d["masks"] for d in detections]
 #     np.savez(mask_path, masks=masks)
 #     with open(json_path, "w") as f:
-#         json.dump(json_data, f, indent=4)
+#         json.dump(json_data, f, indent=2)
 #     annotated_image = utils.annotate_img(img, masks)
 #     plt.imsave(annotated_img_path, np.uint8(annotated_image))
 #     plt.imsave(img_path, np.uint8(img))
