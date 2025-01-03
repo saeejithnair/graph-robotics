@@ -10,6 +10,8 @@ from abc import ABC
 from pathlib import Path
 from typing import Optional
 
+import cv2
+import google.auth
 import google.generativeai as genai
 import matplotlib.pyplot as plt
 import numpy as np
@@ -285,7 +287,7 @@ class PerceptorAPI(Perceptor):
                 box=np.array(box), multimask_output=False
             )
             crop = utils.get_crop(self.img, box)
-            if iou_preds < 0.7 or crop.shape[0] <= 1 or crop.shape[1] <= 1:
+            if crop.shape[0] <= 1 or crop.shape[1] <= 1:
                 continue
 
             edges = []
@@ -358,40 +360,48 @@ def extract_scene_prompts(
     semantic_tree: SemanticTree,
     dataset,
     edge_types=["inside", "on", "part of", "attached to"],
+    prompt_img_interleaved=False,
+    prompt_img_seperate=False,
+    prompt_video=True,
+    video_uri=None,
+    fps=5,
 ):
     navigation_log = []
+    images_prompt = []
+
     for i in range(len(semantic_tree.navigation_log)):
         log = copy.deepcopy(semantic_tree.navigation_log[i])
+
+        if prompt_video:
+            log["Timestamp"] = get_frame_timestamp(log["Frame Index"], fps)
+
         if log["Generic Mapping"] is not None:
             log["Generic Mapping"]["Visible Scene Graph Nodes"] = log[
                 "Generic Mapping"
             ]["Detections"]
             del log["Generic Mapping"]["Detections"]
-
-            with open(dataset.color_paths[i], "rb") as image_file:
-                image = Image.open(image_file)
-                resized_image = image.resize((512, 512))  # Resize to 512x512
-                # Convert to byte array for upload
-                in_memory_file = io.BytesIO()
-                resized_image.save(in_memory_file, format=image.format)
-                image_bytes = in_memory_file.getvalue()
-            files = {
-                "file": (
-                    os.path.basename(dataset.color_paths[i]),
-                    image_bytes,
-                    f"image/{image.format}",
-                )
-            }  # Set mimetype based on image format
-            response = requests.post(
-                f"{api_url}/v1beta/media", headers=headers, files=files
-            )
-            response.raise_for_status()
-
-            media_data = response.json()
-            media_url = media_data.get("url")
-
-            log["ImageURL"] = media_url
         navigation_log.append(log)
+
+    if prompt_img_interleaved or prompt_img_seperate:
+        for frame_id in semantic_tree.visual_memory:
+            with Image.open(dataset.color_paths[frame_id]) as image:
+                resized_image = image.resize((512, 512))
+                buffered = io.BytesIO()
+                resized_image.save(buffered, format="JPEG")
+                image_data = buffered.getvalue()
+                base64_encoded_data = base64.b64encode(image_data).decode("utf-8")
+                images_prompt.append(base64_encoded_data)
+            if prompt_img_interleaved:
+                log["Image"] = base64_encoded_data
+            else:
+                images_prompt.append(base64_encoded_data)
+
+    if prompt_video:
+        if video_uri is None:
+            video_uri = create_gemini_video_prompt(
+                "video", dataset.color_paths, fps=fps
+            )
+        images_prompt.append(video_uri)
 
     graph = []
     not_in_graph = set(semantic_tree.track_ids)
@@ -427,7 +437,7 @@ def extract_scene_prompts(
                 in_graph.add(id)
         not_in_graph = not_in_graph - in_graph
         level += 1
-    return graph, navigation_log
+    return graph, navigation_log, images_prompt, semantic_tree.visual_memory
 
 
 def extract_detections_prompts(detections: DetectionList, tracks):
@@ -445,3 +455,63 @@ def extract_detections_prompts(detections: DetectionList, tracks):
             }
         )
     return prev_detections_json
+
+
+def get_frame_timestamp(frame_number, fps):
+    """Calculates the timestamp for a given frame number in (minutes, seconds) format.
+
+    Args:
+      frame_number: The frame number (starting from 0).
+      fps: Frames per second of the video.
+
+    Returns:
+      The timestamp in the format MM:SS.
+    """
+
+    seconds = frame_number / fps
+    minutes, seconds = divmod(seconds, 60)
+    return f"{int(minutes):02d}:{float(seconds):02.0f}"
+
+
+def create_gemini_video_prompt(name, image_paths, fps=5):
+    """Converts a list of image paths into a video and uploads it to Gemini.
+
+    Args:
+      image_paths: A list of paths to image files.
+      fps: Frames per second for the output video.
+
+    Returns:
+      The URI of the uploaded video file.
+    """
+    path = name + ".avi"
+
+    # Load the first image to get dimensions
+    first_image = cv2.imread(image_paths[0])
+    height, width, _ = first_image.shape
+
+    # Create a video writer object
+    fourcc = cv2.VideoWriter_fourcc(*"XVID")
+    video_writer = cv2.VideoWriter(path, fourcc, fps, (width, height))
+
+    # Write images to the video
+    for image_path in image_paths:
+        image = cv2.imread(image_path)
+        video_writer.write(image)
+
+    video_writer.release()
+
+    # Upload the video to Gemini
+    print("Uploading video...")
+    video_file = genai.upload_file(
+        path=path,
+    )
+    print(f"Completed upload: {video_file.uri}")
+
+    while video_file.state.name == "PROCESSING":
+        print(".", end="")
+        time.sleep(10)
+        video_file = genai.get_file(video_file.name)
+
+    if video_file.state.name == "FAILED":
+        raise ValueError(video_file.state.name)
+    return video_file.uri

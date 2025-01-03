@@ -15,7 +15,7 @@ from vertexai.generative_models import GenerativeModel, Part
 
 import read_graphs
 
-from .api import API, extract_scene_prompts
+from .api import API, create_gemini_video_prompt, extract_scene_prompts
 
 
 def parse_output(output: str) -> str:
@@ -33,6 +33,7 @@ def call_gemini(model, prompt):
     try:
         response = model.generate_content(prompt)
     except:
+        traceback.print_exc()
         time.sleep(30)
         response = model.generate_content(prompt)
     try:
@@ -70,20 +71,37 @@ def reasoning_loop_only_graph(
     # image_prompt = [Part.from_image(vertexai.generative_models.Image.load_from_file(i)) for i in init_images]
     # prompt = [text_prompt] + image_prompt
 
+    prompt_img_seperate = True
+    prompt_video, video_fps = False, 1
+    if prompt_video:
+        video_uri = create_gemini_video_prompt(
+            "video", dataset.color_paths, fps=video_fps
+        )
+    else:
+        video_uri = None
+
     model = genai.GenerativeModel(model_name=gemini_model)
 
     answer = None
     api_logs = []
     for i in range(6):
-        graph_prompt, navigation_log_prompt = extract_scene_prompts(
-            semantic_tree, dataset
+        graph_prompt, navigation_log_prompt, images_prompt, frame_ids = (
+            extract_scene_prompts(
+                semantic_tree,
+                dataset,
+                video_uri=video_uri,
+                fps=video_fps,
+                prompt_video=prompt_video,
+                prompt_img_seperate=prompt_img_seperate,
+            )
         )
         text_prompt = text_prompt_template.format(
             question=question,
             graph=json.dumps(graph_prompt, indent=2),
             navigation_log=json.dumps(navigation_log_prompt, indent=2),
+            frame_ids=frame_ids,
         )
-        response = call_gemini(model, [text_prompt]).strip()
+        response = call_gemini(model, [text_prompt] + images_prompt).strip()
         response = json.loads(response.replace("```json", "").replace("```", ""))
         if response["type"] == "answer_question":
             answer = response
@@ -105,8 +123,8 @@ def reasoning_loop_only_graph(
                 continue
 
     if answer == None:
-        graph_prompt, navigation_log_prompt = extract_scene_prompts(
-            semantic_tree, dataset
+        graph_prompt, navigation_log_prompt, images_prompt, frame_ids = (
+            extract_scene_prompts(semantic_tree, dataset)
         )
         # Bug, this prompt should return a JSON
         text_prompt_final = text_prompt_final_template.format(
@@ -114,7 +132,7 @@ def reasoning_loop_only_graph(
             graph=json.dumps(graph_prompt, indent=2),
             navigation_log=json.dumps(navigation_log_prompt, indent=2),
         )
-        answer = call_gemini(model, [text_prompt_final])
+        answer = call_gemini(model, [text_prompt_final] + images_prompt)
         answer = json.loads(answer.replace("```json", "").replace("```", ""))
     return answer, api_logs
 

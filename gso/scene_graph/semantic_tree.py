@@ -24,6 +24,8 @@ class SemanticTree:
 
         self.tracks = {}
         self.navigation_log = []
+        self.visual_memory = []
+        self.visual_memory_k = 3
 
     def load(self, save_dir):
         navigation_log_path = os.path.join(
@@ -56,6 +58,15 @@ class SemanticTree:
         )
         self.tracks = load_tracks(save_dir / "tracks")
         self.load_pcd(folder=save_dir)
+
+    def extract_visual_memory(self, visual_memory_k):
+        self.visual_memory = []
+        for i, log in enumerate(self.navigation_log):
+            if log.get("Generic Mapping") != None:
+                self.visual_memory.append(i)
+        self.visual_memory = self.visual_memory[
+            :visual_memory_k
+        ]  # only keep the first 3 frames in the memory
 
     def add_pcd(self, pcd):
         self.geometry_map += pcd

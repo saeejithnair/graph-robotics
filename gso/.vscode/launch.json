@@ -35,12 +35,23 @@
             "justMyCode": false
         },
         {
-            "name": "evaluate-predictions.py",
+            "name": "evaluate-predictions.py (baseline)",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "open_eqa/evaluate-predictions.py",
+            "console": "integratedTerminal",
+            "args": ["/home/qasim/Projects/graph-robotics/gso/open_eqa/results/baseline-open-eqa-v0-gemini-1.5-flash-latest.json", "--force"],
+            // "/home/qasim/Projects/graph-robotics/gso/open_eqa/results/open-eqa-v0-gemini-1.5-flash-latest-flat_graph.json"
+            "justMyCode": false
+        },
+        {
+            "name": "evaluate-predictions.py (ours)",
             "type": "debugpy",
             "request": "launch",
             "program": "open_eqa/evaluate-predictions.py",
             "console": "integratedTerminal",
             "args": ["/home/qasim/Projects/graph-robotics/gso/open_eqa/results/open-eqa-v0-gemini-1.5-flash-latest-flat_graph.json", "--force"],
+            // "/home/qasim/Projects/graph-robotics/gso/open_eqa/results/open-eqa-v0-gemini-1.5-flash-latest-flat_graph.json"
             "justMyCode": false
         },
         {
@@ -58,6 +69,15 @@
             "program": "open_eqa/baselines/gemini-1.5-flash_custom.py",
             "console": "integratedTerminal",
             "justMyCode": false
+        }
+    ],
+    "compounds": [
+        {
+            "name": "Run Main and Evaluate Predictions",
+            "configurations": [
+                "main_openeqa.py",
+                "evaluate-predictions.py"
+            ]
         }
     ]
 }
