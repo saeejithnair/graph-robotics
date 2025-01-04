@@ -4,6 +4,7 @@ import copy
 import io
 import json
 import os
+import random
 import time
 import traceback
 from abc import ABC
@@ -238,6 +239,18 @@ class API_GraphAPI(API):
                 if id is None:
                     continue
                 semantic_tree.tracks[id].notes = response[i]["your notes"]
+
+            if not keyframe_id in semantic_tree.visual_memory:
+                remove_id = random.choice(semantic_tree.visual_memory)
+                semantic_tree.visual_memory.remove(remove_id)
+                semantic_tree.visual_memory.append(keyframe_id)
+                print("Swapped ", remove_id, "for", keyframe_id)
+                semantic_tree.visual_memory.sort()
+        elif request["type"] == "swap_image":
+            assert request["removed_frame_id"] in semantic_tree.visual_memory
+            assert request["insert_frame_id"] < len(dataset)
+            semantic_tree.visual_memory.remove(int(request["removed_frame_id"]))
+            semantic_tree.visual_memory.append(int(request["insert_frame_id"]))
         else:
             raise Exception("Unknown request type: " + request["type"])
 
@@ -362,7 +375,7 @@ def extract_scene_prompts(
     edge_types=["inside", "on", "part of", "attached to"],
     prompt_img_interleaved=False,
     prompt_img_seperate=False,
-    prompt_video=True,
+    prompt_video=False,
     video_uri=None,
     fps=5,
 ):
@@ -380,6 +393,7 @@ def extract_scene_prompts(
                 "Generic Mapping"
             ]["Detections"]
             del log["Generic Mapping"]["Detections"]
+
         navigation_log.append(log)
 
     if prompt_img_interleaved or prompt_img_seperate:

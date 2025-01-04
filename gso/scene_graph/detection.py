@@ -38,11 +38,19 @@ class Edge:
         return True
 
     def json(self):
-        return {
-            "type": self.type,
-            "subject": self.subject,
-            "related object": self.related_object,
-        }
+        if self.keyframe is None:
+            return {
+                "type": self.type,
+                "subject": self.subject,
+                "related object": self.related_object,
+            }
+        else:
+            return {
+                "type": self.type,
+                "subject": self.subject,
+                "related object": self.related_object,
+                "keyframe": self.keyframe,
+            }
 
     def __str__(self):
         return json.dumps(

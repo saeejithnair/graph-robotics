@@ -65,7 +65,7 @@ class Perceptor(ABC):
     def perceive(self, img, pose=None):
         raise NotImplementedError()
 
-    def format_objects_bbox(self, response, img_size, img=None):
+    def format_objects_bbox(self, response, img_size):
         bboxes = [d["bbox"] for d in response]
         width, height = img_size[1], img_size[0]
         for i, box in enumerate(bboxes):
@@ -183,7 +183,8 @@ class Perceptor(ABC):
         # ]
         if isinstance(img, (np.ndarray, np.generic)):
             img = Image.fromarray(np.uint8(img))
-        image_prompt = [img.resize((1000, 1000))]
+        resized_img = img.resize((1000, 1000))
+        image_prompt = [resized_img]
         prompt = [text_prompt] + image_prompt
 
         object_detections, llm_response = [], None
@@ -193,7 +194,7 @@ class Perceptor(ABC):
                 llm_response = self.verify_json_response(response)
                 if self.json_detection_key:
                     object_detections = self.format_objects_bbox(
-                        llm_response[self.json_detection_key], img_size, img=img
+                        llm_response[self.json_detection_key], img_size
                     )
                 break
             except Exception as e:

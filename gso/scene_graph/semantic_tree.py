@@ -3,6 +3,7 @@ import csv
 import json
 import os
 import pickle
+from pathlib import Path
 
 import numpy as np
 import open3d as o3d
@@ -25,14 +26,17 @@ class SemanticTree:
         self.tracks = {}
         self.navigation_log = []
         self.visual_memory = []
-        self.visual_memory_k = 3
+        self.visual_memory_k = 4
 
     def load(self, save_dir):
+        save_dir = Path(save_dir)
         navigation_log_path = os.path.join(
             save_dir, "semantic_tree/navigation_log.json"
         )
         with open(navigation_log_path) as f:
             self.navigation_log = json.load(f)
+
+        self.extract_visual_memory(self.visual_memory_k)
 
         with open(save_dir / "semantic_tree/hierarchy_matrix.json") as f:
             json_data = json.load(f)
@@ -64,9 +68,12 @@ class SemanticTree:
         for i, log in enumerate(self.navigation_log):
             if log.get("Generic Mapping") != None:
                 self.visual_memory.append(i)
-        self.visual_memory = self.visual_memory[
-            :visual_memory_k
-        ]  # only keep the first 3 frames in the memory
+        k_indices = np.linspace(
+            0, len(self.visual_memory) - 1, num=visual_memory_k, dtype=np.int32
+        )
+        self.visual_memory = [
+            self.visual_memory[i] for i in k_indices
+        ]  # only keep k frames in the memory
 
     def add_pcd(self, pcd):
         self.geometry_map += pcd
@@ -168,7 +175,7 @@ class SemanticTree:
             "Relative Motion": llm_response["Relative Motion"],
             "Current Location": llm_response["Current Location"],
             "View": llm_response["View"],
-            "Novelty": llm_response["Novelty"],
+            "Summary": llm_response["Summary"],
             "Detections": [d.matched_track_name for d in detections],
             "Edges": [edge.json() for edge in edges_in_frame],
         }
@@ -209,6 +216,9 @@ class SemanticTree:
                 object_trkname = detlabel2trkname[edge.related_object]
                 subject_trkid = get_trackid_by_name(self.tracks, subject_trkname)
 
+                if subject_trkname == object_trkname:
+                    continue
+
                 self.tracks[subject_trkid].edges.append(
                     Edge(edge.type, subject_trkname, object_trkname, keyframe=frame_idx)
                 )
@@ -227,6 +237,8 @@ class SemanticTree:
         if not (hierarchy_type_matrix is None):
             self.hierarchy_type_matrix = hierarchy_type_matrix
         # Re-compute all levels
+        for id in self.tracks:
+            self.tracks[id].level = None
         unknown_levels = set(self.track_ids)
         known_levels = set()
         level = 0

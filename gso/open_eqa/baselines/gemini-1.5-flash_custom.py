@@ -54,7 +54,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--image-size",
         type=int,
-        default=840,
+        default=1000,
         help="image size (default: 512)",
     )
     parser.add_argument(
@@ -163,24 +163,24 @@ def main(args: argparse.Namespace):
     scenes_available = os.listdir(args.graph_dir)
 
     subset_questions = [
-        "41ad08e1-cb46-4599-8beb-def3b0f91e34",
-        "35bfcf60-4227-4bbb-9213-e1bf643b2325",
-        "9104773d-a2f0-4be3-a370-f7bf6e242ff7",
-        "6fddec60-f221-4944-88c3-a132dfbfd1ed",
-        "915cb310-31be-4114-846c-242fc59b581d",
-        "bbb83d84-289c-4f1d-a470-772e5c823a90",
-        "6be2fe87-f20c-48a2-a8fb-161362d86e2a",
-        "96d7f5ef-14b2-432a-8b85-21a0621e41a4",
-        "06745779-f1b8-458b-8daa-ccc18d8958c8",
-        "87019892-7a7f-4ce0-b1e6-4c0d6e87b90a",
-        "025257b6-8b7e-4f6f-aacc-1788069cbfad",
-        "28ea4932-55bf-44b3-9a48-73fde896b8ce",
-        "77c6644e-6018-4ef3-a683-276d3d2af67f",
-        "564d876c-44f1-4915-8d4b-ab5a7728494f",
-        "500e6924-0ea3-45c8-89ce-db3d37e142bf",
-        "5c1d30b9-5827-49fc-b74f-5ee9909a75b8",
-        "8d7f1dd7-9764-4603-918b-58eefcb0b10e",
-        "f2e82760-5c3c-41b1-88b6-85921b9e7b32",
+        # "41ad08e1-cb46-4599-8beb-def3b0f91e34",
+        # "35bfcf60-4227-4bbb-9213-e1bf643b2325",
+        # "9104773d-a2f0-4be3-a370-f7bf6e242ff7",
+        # "6fddec60-f221-4944-88c3-a132dfbfd1ed",
+        # "915cb310-31be-4114-846c-242fc59b581d",
+        # "bbb83d84-289c-4f1d-a470-772e5c823a90",
+        # "6be2fe87-f20c-48a2-a8fb-161362d86e2a",
+        # "96d7f5ef-14b2-432a-8b85-21a0621e41a4",
+        # "06745779-f1b8-458b-8daa-ccc18d8958c8",
+        # "87019892-7a7f-4ce0-b1e6-4c0d6e87b90a",
+        # "025257b6-8b7e-4f6f-aacc-1788069cbfad",
+        # "28ea4932-55bf-44b3-9a48-73fde896b8ce",
+        # "77c6644e-6018-4ef3-a683-276d3d2af67f",
+        # "564d876c-44f1-4915-8d4b-ab5a7728494f",
+        # "500e6924-0ea3-45c8-89ce-db3d37e142bf",
+        # "5c1d30b9-5827-49fc-b74f-5ee9909a75b8",
+        # "8d7f1dd7-9764-4603-918b-58eefcb0b10e",
+        # "f2e82760-5c3c-41b1-88b6-85921b9e7b32",
     ]
 
     # process data
@@ -193,7 +193,8 @@ def main(args: argparse.Namespace):
         question_id = item["question_id"]
         if question_id in completed:
             continue  # skip existing
-        if not (question_id in subset_questions):
+        if len(subset_questions) > 0 and not (question_id in subset_questions):
+            print("skipping")
             continue
         scene_id = os.path.basename(item["episode_history"])
         if not scene_id in scenes_available:

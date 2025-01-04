@@ -101,8 +101,16 @@ def reasoning_loop_only_graph(
             navigation_log=json.dumps(navigation_log_prompt, indent=2),
             frame_ids=frame_ids,
         )
-        response = call_gemini(model, [text_prompt] + images_prompt).strip()
-        response = json.loads(response.replace("```json", "").replace("```", ""))
+        prompt = [text_prompt]
+        for i, id in enumerate(frame_ids):
+            prompt.append(f"Frame  Index {id}:")
+            prompt.append(images_prompt[i])
+        try:
+            response = call_gemini(model, prompt).strip()
+            response = json.loads(response.replace("```json", "").replace("```", ""))
+        except:
+            i -= 1
+            continue
         if response["type"] == "answer_question":
             answer = response
             break
@@ -124,7 +132,7 @@ def reasoning_loop_only_graph(
 
     if answer == None:
         graph_prompt, navigation_log_prompt, images_prompt, frame_ids = (
-            extract_scene_prompts(semantic_tree, dataset)
+            extract_scene_prompts(semantic_tree, dataset, prompt_video=prompt_video)
         )
         # Bug, this prompt should return a JSON
         text_prompt_final = text_prompt_final_template.format(

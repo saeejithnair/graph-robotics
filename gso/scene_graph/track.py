@@ -301,6 +301,7 @@ def associate_dets_to_tracks(
     visual_scores = np.zeros((len(new_objects), len(current_tracks)))
     caption_scores = np.zeros((len(new_objects), len(current_tracks)))
     geometry_scores = np.zeros((len(new_objects), len(current_tracks)))
+    centroid_distances = np.zeros((len(new_objects), len(current_tracks)))
     for i in range(len(new_objects)):
         new_obj_pcd = np.array(
             new_objects[i].compute_local_pcd(full_pcd).points, dtype=np.float32
@@ -319,9 +320,9 @@ def associate_dets_to_tracks(
             overlap = (D < downsample_voxel_size**2).sum()  # D is the squared distance
 
             geometry_scores[i][j] = overlap / len(new_obj_pcd)
-            # geometry_scores[i][j] = np.linalg.norm(
-            #     new_objects[i].features.centroid - current_tracks[j].features.centroid
-            # )
+            centroid_distances[i][j] = np.linalg.norm(
+                new_objects[i].features.centroid - current_tracks[j].features.centroid
+            )
 
     score_matrix = np.mean(
         np.stack(
@@ -333,6 +334,8 @@ def associate_dets_to_tracks(
         ),
         0,
     )
+    score_matrix = np.where(caption_scores > 0.98, 1, score_matrix)
+    score_matrix = np.where(centroid_distances > 4, 0, score_matrix)
 
     # Compute the matches
     is_matched = np.max(score_matrix, 1) > 0.5
