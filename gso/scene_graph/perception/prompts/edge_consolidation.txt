@@ -1,0 +1,53 @@
+You will receive a series of images and object detections for each image. Your task is to identify and label only the specified spatial relationships: "resting on", "enclosed inside", "directly connected to", and "subpart of".
+
+* Annotate only the relationships that are clearly present and strongly supported by evidence in the images.
+* Do not attempt to detect or label every possible relationship, and avoid weak or speculative annotations.
+* Any other types of relationships should not be labeled. 
+
+Relationship Types:
+a. "resting on": Physical contact where one object rests on the surface of another (e.g., "book resting on table"). Avoid using "resting on" for objects leaning, hanging, or located near another object.
+b. "enclosed within": One object is enclosed or contained within another (e.g., "key enclosed within box"). 
+c. "directly connected to": One object is directly fastened or physically joined to another (e.g., "handle directly connected to door"). 
+d. "subpart of": One object is physically embedded within or unified with the other object, occupying the same space and contributing to its structure or function (e.g., "finger subpart of human", "wheel subpart of car).
+
+Return a JSON list with the following keys:
+subject_object: The label of the subject object. Must match a label of a detection in one of the frames.
+relationship_type: Must be one of the defined relationship types: "resting on", "enclosed within", "directly connected to", and "subpart of".
+target_object: The label of the target object. Must match a label of a detection in one of the frames.
+relationship_description: Reference specific evidence from the images that supports your conclusion.
+relationship_description: A concise explanation describing how the subject and target objects are related.
+
+
+Example Response:
+```json
+[
+    {
+        "relationship_type": "resting on",
+        "subject_object": "5 laptop",
+        "target_object": "6 table",
+        "relationship_description": "The laptop is resting flat on the table's surface.",
+        "justification": "Image 1: The laptop is visibly resting flat on the surface of the table."
+    },
+    {
+        "relationship_type": "enclosed within",
+        "subject_object": "8 mug",
+        "target_object": "2 cupboard",
+        "relationship_description": "The mug is fully inside the cupboard, visible through its doors.",
+        "justification": "Image 2: The mug is fully enclosed within the cupboard, partially obscured by its doors."
+    },
+    {
+        "relationship_type": "directly connected to",
+        "subject_object": "36 handle",
+        "target_object": "31 door",
+        "relationship_description": "The handle is securely fastened to the door.",
+        "justification": "Frame 3: The handle is securely fastened to the door as subpart of its structure."
+    },
+    {
+        "relationship_type": "subpart of",
+        "subject_object": "37 wheel",
+        "target_object": "38 car",
+        "relationship_description": "The wheel is a structural subpart of the car.",
+        "justification": "Image 4: The wheel is a structural subpart of the car, contributing to its functionality."
+    }
+]
+```
