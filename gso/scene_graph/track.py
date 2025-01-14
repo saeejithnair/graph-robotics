@@ -11,6 +11,7 @@ import open3d as o3d
 
 from . import utils
 from .detection import Detection, DetectionList, Edge, Features
+from .edges import load_edge
 from .pointcloud import denoise_pcd, find_nearest_points, union_bounding_boxes
 
 track_counter = 0
@@ -31,6 +32,7 @@ class Track:
         level=None,
         times_scene=0,
         notes="",
+        room_id=None,
         edges: List[Edge] = [],
     ) -> None:
         self.id = id
@@ -48,6 +50,7 @@ class Track:
         self.level = level
         self.keyframe_ids = list(keyframe_ids)
         self.notes = notes
+        self.room_id = None
 
     def compute_vis_centroid(self, global_pcd, level=None, height_by_level=False):
         mean_pcd = np.mean(np.asarray(global_pcd.points)[self.local_pcd_idxs], 0)
@@ -166,6 +169,8 @@ def save_tracks(track_list, save_dir):
                 "keyframe_ids": trk.keyframe_ids,
                 "centroid": trk.features.centroid.tolist(),
                 "edges": [edge.json() for edge in trk.edges],
+                "notes": trk.notes,
+                "room_id": trk.room_id,
             }
         )
         local_pcd_idxs.append(trk.local_pcd_idxs)
@@ -239,14 +244,9 @@ def load_tracks(save_dir):
             crops=crops[i],
             level=data["level"],
             times_scene=data["times_scene"],
-            edges=[
-                Edge(
-                    type=e["type"],
-                    subject=e["subject"],
-                    related_object=e["related object"],
-                )
-                for e in data["edges"]
-            ],
+            notes=data.get("notes", ""),
+            room_id=data.get("room_id"),
+            edges=[load_edge(e) for e in data["edges"]],
         )
         tracks[data["id"]] = trk
         max_id = max(max_id, data["id"])
@@ -334,8 +334,9 @@ def associate_dets_to_tracks(
         ),
         0,
     )
-    score_matrix = np.where(caption_scores > 0.98, 1, score_matrix)
-    score_matrix = np.where(centroid_distances > 4, 0, score_matrix)
+    # score_matrix = np.where(caption_scores > 0.98, 1, score_matrix)
+    score_matrix = np.where(centroid_distances > 6, 0, score_matrix)
+    score_matrix = np.where(caption_scores < 0.7, 0, score_matrix)
 
     # Compute the matches
     is_matched = np.max(score_matrix, 1) > 0.5

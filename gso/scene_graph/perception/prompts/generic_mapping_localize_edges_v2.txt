@@ -16,8 +16,5 @@ confidence: A confidence score between 0 and 1.
 relationships: A list of JSON objects describing the "on", "inside" and "part of" relationships with other detections in the scene. 
 
 Each JSON object within the "relationships" should have the following keys:
+relationship_type: Must be either "on" (e.g., "laptop on table," "rice on bowl"), "inside" (e.g., "apple inside fridge," "pants inside dresser," "hands inside pockets"), or "part of" (e.g., "door part of car," "handle part of door," "zipper part of backpack")
 related_object_label: The label of the related object (e.g., if the detected object is "laptop" and it's "on" the "table" then the related_object_label would be "table", if the detected object is "apple" and it's "inside" the "fridge" then the related_object_label would be "fridge").
-relationship_type: Must be one of:
-- "on": Used when one object is physically resting on another object (e.g., "laptop on table," "rice on bowl"). Avoid assigning "on" to objects partially leaning against others (e.g., "painting on wall").
-- "inside": Used when an object is fully or mostly enclosed within another (e.g., "apple inside fridge," "pants inside dresser," "hands inside pockets"). Avoid using "inside" for objects partially sticking out of containers unless the enclosure is dominant.
-- "part of": Used for components or integral parts of an object (e.g., "door part of car," "handle part of door," "zipper part of backpack"). Avoid using "part of" for objects that are merely associated or adjacent.

@@ -23,7 +23,7 @@ import read_graphs
 import scene_graph.utils as utils
 from scene_graph.detection import Detection, DetectionList, Edge, load_objects
 from scene_graph.features import FeatureComputer
-from scene_graph.perception import Perceptor
+from scene_graph.perception import PerceptorWithTextPrompt
 from scene_graph.pointcloud import create_depth_cloud
 from scene_graph.relationship_scorer import RelationshipScorer
 from scene_graph.semantic_tree import SemanticTree
@@ -44,6 +44,7 @@ class API(ABC):
         request_json,
         dataset,
         result_path,
+        detections_folder,
         semantic_tree: SemanticTree,
         obj_pcd_max_points,
         downsample_voxel_size=0.02,
@@ -54,7 +55,7 @@ class API(ABC):
 class API_TextualQA(API):
     def __init__(self, prompt_reasoning_loop, prompt_reasoning_final, device="cuda"):
         super().__init__(prompt_reasoning_loop, prompt_reasoning_final, device)
-        self.perceptor = PerceptorAPI(
+        self.perceptor = PerceptorWithTextPrompt(
             json_detection_key="Detections",
             json_other_keys=["Finding"],
             prompt_file="open_eqa/prompts/gso/refine_textual_response.txt",
@@ -103,7 +104,7 @@ class API_TextualQA(API):
         )
 
         semantic_tree.integrate_detections(
-            detections, det_matched, matched_tracks, keyframe_id
+            detections, det_matched, matched_tracks, keyframe_id, consolidate=False
         )
 
         navigation_log_refinement = dict(Request=query)
@@ -128,14 +129,21 @@ class API_TextualQA(API):
 class API_GraphAPI(API):
     def __init__(self, prompt_reasoning_loop, prompt_reasoning_final, device="cuda"):
         super().__init__(prompt_reasoning_loop, prompt_reasoning_final, device)
-        self.find_objects_perceptor = PerceptorAPI(
+        self.find_objects_perceptor = PerceptorWithTextPrompt(
             json_detection_key="Detections",
             json_other_keys=["your notes"],
             prompt_file="open_eqa/prompts/gso/refine_find_objects_v2.txt",
             device=self.device,
-            with_edges=True,
+            with_edges=False,
         )
-        self.analyze_objects_perceptor = PerceptorAPI(
+        self.analyze_frame_perceptor = PerceptorWithTextPrompt(
+            json_detection_key="Detections",
+            json_other_keys=["your notes"],
+            prompt_file="open_eqa/prompts/gso/analyze_frame.txt",
+            device=self.device,
+            with_edges=False,
+        )
+        self.analyze_objects_perceptor = PerceptorWithTextPrompt(
             json_detection_key=None,
             json_other_keys=["name", "your notes"],
             prompt_file="open_eqa/prompts/gso/refine_analyze_objects.txt",
@@ -143,6 +151,7 @@ class API_GraphAPI(API):
         )
         self.find_objects_perceptor.init()
         self.analyze_objects_perceptor.init()
+        self.analyze_frame_perceptor.init()
         self.relationship_scorer = RelationshipScorer(downsample_voxel_size=0.02)
 
     def call(
@@ -156,6 +165,21 @@ class API_GraphAPI(API):
     ):
         keyframe_id = int(request["frame_id"])
         assert keyframe_id < len(dataset)
+        clarify_class_valid = True
+        if request["type"] == "analyze_objects_in_frame" and "nodes" in request:
+            for name in request["nodes"].split(","):
+                name = name.strip()
+                if (
+                    not name
+                    in semantic_tree.navigation_log[keyframe_id]["Generic Mapping"][
+                        "Detections"
+                    ]
+                ):
+                    clarify_class_valid = False
+                    break
+        if not clarify_class_valid and request["type"] == "analyze_objects_in_frame":
+            request["type"] = "find_objects_in_frame"
+
         query = request["query"]
 
         color_tensor, depth_tensor, intrinsics, *_ = dataset[keyframe_id]
@@ -168,19 +192,31 @@ class API_GraphAPI(API):
         image_rgb = (color_np).astype(np.uint8)  # (H, W, 3)
         assert image_rgb.max() > 1, "Image is not in range [0, 255]"
 
-        _, prev_detections = load_objects(result_path, keyframe_id)
+        _, prev_detections = load_objects(
+            result_path, keyframe_id, temp_refine=semantic_tree.temp_refine_dir
+        )
         prev_detections_json = extract_detections_prompts(
             prev_detections, semantic_tree.tracks
         )
 
-        if request["type"] == "add_nodes_to_graph":
-            text_prompt = self.find_objects_perceptor.text_prompt_template
-            text_prompt = text_prompt.format(
-                query=query, prev_detections=prev_detections_json
-            )
-            detections, response = self.find_objects_perceptor.perceive(
-                color_np, text_prompt
-            )
+        if (
+            request["type"] == "analyze_frame"
+            or request["type"] == "find_objects_in_frame"
+        ):
+            if request["type"] == "find_objects_in_frame":
+                text_prompt = self.find_objects_perceptor.text_prompt_template
+                text_prompt = text_prompt.format(
+                    query=query, prev_detections=prev_detections_json
+                )
+                detections, response = self.find_objects_perceptor.perceive(
+                    color_np, text_prompt
+                )
+            else:
+                text_prompt = self.analyze_frame_perceptor.text_prompt_template
+                text_prompt = text_prompt.format(query=query)
+                detections, response = self.analyze_frame_perceptor.perceive(
+                    color_np, text_prompt
+                )
             detections.extract_pcd(
                 depth_cloud,
                 color_np,
@@ -201,8 +237,13 @@ class API_GraphAPI(API):
                 semantic_tree.geometry_map,
                 downsample_voxel_size=downsample_voxel_size,
             )
-            semantic_tree.integrate_detections(
-                detections, det_matched, matched_tracks, keyframe_id
+            detections, edges = semantic_tree.integrate_detections(
+                detections,
+                det_matched,
+                matched_tracks,
+                keyframe_id,
+                img=color_np,
+                consolidate=False,
             )
 
             for i in range(len(response)):
@@ -222,11 +263,15 @@ class API_GraphAPI(API):
                 if det.label in detections.get_field("label"):
                     continue
                 detections.add_object(det)
-            self.find_objects_perceptor.save_results(
-                prev_detections, result_path / "detections-refine", keyframe_id
-            )
-
-        elif request["type"] == "inspect_nodes_in_graph":
+            if request["type"] == "find_objects_in_frame":
+                self.find_objects_perceptor.save_results(
+                    detections, result_path / "temp-refine", keyframe_id
+                )
+            else:
+                self.analyze_frame_perceptor.save_results(
+                    detections, result_path / "temp-refine", keyframe_id
+                )
+        elif request["type"] == "analyze_objects_in_frame":
             text_prompt = self.analyze_objects_perceptor.text_prompt_template
             text_prompt = text_prompt.format(
                 query=query, detections=prev_detections_json
@@ -257,7 +302,7 @@ class API_GraphAPI(API):
         navigation_log_refinement = dict(request=request)
         navigation_log_refinement["response"] = response
         semantic_tree.integrate_refinement_log(
-            query, navigation_log_refinement, keyframe_id
+            query, navigation_log_refinement, keyframe_id, detections=detections
         )
 
         # perceptor.save_results(
@@ -274,105 +319,15 @@ class API_GraphAPI(API):
         return semantic_tree, response, api_log
 
 
-class PerceptorAPI(Perceptor):
-    def perceive(self, img, text_prompt):
-        self.img = np.uint8(img)
-
-        detections, llm_response = self.ask_question_gemini(
-            self.img,
-            text_prompt,
-            self.img.shape,
-        )
-
-        if not self.json_detection_key:
-            detection_list = DetectionList()
-            return detection_list, llm_response
-
-        response = []
-
-        self.num_detections = len(detections)
-
-        self.mask_predictor.set_image(np.uint8(img))
-        detection_list = DetectionList()
-        for i in range(self.num_detections):
-            box = detections[i]["bbox"]
-            sam_masks, iou_preds, _ = self.mask_predictor.predict(
-                box=np.array(box), multimask_output=False
-            )
-            crop = utils.get_crop(self.img, box)
-            if crop.shape[0] <= 1 or crop.shape[1] <= 1:
-                continue
-
-            edges = []
-            if self.with_edges:
-                for rel in detections[i]["relationships"]:
-                    edges.append(
-                        Edge(
-                            rel["relationship_type"].lower(),
-                            detections[i]["label"].lower(),
-                            rel["related_object_label"].lower(),
-                            (
-                                rel["related_object_spatial_caption"]
-                                if "related_object_spatial_caption" in rel
-                                else None
-                            ),
-                        )
-                    )
-            detection_list.add_object(
-                Detection(
-                    mask=sam_masks[0],
-                    crop=crop,
-                    label=detections[i]["label"].lower(),
-                    visual_caption=detections[i]["visual caption"],
-                    spatial_caption=detections[i]["spatial caption"],
-                    bbox=box,
-                    confidence=detections[i]["confidence"],
-                    notes=detections[i]["your notes"],
-                    edges=edges,
-                )
-            )
-            response.append(llm_response[self.json_detection_key][i])
-
-        detection_names = detection_list.get_field("label")
-        detection_list.filter_edges(self.edge_types, detection_names)
-
-        return detection_list, response
-
-    def verify_json_response(self, response):
-        # This code is very hacked. This is because of find_objects prompt returns a list, which I process into a JSON where 'keys' =  detections.
-        assert "```json" in response
-        response = response.replace("```json", "")
-        response = response.replace("```", "")
-        response = response.strip()
-        response = json.loads(response)
-        for obj in response:
-            if self.json_detection_key:
-                assert "label" in obj
-                assert "visual caption" in obj
-                assert "spatial caption" in obj
-                assert "bbox" in obj
-                assert "confidence" in obj
-                assert "your notes" in obj
-                assert len(obj["bbox"]) == 4
-                assert not ("/" in obj["label"])
-                if self.with_edges:
-                    assert "relationships" in obj
-                    for rel in obj["relationships"]:
-                        assert "related_object_label" in rel
-                        assert "relationship_type" in rel
-            else:
-                for key in self.json_other_keys:
-                    assert key in obj
-        if self.json_detection_key:
-            return {self.json_detection_key: response}
-        else:
-            return response
-
-
 def extract_scene_prompts(
     semantic_tree: SemanticTree,
     dataset,
-    edge_types=["inside", "on", "part of", "attached to"],
+    edge_types=[
+        "enclosed within",
+        "resting on",
+        "directly connected to",
+        "subpart of",
+    ],
     prompt_img_interleaved=False,
     prompt_img_seperate=False,
     prompt_video=False,
@@ -394,21 +349,32 @@ def extract_scene_prompts(
             ]["Detections"]
             del log["Generic Mapping"]["Detections"]
 
+            # del log["Generic Mapping"]["Estimated Current Location"]
+
+            # Replace the Estimated Current Location with the Present Room
+            # log["Generic Mapping"]["Estimated Current Location"] = semantic_tree.rooms[
+            #     log["Generic Mapping"]["Present Room"]
+            # ].get_semantic_name()
+            # del log["Generic Mapping"]["Present Room"]
+
+            semantic_tree
+
         navigation_log.append(log)
 
     if prompt_img_interleaved or prompt_img_seperate:
         for frame_id in semantic_tree.visual_memory:
             with Image.open(dataset.color_paths[frame_id]) as image:
-                resized_image = image.resize((512, 512))
+                resized_image = image.resize((1000, 1000))
                 buffered = io.BytesIO()
                 resized_image.save(buffered, format="JPEG")
                 image_data = buffered.getvalue()
                 base64_encoded_data = base64.b64encode(image_data).decode("utf-8")
-                images_prompt.append(base64_encoded_data)
+                # images_prompt.append(base64_encoded_data)
             if prompt_img_interleaved:
                 log["Image"] = base64_encoded_data
             else:
-                images_prompt.append(base64_encoded_data)
+                # images_prompt.append(base64_encoded_data)
+                images_prompt.append(dataset.color_paths[frame_id])
 
     if prompt_video:
         if video_uri is None:
@@ -418,39 +384,97 @@ def extract_scene_prompts(
         images_prompt.append(video_uri)
 
     graph = []
-    not_in_graph = set(semantic_tree.track_ids)
-    in_graph = set()
-    level = 0
-    while len(not_in_graph) > 0:
-        for id in not_in_graph:
-            if semantic_tree.tracks[id].level == level:
-                node = {
-                    "name": semantic_tree.tracks[id].name,
-                    "visual caption": semantic_tree.tracks[id].captions[0],
-                    "your notes": semantic_tree.tracks[id].notes,
-                    "times scene": semantic_tree.tracks[id].times_scene,
-                    "hierarchy level": semantic_tree.tracks[id].level,
-                    "centroid": semantic_tree.tracks[id].features.centroid.tolist(),
-                }
-                for type in edge_types:
-                    node["Items " + type] = []
-                children_id = semantic_tree.get_children_ids(
-                    id, semantic_tree.hierarchy_matrix
-                )
-                for child_id in children_id:
-                    if semantic_tree.tracks[child_id].level >= level:
-                        continue
-                    for i in range(len(graph)):
-                        if graph[i]["name"] == semantic_tree.tracks[child_id].name:
-                            node[
-                                "Items "
-                                + semantic_tree.hierarchy_type_matrix[id][child_id]
-                            ].append(graph.pop(i))
-                            break
-                graph.append(node)
-                in_graph.add(id)
-        not_in_graph = not_in_graph - in_graph
-        level += 1
+
+    # Option 1: Nested JSON
+    # not_in_graph = set(semantic_tree.track_ids)
+    # in_graph = set()
+    # level = 0
+    # while len(not_in_graph) > 0:
+    #     for id in not_in_graph:
+    #         if semantic_tree.tracks[id].level == level:
+    #             node = {
+    #                 "name": semantic_tree.tracks[id].name,
+    #                 "visual caption": semantic_tree.tracks[id].captions[0],
+    #                 "your notes": semantic_tree.tracks[id].notes,
+    #                 "times scene": semantic_tree.tracks[id].times_scene,
+    #                 "hierarchy level": semantic_tree.tracks[id].level,
+    #                 "centroid": semantic_tree.tracks[id].features.centroid.tolist(),
+    #             }
+    #             for type in edge_types:
+    #                 node["Items " + type] = []
+    #             children_id = semantic_tree.get_children_ids(
+    #                 id, semantic_tree.hierarchy_matrix
+    #             )
+    #             for child_id in children_id:
+    #                 if semantic_tree.tracks[child_id].level >= level:
+    #                     continue
+    #                 for i in range(len(graph)):
+    #                     if graph[i]["name"] == semantic_tree.tracks[child_id].name:
+    #                         node[
+    #                             "Items "
+    #                             + semantic_tree.hierarchy_type_matrix[id][child_id]
+    #                         ].append(graph.pop(i))
+    #                         break
+    #             graph.append(node)
+    #             in_graph.add(id)
+    #     not_in_graph = not_in_graph - in_graph
+    #     level += 1
+
+    # Option 2: Flat Edges
+    for track in semantic_tree.tracks.values():
+        edges = [e.json() for e in track.edges]
+        _ = [e.pop("frame_id") for e in edges]
+        _ = [e.pop("subject") for e in edges]
+        graph.append(
+            {
+                "name": track.name,
+                "visual caption": track.captions[0],
+                "your notes": track.notes,
+                "times scene": track.times_scene,
+                "hierarchy level": track.level,
+                "centroid": track.features.centroid.tolist(),
+                "relationships": [e.json() for e in track.edges],
+            }
+        )
+
+    # # Option 3: Edges at in seperate key
+    # graph = {"Nodes": []}
+    # edges = []
+    # for track in semantic_tree.tracks.values():
+    #     graph["Nodes"].append(
+    #         {
+    #             "name": track.name,
+    #             "visual caption": track.captions[0],
+    #             "your notes": track.notes,
+    #             "times scene": track.times_scene,
+    #             "hierarchy level": track.level,
+    #             "centroid": track.features.centroid.tolist(),
+    #         }
+    #     )
+    #     new_edges = [e.json() for e in track.edges]
+    #     _ = [e.pop("frame_id") for e in new_edges]
+    #     _ = [e.pop("subject") for e in new_edges]
+    #     edges += new_edges
+    # graph["Relationships"] = edges
+
+    # Option 4: Hierarchy with room nodes
+    # edges = []
+    # for room in semantic_tree.rooms:
+    #     graph[room.get_semantic_name()] = {"Objects": []}
+    # for track in semantic_tree.tracks.values():
+    #     room_name = semantic_tree.rooms[track.room_id].get_semantic_name()
+    #     graph[room_name]["Objects"].append(
+    #         {
+    #             "name": track.name,
+    #             "visual caption": track.captions[0],
+    #             "your notes": track.notes,
+    #             "times scene": track.times_scene,
+    #             "hierarchy level": track.level,
+    #             "centroid": track.features.centroid.tolist(),
+    #             "edges": [e.json() for e in track.edges],
+    #         }
+    #     )
+
     return graph, navigation_log, images_prompt, semantic_tree.visual_memory
 
 

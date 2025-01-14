@@ -1,6 +1,6 @@
 Detect items, localize your position and describe your field of view within the environment.
 
-When detecting items, focus on semantic and functional groupings (e.g., "group of chairs") rather than individual instances. Exclude background elements (walls, floors), very small objects, and large areas like rooms (hallways, kitchens). Include items critical for navigation, interaction, or scene understanding
+When detecting items, focus on semantic and functional groupings (e.g., "group of chairs") rather than individual instances. Exclude background elements (walls, floors), very small objects, and large areas like rooms (hallways, kitchens). Include items critical for navigation, interaction, or scene understanding.
 
 Return a JSON with the following keys:
 

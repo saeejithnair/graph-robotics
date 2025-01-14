@@ -40,7 +40,7 @@
             "request": "launch",
             "program": "open_eqa/evaluate-predictions.py",
             "console": "integratedTerminal",
-            "args": ["/home/qasim/Projects/graph-robotics/gso/open_eqa/results/baseline88q-open-eqa-v0-gemini-1.5-flash-latest.json", "--force"],
+            "args": ["/home/qasim/Projects/graph-robotics/gso/open_eqa/results/baseline-open-eqa-v0-gemini-1.5-flash-latest.json", "--force"],
             // "/home/qasim/Projects/graph-robotics/gso/open_eqa/results/open-eqa-v0-gemini-1.5-flash-latest-flat_graph.json"
             "justMyCode": false
         },
@@ -69,7 +69,18 @@
             "program": "open_eqa/baselines/gemini-1.5-flash_custom.py",
             "console": "integratedTerminal",
             "justMyCode": false
-        }
+        },
+        {
+            "name": "main_rooms.py",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "main_rooms.py",
+            "console": "integratedTerminal",
+            "justMyCode": false,
+            "env": {
+                "CUDA_VISIBLE_DEVICES": "2"
+            }
+        },
     ],
     "compounds": [
         {

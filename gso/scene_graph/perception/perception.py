@@ -23,19 +23,26 @@ from vertexai.generative_models import GenerativeModel, Part
 
 from .. import utils
 from ..detection import Detection, DetectionList, Edge
+from ..track import get_trackid_by_name
 
 
 class Perceptor(ABC):
     def __init__(
         self,
+        # prompt_file="scene_graph/perception/prompts/generic_mapping_localize_edges_v2.txt",
+        prompt_file="scene_graph/perception/prompts/generic_mapping_localize_v3.txt",
         json_detection_key="Detections",
         json_other_keys=[],
         with_edges=False,
         device="cuda:0",
         sam_model_type="vit_h",
         sam_checkpoint_path="checkpoints/sam_vit_h_4b8939.pth",
-        prompt_file="scene_graph/perception/prompts/generic_mapping_localize_edges_v2.txt",
-        edge_types=["inside", "on", "part of"],
+        edge_types=[
+            "enclosed within",
+            "resting on",
+            "directly connected to",
+            "subpart of",
+        ],
     ):
         self.json_detection_key = json_detection_key
         self.json_other_keys = json_other_keys
@@ -188,7 +195,7 @@ class Perceptor(ABC):
         prompt = [text_prompt] + image_prompt
 
         object_detections, llm_response = [], None
-        for _ in range(10):
+        for _ in range(20):
             try:
                 response = utils.call_gemini(model, prompt)
                 llm_response = self.verify_json_response(response)
@@ -310,19 +317,20 @@ class GenericMapper(Perceptor):
                 continue
 
             edges = []
-            for rel in detections[i]["relationships"]:
-                edges.append(
-                    Edge(
-                        rel["relationship_type"].lower(),
-                        detections[i]["label"].lower(),
-                        rel["related_object_label"].lower(),
-                        (
-                            rel["related_object_spatial_caption"]
-                            if "related_object_spatial_caption" in rel
-                            else None
-                        ),
+            if self.with_edges:
+                for rel in detections[i]["relationships"]:
+                    edges.append(
+                        Edge(
+                            rel["relationship_type"].lower(),
+                            detections[i]["label"].lower(),
+                            rel["related_object_label"].lower(),
+                            (
+                                rel["related_object_spatial_caption"]
+                                if "related_object_spatial_caption" in rel
+                                else None
+                            ),
+                        )
                     )
-                )
 
             detection_list.add_object(
                 Detection(
@@ -341,6 +349,210 @@ class GenericMapper(Perceptor):
         detection_list.filter_edges(self.edge_types, detection_names)
 
         return detection_list, response
+
+
+def call_gemini(model, prompt):
+    response = None
+    try:
+        response = model.generate_content(prompt)
+    except:
+        traceback.print_exc()
+        time.sleep(30)
+        response = model.generate_content(prompt)
+    try:
+        response = response.text
+    except:
+        response = "No response"
+    return response
+
+
+class EdgeConsolidator(Perceptor):
+
+    def perceive(
+        self,
+        tracks,
+        detections_buffer,
+        frame_buffer,
+        edges_buffer=None,
+        gemini_model: str = "gemini-1.5-flash-latest",
+    ):
+        response = {}
+        assert len(detections_buffer) == len(frame_buffer)
+        if not (edges_buffer is None):
+            assert len(edges_buffer) == len(frame_buffer)
+
+        prompt_prefix = self.text_prompt_template
+        prompt = [prompt_prefix]
+        for i in range(len(frame_buffer)):
+            img = Image.fromarray(np.uint8(frame_buffer[i]))
+            resized_img = img.resize((1000, 1000))
+            prompt.append(f"Image {i}:")
+            prompt.append(resized_img)
+
+            detections_prompt = []
+            for obj in detections_buffer[i]:
+                id = get_trackid_by_name(tracks, obj.matched_track_name)
+                detections_prompt.append(
+                    {
+                        "label": obj.matched_track_name,
+                        "visual caption": obj.visual_caption,
+                        "spatial caption": obj.spatial_caption,
+                        "bbox": obj.bbox,
+                        "edges": [str(edge) for edge in obj.edges],
+                        "your notes": tracks[id].notes,
+                    }
+                )
+            prompt.append("Object Detections:\n" + json.dumps(detections_prompt))
+
+            relationships_prompt = []
+            for edge in edges_buffer[i]:
+                relationships_prompt.append(
+                    {
+                        "relationship type": edge.type,
+                        "subject object label": edge.subject,
+                        "related object label": obj.visual_caption,
+                    }
+                )
+
+            if self.with_edges:
+                # Append frame by frame edges
+                prompt.append("Relationships:\n" + json.dumps(relationships_prompt))
+
+        relationships_output = []
+        for i in range(4):
+            try:
+                model = genai.GenerativeModel(model_name=gemini_model)
+                response = call_gemini(model, prompt).strip()
+                response = json.loads(
+                    response.replace("```json", "").replace("```", "")
+                )
+                edge_tuples = set()
+                for data in response:
+                    if get_trackid_by_name(tracks, data["subject_object"]) is None:
+                        continue
+                    if get_trackid_by_name(tracks, data["target_object"]) is None:
+                        continue
+                    if not data["relationship_type"] in self.edge_types:
+                        continue
+                    if data["subject_object"] == data["target_object"]:
+                        continue
+                    edge_tuple = (
+                        data["subject_object"],
+                        data["target_object"],
+                    )
+                    if edge_tuple in edge_tuples:
+                        continue
+                    else:
+                        edge_tuples.add(edge_tuple)
+                    relationships_output.append(
+                        Edge(
+                            data["relationship_type"],
+                            data["subject_object"],
+                            data["target_object"],
+                            description=data.get("relationship_description"),
+                        )
+                    )
+                return relationships_output
+            except:
+                relationships_output = []
+                print("failed to consolidate relationships, trying again")
+                continue
+        raise Exception("Failed to consolidate edges")
+
+
+class PerceptorWithTextPrompt(Perceptor):
+    def perceive(self, img, text_prompt):
+        self.img = np.uint8(img)
+
+        detections, llm_response = self.ask_question_gemini(
+            self.img,
+            text_prompt,
+            self.img.shape,
+        )
+
+        if not self.json_detection_key:
+            detection_list = DetectionList()
+            return detection_list, llm_response
+
+        response = []
+
+        self.num_detections = len(detections)
+
+        self.mask_predictor.set_image(np.uint8(img))
+        detection_list = DetectionList()
+        for i in range(self.num_detections):
+            box = detections[i]["bbox"]
+            sam_masks, iou_preds, _ = self.mask_predictor.predict(
+                box=np.array(box), multimask_output=False
+            )
+            crop = utils.get_crop(self.img, box)
+            if crop.shape[0] <= 1 or crop.shape[1] <= 1:
+                continue
+
+            edges = []
+            if self.with_edges:
+                for rel in detections[i]["relationships"]:
+                    edges.append(
+                        Edge(
+                            rel["relationship_type"].lower(),
+                            detections[i]["label"].lower(),
+                            rel["related_object_label"].lower(),
+                            (
+                                rel["related_object_spatial_caption"]
+                                if "related_object_spatial_caption" in rel
+                                else None
+                            ),
+                        )
+                    )
+            detection_list.add_object(
+                Detection(
+                    mask=sam_masks[0],
+                    crop=crop,
+                    label=detections[i]["label"].lower(),
+                    visual_caption=detections[i]["visual caption"],
+                    spatial_caption=detections[i]["spatial caption"],
+                    bbox=box,
+                    confidence=detections[i]["confidence"],
+                    notes=detections[i]["your notes"],
+                    edges=edges,
+                )
+            )
+            response.append(llm_response[self.json_detection_key][i])
+
+        detection_names = detection_list.get_field("label")
+        detection_list.filter_edges(self.edge_types, detection_names)
+
+        return detection_list, response
+
+    def verify_json_response(self, response):
+        # This code is very hacked. This is because of find_objects prompt returns a list, which I process into a JSON where 'keys' =  detections.
+        assert "```json" in response
+        response = response.replace("```json", "")
+        response = response.replace("```", "")
+        response = response.strip()
+        response = json.loads(response)
+        for obj in response:
+            if self.json_detection_key:
+                assert "label" in obj
+                assert "visual caption" in obj
+                assert "spatial caption" in obj
+                assert "bbox" in obj
+                assert "confidence" in obj
+                assert "your notes" in obj
+                assert len(obj["bbox"]) == 4
+                assert not ("/" in obj["label"])
+                if self.with_edges:
+                    assert "relationships" in obj
+                    for rel in obj["relationships"]:
+                        assert "related_object_label" in rel
+                        assert "relationship_type" in rel
+            else:
+                for key in self.json_other_keys:
+                    assert key in obj
+        if self.json_detection_key:
+            return {self.json_detection_key: response}
+        else:
+            return response
 
 
 if __name__ == "__main__":

@@ -11,56 +11,10 @@ import PIL
 from transformers import AutoModel, AutoProcessor, AutoTokenizer
 
 from . import utils
+from .edges import Edge, load_edge
 from .features import Features
 from .pointcloud import denoise_pcd, dynamic_downsample, find_nearest_points
 from .utils import get_crop
-
-
-class Edge:
-    def __init__(
-        self, type: str, subject, related_object, keyframe=None, explanation=None
-    ):
-        self.type = type
-        self.subject = subject
-        self.related_object = related_object
-        self.keyframe = keyframe
-        self.explanation = explanation
-
-    def verify(self, valid_types, valid_object_names):
-        valid_types = [i.lower() for i in valid_types]
-        valid_object_names = [i.lower() for i in valid_object_names]
-        if not (self.type.lower() in valid_types):
-            return False
-        if not self.subject.lower() in valid_object_names:
-            return False
-        if not self.related_object.lower() in valid_object_names:
-            return False
-        return True
-
-    def json(self):
-        if self.keyframe is None:
-            return {
-                "type": self.type,
-                "subject": self.subject,
-                "related object": self.related_object,
-            }
-        else:
-            return {
-                "type": self.type,
-                "subject": self.subject,
-                "related object": self.related_object,
-                "keyframe": self.keyframe,
-            }
-
-    def __str__(self):
-        return json.dumps(
-            {
-                "type": self.type,
-                "subject": self.subject,
-                "related object": self.related_object,
-            },
-            indent=2,
-        )
 
 
 class Detection:
@@ -264,8 +218,10 @@ class DetectionList:
         return len(self.objects)
 
 
-def load_objects(result_dir, frame):
-    dir = Path(result_dir) / "detections" / str(frame)
+def load_objects(result_dir, frame, temp_refine="temp-refine"):
+    dir = Path(result_dir) / temp_refine / str(frame)
+    if not os.path.exists(dir):
+        dir = Path(result_dir) / "detections" / str(frame)
     json_path = dir / "detections.json"
     masks_path = dir / "masks.npz"
     pcd_path = dir / "local_pcd_idxs.npz"
@@ -295,13 +251,7 @@ def load_objects(result_dir, frame):
 
         edges_i = []
         for edge in json_data[i]["edges"]:
-            edges_i.append(
-                Edge(
-                    edge["type"],
-                    edge["subject"],
-                    edge["related object"],
-                )
-            )
+            edges_i.append(load_edge(edge))
 
         object_list.add_object(
             Detection(
