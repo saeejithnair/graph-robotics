@@ -230,7 +230,7 @@ class Perceptor(ABC):
                 assert "visual caption" in obj
                 assert "spatial caption" in obj
                 assert "bbox" in obj
-                assert "confidence" in obj
+                # assert "confidence" in obj
                 assert len(obj["bbox"]) == 4
                 assert not ("/" in obj["label"])
                 if self.with_edges:
@@ -338,9 +338,9 @@ class GenericMapper(Perceptor):
                     crop=crop,
                     label=detections[i]["label"].lower(),
                     visual_caption=detections[i]["visual caption"],
-                    spatial_caption=detections[i]["spatial caption"],
+                    # spatial_caption=detections[i]["spatial caption"],
                     bbox=box,
-                    confidence=detections[i]["confidence"],
+                    # confidence=detections[i]["confidence"],
                     edges=edges,
                 )
             )
@@ -510,9 +510,9 @@ class PerceptorWithTextPrompt(Perceptor):
                     crop=crop,
                     label=detections[i]["label"].lower(),
                     visual_caption=detections[i]["visual caption"],
-                    spatial_caption=detections[i]["spatial caption"],
+                    # spatial_caption=detections[i]["spatial caption"],
                     bbox=box,
-                    confidence=detections[i]["confidence"],
+                    # confidence=detections[i]["confidence"],
                     notes=detections[i]["your notes"],
                     edges=edges,
                 )
@@ -535,9 +535,9 @@ class PerceptorWithTextPrompt(Perceptor):
             if self.json_detection_key:
                 assert "label" in obj
                 assert "visual caption" in obj
-                assert "spatial caption" in obj
+                # assert "spatial caption" in obj
                 assert "bbox" in obj
-                assert "confidence" in obj
+                # assert "confidence" in obj
                 assert "your notes" in obj
                 assert len(obj["bbox"]) == 4
                 assert not ("/" in obj["label"])

@@ -30,7 +30,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--model",
         type=str,
-        default="gemini-1.5-flash-latest",
+        default="gemini-1.5-flash-002",
         help="Google model (default: gemini-1.5-flash-latest)",
     )
     parser.add_argument(
@@ -187,7 +187,7 @@ def main(args: argparse.Namespace):
     for idx, item in enumerate(tqdm.tqdm(dataset)):
         if args.dry_run and idx >= 5:
             break
-        if idx >= 250:
+        if idx >= 200:
             break
         # skip completed questions
         question_id = item["question_id"]

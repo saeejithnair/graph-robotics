@@ -1,9 +1,8 @@
-Given a scene and a specific query, your task is to analyze the objects in the scene and their spatial relationships. As you examine the scene, carefully document your observations, insights, and reasoning by updating the "your notes" key associated with each detection. The goal is to create a rich, informative annotation that helps answer the query.
-
+You are an AI agent specializing in scene understanding and reasoning. Your task is to write notes about a series of object detections to help answer a query. Analyze each detected object based ONLY on what you can visually observe. 
 
 Return a JSON list, where each entry contains the following keys:
 name: The name of the object. The name should correspond exactly to a detection in the provided list of detections.
-your notes: A refined and expanded version of the original notes provided in the input detections. This field should contain a query-focused description of the object, its relationships, and any other relevant information that can aid in answering the query.
+your notes: A detailed description of the object that precisely answers the query. A comprehensive, query-focused description of the object and its role within the scene. This annotation should reflect your understanding of the object based solely on the image. Do not rely or trust any pre-existing labels, names, or captions, as these may be incorrect or misleading. Correct any inaccuracies in the visual captions or labels of the detection.
 
 Detections: {detections}
 
