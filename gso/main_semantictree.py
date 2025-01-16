@@ -16,7 +16,7 @@ import scene_graph.pointcloud as pointcloud
 import scene_graph.utils as utils
 from scene_graph.datasets import get_dataset
 from scene_graph.features import FeatureComputer
-from scene_graph.perception import EdgeConsolidator, GenericMapper, CaptionConsolidator
+from scene_graph.perception import CaptionConsolidator, EdgeConsolidator, GenericMapper
 from scene_graph.relationship_scorer import RelationshipScorer
 from scene_graph.semantic_tree import SemanticTree
 from scene_graph.track import associate_dets_to_tracks, save_tracks
@@ -67,7 +67,9 @@ def main_semantictree(cfg: DictConfig):
         prompt_file="scene_graph/perception/prompts/edge_consolidation.txt",
     )
     caption_consolidator = CaptionConsolidator(
-        prompt_file="scene_graph/perception/prompts/caption_consolidation.txt"
+        json_detection_key=None,
+        json_other_keys=["label", "caption"],
+        prompt_file="scene_graph/perception/prompts/caption_consolidation.txt",
     )
     feature_computer = FeatureComputer(device)
     relationship_scorer = RelationshipScorer(downsample_voxel_size=0.02)
@@ -80,7 +82,6 @@ def main_semantictree(cfg: DictConfig):
     pose_list = []
     frame_list = []
     for frame_idx in tqdm(range(0, len(dataset), 7)):  # len(dataset)
-
         # Check if we should exit early only if the flag hasn't been set yet
         if not exit_early_flag and utils.should_exit_early(cfg.exit_early_file):
             print("Exit early signal detected. Skipping to the final frame...")
@@ -113,24 +114,19 @@ def main_semantictree(cfg: DictConfig):
         detections.extract_pcd(
             depth_cloud,
             color_np,
-            semantic_tree.geometry_map,
             downsample_voxel_size=cfg["downsample_voxel_size"],
             dbscan_remove_noise=cfg["dbscan_remove_noise"],
             dbscan_eps=cfg["dbscan_eps"],
             dbscan_min_points=cfg["dbscan_min_points"],
             trans_pose=trans_pose,
             obj_pcd_max_points=cfg["obj_pcd_max_points"],
-            neighbour_radius=cfg["neighbour_radius"],
         )
 
-        feature_computer.compute_features(
-            image_rgb, semantic_tree.geometry_map, detections
-        )
+        feature_computer.compute_features(image_rgb, detections)
 
         is_matched, matched_trackidx = associate_dets_to_tracks(
             detections,
             semantic_tree.get_tracks(),
-            semantic_tree.geometry_map,
             downsample_voxel_size=cfg["downsample_voxel_size"],
         )
 
@@ -144,7 +140,9 @@ def main_semantictree(cfg: DictConfig):
         )
 
         if counter > 0 and counter % 3 == 0:
-            semantic_tree.tracks = caption_consolidator.perceive(semantic_tree.tracks, color_np)
+            semantic_tree.tracks = caption_consolidator.perceive(
+                semantic_tree.tracks, color_np
+            )
             consolidated_edges = edge_consolidator.perceive(
                 semantic_tree.tracks,
                 semantic_tree.detections_for_consolidation,
@@ -163,27 +161,23 @@ def main_semantictree(cfg: DictConfig):
         if cfg["denoise_interval"] > 0 and (counter + 1) % cfg["denoise_interval"] == 0:
             for id in semantic_tree.track_ids:
                 semantic_tree.tracks[id].denoise(
-                    semantic_tree.geometry_map,
                     downsample_voxel_size=cfg["downsample_voxel_size"],
                     dbscan_remove_noise=cfg["dbscan_remove_noise"],
                     dbscan_eps=cfg["dbscan_eps"],
                     dbscan_min_points=cfg["dbscan_min_points"],
-                    neighbour_radius=cfg["neighbour_radius"],
                 )
 
     if cfg["run_filter_final_frame"]:
         for id in semantic_tree.track_ids:
             semantic_tree.tracks[id].denoise(
-                semantic_tree.geometry_map,
                 downsample_voxel_size=cfg["downsample_voxel_size"],
                 dbscan_remove_noise=cfg["dbscan_remove_noise"],
                 dbscan_eps=cfg["dbscan_eps"],
                 dbscan_min_points=cfg["dbscan_min_points"],
-                neighbour_radius=cfg["neighbour_radius"],
             )
 
     # hierarchy_matrix, hierarchy_type_matrix = relationship_scorer.infer_hierarchy_heuristics(
-    #         semantic_tree.tracks, semantic_tree.geometry_map
+    #         semantic_tree.tracks
     #     )
     if len(semantic_tree.imgs_for_consolidation) > 0:
         consolidated_edges = edge_consolidator.perceive(
@@ -200,14 +194,14 @@ def main_semantictree(cfg: DictConfig):
 
     semantic_tree.compute_node_levels(hierarchy_matrix, hierarchy_type_matrix)
 
-    # semantic_tree.process_rooms(
-    #     room_grid_resolution=cfg.room_grid_resolution,
-    #     img_list=img_list,
-    #     pose_list=pose_list,
-    #     frame_list=frame_list,
-    #     debug_folder=cfg.debug_folder,
-    #     device=device,
-    # )
+    semantic_tree.process_rooms(
+        room_grid_resolution=cfg.room_grid_resolution,
+        img_list=img_list,
+        pose_list=pose_list,
+        frame_list=frame_list,
+        debug_folder=cfg.debug_folder,
+        device=device,
+    )
 
     semantic_tree.save(
         semantic_tree_result_dir, hierarchy_matrix, hierarchy_type_matrix

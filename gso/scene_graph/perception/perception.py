@@ -608,7 +608,7 @@ class CaptionConsolidator(Perceptor):
         )
 
         for r in llm_response:
-            tracks[get_trackid_by_name(r["name"])].captions = r["caption"]
+            tracks[get_trackid_by_name(tracks, r["label"])].captions = [r["caption"]]
         return tracks
     
     def verify_json_response(self, response):

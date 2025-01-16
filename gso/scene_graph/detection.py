@@ -28,7 +28,6 @@ class Detection:
         bbox=None,
         confidence=None,
         local_pcd=None,
-        local_pcd_idxs=None,
         matched_track_name=None,
         features: Features = None,
         notes="",
@@ -42,7 +41,6 @@ class Detection:
         self.bbox = bbox
         self.confidence = confidence
         self.local_pcd = local_pcd
-        self.local_pcd_idxs = local_pcd_idxs
         self.features = features
         self.matched_track_name = matched_track_name
         self.edges = edges
@@ -52,7 +50,6 @@ class Detection:
         self,
         depth_cloud,
         img_rgb,
-        global_pcd,
         downsample_voxel_size,
         dbscan_remove_noise,
         dbscan_eps,
@@ -60,7 +57,6 @@ class Detection:
         run_dbscan=True,
         trans_pose=None,
         obj_pcd_max_points=5000,
-        neighbour_radius=0.02,
     ):
         downsampled_points, downsampled_colors = dynamic_downsample(
             depth_cloud[self.mask],
@@ -87,21 +83,9 @@ class Detection:
             )  # Apply transformation directly to the point cloud
 
         self.local_pcd = local_pcd
-        _, self.local_pcd_idxs = find_nearest_points(
-            np.array(self.local_pcd.points),
-            np.array(global_pcd.points),
-            radius=neighbour_radius,
-        )
 
-    def compute_local_pcd(self, full_pcd):
-        local_pcd = o3d.geometry.PointCloud()
-        local_pcd.points = o3d.utility.Vector3dVector(
-            np.array(full_pcd.points)[self.local_pcd_idxs]
-        )
-        local_pcd.colors = o3d.utility.Vector3dVector(
-            np.array(full_pcd.colors)[self.local_pcd_idxs]
-        )
-        return local_pcd
+    def compute_local_pcd(self):
+        return self.local_pcd 
 
 
 class DetectionList:
@@ -128,21 +112,18 @@ class DetectionList:
         self,
         depth_cloud,
         img_rgb,
-        global_pcd,
         downsample_voxel_size,
         dbscan_remove_noise,
         dbscan_eps,
         dbscan_min_points,
         trans_pose=None,
         obj_pcd_max_points=5000,
-        neighbour_radius=0.02,
     ):
 
         for object in self.objects:
             object.extract_pcd(
                 depth_cloud,
                 img_rgb,
-                global_pcd,
                 downsample_voxel_size=downsample_voxel_size,
                 dbscan_remove_noise=dbscan_remove_noise,
                 dbscan_eps=dbscan_eps,
@@ -150,7 +131,6 @@ class DetectionList:
                 run_dbscan=True,
                 trans_pose=trans_pose,
                 obj_pcd_max_points=obj_pcd_max_points,
-                neighbour_radius=neighbour_radius,
             )
 
     def __iter__(self):
@@ -173,7 +153,7 @@ class DetectionList:
         json_path = dir / "detections.json"
         annotated_img_path = dir / "annotated_masks.png"
         mask_path = dir / "masks.npz"
-        pcd_path = dir / "local_pcd_idxs.npz"
+        pcd_path = dir / "local_pcd.npz"
         json_data = []
 
         for i in range(len(self.objects)):
@@ -187,7 +167,9 @@ class DetectionList:
                 dir / ("bbox_crop-" + str(i) + "-" + obj.label + ".png"),
                 np.uint8(crop),
             )
-
+            
+            o3d.io.write_point_cloud(str(dir / Path('pcd-'+str(i)+'.pcd')), obj.local_pcd)
+            
             data = {
                 "label": obj.label,
                 "visual caption": obj.visual_caption,
@@ -202,8 +184,6 @@ class DetectionList:
 
             json_data.append(data)
 
-        local_pcd_idxs = self.get_field("local_pcd_idxs")
-        np.savez(pcd_path, *local_pcd_idxs)
         masks = self.get_field("mask")
         np.savez(mask_path, masks=masks)
 
@@ -224,7 +204,6 @@ def load_objects(result_dir, frame, temp_refine="temp-refine"):
         dir = Path(result_dir) / "detections" / str(frame)
     json_path = dir / "detections.json"
     masks_path = dir / "masks.npz"
-    pcd_path = dir / "local_pcd_idxs.npz"
     img_path = dir / "input_image.png"
 
     if not dir.exists():
@@ -244,15 +223,14 @@ def load_objects(result_dir, frame, temp_refine="temp-refine"):
         crops.append(utils.get_crop(img_np, box))
 
     masks = np.load(masks_path)["masks"]
-    local_pcd_idxs = np.load(pcd_path)
     num_detections = masks.shape[0]
     object_list = DetectionList()
     for i in range(num_detections):
-
         edges_i = []
         for edge in json_data[i]["edges"]:
             edges_i.append(load_edge(edge))
-
+            
+        local_pcd = o3d.io.read_point_cloud(str(dir / Path('pcd-'+str(i)+'.pcd')))
         object_list.add_object(
             Detection(
                 mask=masks[i],
@@ -263,7 +241,7 @@ def load_objects(result_dir, frame, temp_refine="temp-refine"):
                 bbox=json_data[i]["bbox"],
                 confidence=json_data[i]["confidence"],
                 matched_track_name=json_data[i]["track name"],
-                local_pcd_idxs=local_pcd_idxs["arr_" + str(i)],
+                local_pcd=local_pcd,
                 edges=edges_i,
             )
         )

@@ -41,7 +41,8 @@ class Visualizer3D:
         location,
         children_locs,
         children_labels,
-        points,
+        points_xyz,
+        points_colors,
         level,
         geometry_color=getrgb("gray"),
     ):
@@ -63,11 +64,15 @@ class Visualizer3D:
             ),
         )
         rr.log(
-            entity_path + "/node_point_cloud/" + name,
+            entity_path + "/node_point_cloud_lines/" + name,
             rr.LineStrips3D(
-                np.array([(location, i) for i in points]),
+                np.array([(location, i) for i in points_xyz]),
                 colors=np.asarray(geometry_color),
             ),
+        )
+        rr.log(
+            entity_path + "/node_point_cloud/" + name,
+            rr.Points3D(np.asarray(points_xyz), colors=np.asarray(points_colors), radii=0.01),
         )
         rr.log(
             entity_path + "/node_children/" + name,
@@ -297,7 +302,7 @@ if __name__ == "__main__":
             level=nodes[idx].level,
             children_locs=[nodes[c].location for c in children[idx]],
             children_labels=[nodes[c].label for c in children[idx]],
-            points=get_points_at_idxs(pcd, nodes[idx].local_pcd_idxs),
+            points= get_points_at_idxs(pcd, nodes[idx].local_pcd_idxs),
         )
 
     def get_points_at_idxs(pcd, idxs):

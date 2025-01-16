@@ -39,7 +39,7 @@ class FeatureComputer:
         )
         self.sentence_model = AutoModel.from_pretrained("BAAI/bge-small-en-v1.5")
 
-    def compute_features(self, img, full_pcd, objects):
+    def compute_features(self, img, objects):
         if len(objects) == 0:
             return
 
@@ -50,7 +50,7 @@ class FeatureComputer:
         centroids = []
         bboxes_3d = []
         for i in range(len(objects)):
-            local_pcd = objects[i].compute_local_pcd(full_pcd)
+            local_pcd = objects[i].compute_local_pcd()
             centroids.append(np.mean(local_pcd.points, 0))
             bboxes_3d.append(self.get_bounding_box(local_pcd))
 

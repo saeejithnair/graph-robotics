@@ -14,7 +14,7 @@ from transformers import AutoModel, AutoProcessor, AutoTokenizer
 from .detection import DetectionList, Edge
 from .floor import Floor, segment_floors
 from .pointcloud import pcd_denoise_dbscan
-from .rooms import Room, assign_tracks_to_rooms, segment_rooms
+from .rooms import Room, assign_tracks_to_rooms, segment_rooms, assign_frames_to_rooms
 from .track import get_trackid_by_name, load_tracks, object_to_track
 from .visualizer import Visualizer2D, Visualizer3D
 
@@ -309,19 +309,16 @@ class SemanticTree:
                 print("room id", room.room_id, "is", room_type)
                 self.rooms[room.room_id] = room
 
-                for id in room.represent_images:
-                    if id in frame_id_to_rooms:
-                        frame_id_to_rooms[id].append(room.room_id)
-                    else:
-                        frame_id_to_rooms[id] = [room.room_id]
+        poses_xyz = [p.detach().numpy()[:3,3] for p in pose_list]
+        room_ids = assign_frames_to_rooms(poses_xyz, self.geometry_map, self.floors)
+        for i,frame_id in enumerate(frame_list):
+            frame_id_to_rooms[frame_id] = room_ids[i]
 
         for frame_id in frame_list:
             log = self.navigation_log[frame_id]
             assert int(log["Frame Index"]) == frame_id
             if frame_id_to_rooms.get(frame_id):
-                log["Generic Mapping"]["Present Room"] = ",".join(
-                    frame_id_to_rooms[frame_id]
-                )
+                log["Generic Mapping"]["Present Room"] = frame_id_to_rooms[frame_id]
             else:
                 log["Generic Mapping"]["Present Room"] = None
 
@@ -435,9 +432,7 @@ class SemanticTree:
 
         # Compute visualization fields
         for idx in self.tracks.keys():
-            self.tracks[idx].compute_vis_centroid(
-                self.geometry_map, self.tracks[idx].level
-            )
+            self.tracks[idx].compute_vis_centroid(self.tracks[idx].level)
 
         # Visualize tracks
         for id in self.tracks.keys():
@@ -450,5 +445,6 @@ class SemanticTree:
                 level=self.tracks[id].level,
                 children_locs=[self.tracks[c].vis_centroid for c in children_ids],
                 children_labels=[self.tracks[c].label for c in children_ids],
-                points=self.tracks[id].get_points_at_idxs(self.geometry_map),
+                points_xyz=self.tracks[id].compute_local_pcd().points,
+                points_colors=self.tracks[id].compute_local_pcd().colors
             )

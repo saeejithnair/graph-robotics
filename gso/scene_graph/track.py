@@ -27,7 +27,7 @@ class Track:
         keyframe_ids: List[int],
         masks: list,
         bboxes: list,
-        local_pcd_idxs,
+        local_pcd,
         crops: list,
         level=None,
         times_scene=0,
@@ -45,42 +45,31 @@ class Track:
         self.edges = edges
         self.features = features
         self.times_scene = times_scene
-        self.local_pcd_idxs = local_pcd_idxs
-        self.local_pcd = None
+        self.local_pcd = local_pcd
         self.level = level
         self.keyframe_ids = list(keyframe_ids)
         self.notes = notes
         self.room_id = None
 
-    def compute_vis_centroid(self, global_pcd, level=None, height_by_level=False):
-        mean_pcd = np.mean(np.asarray(global_pcd.points)[self.local_pcd_idxs], 0)
+    def compute_vis_centroid(self, level=None, height_by_level=False):
+        local_points = np.asarray(self.local_pcd.points)
+        mean_pcd = np.mean(local_points, 0)
         height = None
         if height_by_level:
             height = self.level * 0.5 + 4  # heursitic
         else:
             max_pcd_height = np.max(
-                -np.asarray(global_pcd.points)[self.local_pcd_idxs], 0
+                -local_points, 0
             )[1]
             height = max_pcd_height + level * 0.3 + 0.5
         location = [mean_pcd[0], -1 * height, mean_pcd[2]]
         self.vis_centroid = location
 
-    def add_local_pcd_idxs(self, local_pcd_idxs):
-        self.local_pcd_idxs = np.concatenate((self.local_pcd_idxs, local_pcd_idxs))
+    def add_local_pcd(self, local_pcd):
+        self.local_pcd += local_pcd
 
-    def get_points_at_idxs(self, global_pcd):
-        return np.asarray(global_pcd.points)[self.local_pcd_idxs]
-
-    def compute_local_pcd(self, global_pcd):
-        local_pcd = o3d.geometry.PointCloud()
-        local_pcd.points = o3d.utility.Vector3dVector(
-            np.array(global_pcd.points)[self.local_pcd_idxs]
-        )
-        local_pcd.colors = o3d.utility.Vector3dVector(
-            np.array(global_pcd.colors)[self.local_pcd_idxs]
-        )
-        self.local_pcd = local_pcd
-        return local_pcd
+    def compute_local_pcd(self):
+        return self.local_pcd
 
     def merge_detection(self, object: Detection, keyframe_id):
         self.captions.append(object.visual_caption)
@@ -99,7 +88,7 @@ class Track:
             self.features.centroid * self.times_scene + object.features.centroid
         ) / (self.times_scene + 1)
 
-        self.add_local_pcd_idxs(object.local_pcd_idxs)
+        self.add_local_pcd(object.local_pcd)
 
         if not (object.notes == ""):
             self.notes = object.notes
@@ -112,15 +101,13 @@ class Track:
 
     def denoise(
         self,
-        global_pcd,
         downsample_voxel_size,
         dbscan_remove_noise,
         dbscan_eps,
         dbscan_min_points,
         run_dbscan=True,
-        neighbour_radius=0.02,
     ):
-        local_pcd = self.compute_local_pcd(global_pcd)
+        local_pcd = self.compute_local_pcd()
 
         self.local_pcd = denoise_pcd(
             local_pcd,
@@ -129,12 +116,6 @@ class Track:
             dbscan_eps=dbscan_eps,
             dbscan_min_points=dbscan_min_points,
             run_dbscan=run_dbscan,
-        )
-
-        _, self.local_pcd_idxs = find_nearest_points(
-            np.array(self.local_pcd.points),
-            np.array(global_pcd.points),
-            radius=neighbour_radius,
         )
 
 
@@ -146,11 +127,10 @@ def save_tracks(track_list, save_dir):
     bboxes_path = save_dir / "bboxes.npz"
     visual_embs_path = save_dir / "visual_embs.npz"
     caption_embs_path = save_dir / "caption_embs.npz"
-    pcd_path = save_dir / "local_pcd_idxs.npz"
     bboxes3d_path = save_dir / "bboxes_3d.txt"
     crops_path = save_dir / "crops.pkl"
 
-    json_data, local_pcd_idxs = [], []
+    json_data = []
     masks, bboxes, bboxes_3d, crops = [], [], [], []
     visual_embs, caption_embs = [], []
     for i in track_list:
@@ -173,19 +153,20 @@ def save_tracks(track_list, save_dir):
                 "room_id": trk.room_id,
             }
         )
-        local_pcd_idxs.append(trk.local_pcd_idxs)
 
         sample_crop = trk.crops[0]
         plt.imsave(
             save_dir / ("track-" + str(trk.id) + "-" + str(trk.label) + ".png"),
             sample_crop,
         )
+        
+        o3d.io.write_point_cloud(str(save_dir / Path('pcd-'+str(trk.id)+'.pcd')), trk.local_pcd)
+        
         crops.append(trk.crops)
         bboxes_3d.append(trk.features.bbox_3d)
         visual_embs.append(trk.features.visual_emb)
         caption_embs.append(trk.features.caption_emb)
 
-    np.savez(pcd_path, *local_pcd_idxs)
     np.savez(masks_path, masks=masks)
     np.savez(bboxes_path, bboxes=bboxes)
     np.savez(visual_embs_path, visual_embs=visual_embs)
@@ -217,7 +198,6 @@ def load_tracks(save_dir):
     caption_embs = np.load(save_dir / "caption_embs.npz", allow_pickle=True)[
         "caption_embs"
     ]
-    local_pcd_idxs = np.load(save_dir / "local_pcd_idxs.npz", allow_pickle=True)
 
     with open(save_dir / "tracks.json") as f:
         text_data = json.load(f)
@@ -232,6 +212,8 @@ def load_tracks(save_dir):
         features = Features(
             visual_embs[i], caption_embs[i], data["centroid"], bboxes_3d[i]
         )
+        local_pcd = o3d.io.read_point_cloud(str(save_dir / Path('pcd-'+str(data["id"])+'.pcd')))
+
         trk = Track(
             id=data["id"],
             label=data["label"],
@@ -240,7 +222,7 @@ def load_tracks(save_dir):
             keyframe_ids=data["keyframe_ids"],
             masks=masks[i],
             bboxes=bboxes[i],
-            local_pcd_idxs=local_pcd_idxs["arr_" + str(i)],
+            local_pcd=local_pcd,
             crops=crops[i],
             level=data["level"],
             times_scene=data["times_scene"],
@@ -272,7 +254,7 @@ def object_to_track(object: Detection, keyframe_id, edges=[]):
         masks=[object.mask],
         bboxes=[object.bbox],
         keyframe_ids=[keyframe_id],
-        local_pcd_idxs=object.local_pcd_idxs,
+        local_pcd=object.local_pcd,
         crops=[object.crop],
         notes=object.notes,
         edges=edges,
@@ -282,7 +264,7 @@ def object_to_track(object: Detection, keyframe_id, edges=[]):
 
 
 def associate_dets_to_tracks(
-    new_objects: DetectionList, current_tracks, full_pcd, downsample_voxel_size
+    new_objects: DetectionList, current_tracks, downsample_voxel_size
 ):
     if len(current_tracks) == 0:
         return np.zeros((len(new_objects))), np.zeros(len(new_objects))
@@ -290,7 +272,7 @@ def associate_dets_to_tracks(
         return [], []
 
     track_pcds = [
-        np.asarray(trk.compute_local_pcd(full_pcd).points, dtype=np.float32)
+        np.asarray(trk.compute_local_pcd().points, dtype=np.float32)
         for trk in current_tracks
     ]
     indices = [faiss.IndexFlatL2(arr.shape[1]) for arr in track_pcds]
@@ -304,7 +286,7 @@ def associate_dets_to_tracks(
     centroid_distances = np.zeros((len(new_objects), len(current_tracks)))
     for i in range(len(new_objects)):
         new_obj_pcd = np.array(
-            new_objects[i].compute_local_pcd(full_pcd).points, dtype=np.float32
+            new_objects[i].compute_local_pcd().points, dtype=np.float32
         )
         for j in range(len(current_tracks)):
             visual_scores[i][j] = np.dot(

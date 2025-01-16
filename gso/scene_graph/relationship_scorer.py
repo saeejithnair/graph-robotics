@@ -135,7 +135,6 @@ class RelationshipScorer:
     def infer_hierarchy_heuristics(
         self,
         current_tracks,
-        full_pcd,
         neighbour_thresh=1,
         downsample_voxel_size=0.02,
         in_threshold=0.8,
@@ -152,7 +151,7 @@ class RelationshipScorer:
 
         # Convert the point clouds into numpy arrays and then into FAISS indices for efficient search
         track_pcds = [
-            np.asarray(trk.compute_local_pcd(full_pcd).points, dtype=np.float32)
+            np.asarray(trk.compute_local_pcd().points, dtype=np.float32)
             for trk in track_values
         ]
         indices = [faiss.IndexFlatL2(arr.shape[1]) for arr in track_pcds]
@@ -161,13 +160,13 @@ class RelationshipScorer:
 
         track_top_pcds = [
             pointcloud.get_top_points(
-                np.asarray(trk.compute_local_pcd(full_pcd).points, dtype=np.float32)
+                np.asarray(trk.compute_local_pcd().points, dtype=np.float32)
             )
             for trk in track_values
         ]
         track_bottom_pcds = [
             pointcloud.get_bottom_points(
-                np.asarray(trk.compute_local_pcd(full_pcd).points, dtype=np.float32)
+                np.asarray(trk.compute_local_pcd().points, dtype=np.float32)
             )
             for trk in track_values
         ]
@@ -228,13 +227,13 @@ class RelationshipScorer:
     #         i += 1
     #     return track_to_parent
 
-    def compute_containedin_matrix(self, tracks, full_pcd):
+    def compute_containedin_matrix(self, tracks):
         downsample_voxel_size = self.downsample_voxel_size
         track_values = list(tracks.values())
 
         # Convert the point clouds into numpy arrays and then into FAISS indices for efficient search
         track_pcds = [
-            np.asarray(trk.compute_local_pcd(full_pcd).points, dtype=np.float32)
+            np.asarray(trk.compute_local_pcd().points, dtype=np.float32)
             for trk in track_values
         ]
         indices = [faiss.IndexFlatL2(arr.shape[1]) for arr in track_pcds]
@@ -273,20 +272,20 @@ class RelationshipScorer:
 
         return overlap_matrix
 
-    def compute_ontop_matrix(self, tracks, full_pcd):
+    def compute_ontop_matrix(self, tracks):
         downsample_voxel_size = self.downsample_voxel_size
         track_values = list(tracks.values())
 
         # Convert the point clouds into numpy arrays and then into FAISS indices for efficient search
         track_top_pcds = [
             pointcloud.get_top_points(
-                np.asarray(trk.compute_local_pcd(full_pcd).points)
+                np.asarray(trk.compute_local_pcd().points)
             )
             for trk in track_values
         ]
         track_bottom_pcds = [
             pointcloud.get_bottom_points(
-                np.asarray(trk.compute_local_pcd(full_pcd).points)
+                np.asarray(trk.compute_local_pcd().points)
             )
             for trk in track_values
         ]
