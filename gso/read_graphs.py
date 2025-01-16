@@ -40,9 +40,11 @@ def read_conceptgraph(graph_path, image_paths):
     return graph, graph_keyframes
 
 
-def read_hamsg_flatgraph(graph_path, device="cuda") -> SemanticTree:
+def read_hamsg_flatgraph(
+    graph_path, device="cpu", load_floors=True, load_rooms=True
+) -> SemanticTree:
     semantic_tree = SemanticTree(device)
-    semantic_tree.load(graph_path)
+    semantic_tree.load(graph_path, load_floors=load_floors, load_rooms=load_rooms)
     return semantic_tree
 
     f = open(graph_path / "tracks/tracks.json")

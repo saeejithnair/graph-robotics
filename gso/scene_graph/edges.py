@@ -5,14 +5,14 @@ class Edge:
     def __init__(
         self,
         type: str,
-        subject,
+        subject_object,
         related_object,
         frame_id=None,
         explanation=None,
         description=None,
     ):
         self.type = type
-        self.subject = subject
+        self.subject_object = subject_object
         self.related_object = related_object
         self.frame_id = frame_id
         self.explanation = explanation
@@ -23,7 +23,7 @@ class Edge:
         valid_object_names = [i.lower() for i in valid_object_names]
         if not (self.type.lower() in valid_types):
             return False
-        if not self.subject.lower() in valid_object_names:
+        if not self.subject_object.lower() in valid_object_names:
             return False
         if not self.related_object.lower() in valid_object_names:
             return False
@@ -33,7 +33,7 @@ class Edge:
         if self.description:
             return {
                 "type": self.type,
-                "subject": self.subject,
+                "subject": self.subject_object,
                 "related object": self.related_object,
                 "frame_id": self.frame_id,
                 "description": self.description,
@@ -41,7 +41,7 @@ class Edge:
         else:
             return {
                 "type": self.type,
-                "subject": self.subject,
+                "subject": self.subject_object,
                 "related object": self.related_object,
                 "frame_id": self.frame_id,
             }

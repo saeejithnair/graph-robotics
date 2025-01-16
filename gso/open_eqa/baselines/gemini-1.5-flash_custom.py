@@ -187,7 +187,7 @@ def main(args: argparse.Namespace):
     for idx, item in enumerate(tqdm.tqdm(dataset)):
         if args.dry_run and idx >= 5:
             break
-        if idx >= 200:
+        if idx >= 43:
             break
         # skip completed questions
         question_id = item["question_id"]

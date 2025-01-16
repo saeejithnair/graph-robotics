@@ -324,7 +324,7 @@ def extract_scene_prompts(
     dataset,
     edge_types=[
         "enclosed within",
-        "resting on",
+        "resting on top of",
         "directly connected to",
         "subpart of",
     ],

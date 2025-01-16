@@ -39,7 +39,7 @@ def parse_output(output: str) -> str:
 api_declarations = [
     {
         "name": "analyze_frame",
-        "description": "Analyzes an image frame based on a query and updates the Scene Graph with the findings.",
+        "description": "Analyzes an image based on a given query and updates the Scene Graph with the findings. Returns an image of the requested frame and an updated Scene Graph and Observation Log with the analysis.",
         "parameters": {
             "type": "object",
             "properties": {
@@ -158,6 +158,8 @@ def reasoning_loop_only_graph(
         video_uri = None
 
     vertexai.init(project="total-byte-432318-q3")
+    # vertexai.init(project="robotics-447921")
+
     model = GenerativeModel(
         model_name="gemini-1.5-flash-002",  # "gemini-1.5-flash-002" "gemini-2.0-flash-exp"
         tools=[Tool([FunctionDeclaration(**a) for a in api_declarations])],
@@ -206,11 +208,11 @@ def reasoning_loop_only_graph(
                 continue
             tool = part.function_call
             keyframe = int(tool.args["frame_id"])
-            if not keyframe in semantic_tree.visual_memory:
-                call_response.append(Part.from_text(f"Frame Index {keyframe}:"))
-                call_response.append(
-                    Part.from_image(Image.load_from_file(dataset.color_paths[keyframe]))
-                )
+            # if not keyframe in semantic_tree.visual_memory:
+            call_response.append(Part.from_text(f"Frame Index {keyframe}:"))
+            call_response.append(
+                Part.from_image(Image.load_from_file(dataset.color_paths[keyframe]))
+            )
             semantic_tree, api_response, api_log = api.call(
                 {"type": tool.name, **tool.args},
                 dataset,

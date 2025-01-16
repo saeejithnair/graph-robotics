@@ -118,7 +118,7 @@ class RelationshipScorer:
                 related_object = edge.related_object
                 related_object_id = get_trackid_by_name(current_tracks, related_object)
                 print(
-                    "Debug: subject_id",
+                    "Debug edges: subject_id",
                     subject_id,
                     "related_object_id",
                     related_object_id,
@@ -126,7 +126,7 @@ class RelationshipScorer:
                     edge.type,
                 )
                 assert not (related_object_id is None)
-                assert not (subject_id == edge.subject)
+                assert not (subject_id is None)
                 # Parent object = related_object_id, Child object = subject_id
                 hierarchy_matrix[related_object_id][subject_id] += 1
                 hierarchy_type_matrix[related_object_id][subject_id] = edge.type

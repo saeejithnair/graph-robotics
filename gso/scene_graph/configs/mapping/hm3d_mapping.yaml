@@ -29,6 +29,9 @@ questions_exp_name: flat_graph
 questions_dry_run : False
 questions_ignore_old_results : True
 
+# Rooms and Floors
+room_grid_resolution: 0.2
+debug_folder: /home/qasim/Projects/graph-robotics/gso/debug
 stride: 1
 exp_suffix: r_mapping # helpful label to identify your mapping experiment
 
@@ -59,7 +62,7 @@ obj_min_points: 0
 obj_min_detections: 1
 
 # For merge_overlap_objects() function
-use_rerun: !!bool False
+use_rerun: !!bool True
 save_rerun: !!bool False
 
 # hydra:

@@ -179,9 +179,9 @@ class SemanticTree:
     def integrate_generic_log(self, llm_response, detections, frame_idx):
         i = self.get_navigation_log_idx(frame_idx)
 
-        edges_in_frame = []
-        for det in detections:
-            edges_in_frame += [edge for edge in det.edges]
+        # edges_in_frame = []
+        # for det in detections:
+        #     edges_in_frame += [edge for edge in det.edges]
 
         self.navigation_log[i]["Generic Mapping"] = {
             "Relative Motion": llm_response["Relative Motion"],
@@ -189,7 +189,7 @@ class SemanticTree:
             "View": llm_response["View"],
             "Summary": llm_response["Summary"],
             "Detections": [d.matched_track_name for d in detections],
-            "Edges": [edge.json() for edge in edges_in_frame],
+            # "Edges": [edge.json() for edge in edges_in_frame],
         }
 
     def integrate_refinement_log(
@@ -261,7 +261,7 @@ class SemanticTree:
     def merge_edge_buffer(self, edges, clear_buffers=True):
         # Replace the names of the edges from the detection names to the track names. Then add the edges into the track list.
         for edge in edges:
-            subject_trkid = get_trackid_by_name(self.tracks, edge.subject)
+            subject_trkid = get_trackid_by_name(self.tracks, edge.subject_object)
             self.tracks[subject_trkid].edges.append(edge)
         if clear_buffers:
             self.edges_for_consolidation = []

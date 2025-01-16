@@ -40,7 +40,7 @@
             "request": "launch",
             "program": "open_eqa/evaluate-predictions.py",
             "console": "integratedTerminal",
-            "args": ["/home/qasim/Projects/graph-robotics/gso/open_eqa/results/baseline-open-eqa-v0-gemini-1.5-flash-latest.json", "--force"],
+            "args": ["/home/qasim/Projects/graph-robotics/gso/open_eqa/results/baseline-open-eqa-v0-gemini-1.5-flash-002.json", "--force"],
             // "/home/qasim/Projects/graph-robotics/gso/open_eqa/results/open-eqa-v0-gemini-1.5-flash-latest-flat_graph.json"
             "justMyCode": false
         },

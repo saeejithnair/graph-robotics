@@ -10,6 +10,7 @@ def init_gemini():
     os.environ["GOOGLE_API_KEY"] = GOOGLE_API_KEY
     os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = os.path.abspath(
         "/home/qasim/Projects/graph-robotics/api_keys/total-byte-432318-q3-78e6d4aa6497.json"
+        # "/home/qasim/Projects/graph-robotics/api_keys/robotics-447921.json"
     )
 
 
