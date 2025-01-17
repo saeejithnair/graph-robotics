@@ -26,6 +26,7 @@ from scene_graph.features import FeatureComputer
 from scene_graph.perception import PerceptorWithTextPrompt
 from scene_graph.pointcloud import create_depth_cloud
 from scene_graph.relationship_scorer import RelationshipScorer
+from scene_graph.rooms import assign_tracks_to_rooms
 from scene_graph.semantic_tree import SemanticTree
 from scene_graph.track import associate_dets_to_tracks, get_trackid_by_name
 
@@ -220,7 +221,6 @@ class API_GraphAPI(API):
             detections.extract_pcd(
                 depth_cloud,
                 color_np,
-                semantic_tree.geometry_map,
                 downsample_voxel_size=downsample_voxel_size,
                 dbscan_remove_noise=True,
                 dbscan_eps=0.1,
@@ -228,13 +228,10 @@ class API_GraphAPI(API):
                 trans_pose=trans_pose,
                 obj_pcd_max_points=obj_pcd_max_points,
             )
-            self.feature_computer.compute_features(
-                image_rgb, semantic_tree.geometry_map, detections
-            )
+            self.feature_computer.compute_features(image_rgb, detections)
             det_matched, matched_tracks = associate_dets_to_tracks(
                 detections,
                 semantic_tree.get_tracks(),
-                semantic_tree.geometry_map,
                 downsample_voxel_size=downsample_voxel_size,
             )
             detections, edges = semantic_tree.integrate_detections(
@@ -259,6 +256,9 @@ class API_GraphAPI(API):
             )
             semantic_tree.compute_node_levels(hierarchy_matrix, hierarchy_type_matrix)
 
+            semantic_tree.tracks = assign_tracks_to_rooms(
+                semantic_tree.tracks, semantic_tree.geometry_map, semantic_tree.floors
+            )
             for det in prev_detections:
                 if det.label in detections.get_field("label"):
                     continue
@@ -352,10 +352,12 @@ def extract_scene_prompts(
             # del log["Generic Mapping"]["Estimated Current Location"]
 
             # Replace the Estimated Current Location with the Present Room
-            # log["Generic Mapping"]["Estimated Current Location"] = semantic_tree.rooms[
-            #     log["Generic Mapping"]["Present Room"]
-            # ].get_semantic_name()
-            # del log["Generic Mapping"]["Present Room"]
+            log["Generic Mapping"]["Current Room"] = "unknown"
+            if log["Generic Mapping"]["Present Room"] != "unknown":
+                log["Generic Mapping"]["Current Room"] = log["Generic Mapping"][
+                    "Present Room"
+                ]
+            del log["Generic Mapping"]["Present Room"]
 
             semantic_tree
 
@@ -397,6 +399,7 @@ def extract_scene_prompts(
     #                 "visual caption": semantic_tree.tracks[id].captions[0],
     #                 "your notes": semantic_tree.tracks[id].notes,
     #                 "times scene": semantic_tree.tracks[id].times_scene,
+    #                 "room": semantic_tree.tracks[id].room_id,
     #                 "hierarchy level": semantic_tree.tracks[id].level,
     #                 "centroid": semantic_tree.tracks[id].features.centroid.tolist(),
     #             }
@@ -431,9 +434,10 @@ def extract_scene_prompts(
                 "visual caption": track.captions[0],
                 "your notes": track.notes,
                 "times scene": track.times_scene,
+                "room": track.room_id,
                 "hierarchy level": track.level,
                 "centroid": track.features.centroid.tolist(),
-                "relationships": [e.json() for e in track.edges],
+                "relationships": edges,
             }
         )
 
@@ -447,6 +451,7 @@ def extract_scene_prompts(
     #             "visual caption": track.captions[0],
     #             "your notes": track.notes,
     #             "times scene": track.times_scene,
+    #             "room": track.room_id,
     #             "hierarchy level": track.level,
     #             "centroid": track.features.centroid.tolist(),
     #         }
@@ -460,9 +465,9 @@ def extract_scene_prompts(
     # Option 4: Hierarchy with room nodes
     # edges = []
     # for room in semantic_tree.rooms:
-    #     graph[room.get_semantic_name()] = {"Objects": []}
+    #     graph[room.name] = {"Objects": []}
     # for track in semantic_tree.tracks.values():
-    #     room_name = semantic_tree.rooms[track.room_id].get_semantic_name()
+    #     room_name = track.room_id
     #     graph[room_name]["Objects"].append(
     #         {
     #             "name": track.name,

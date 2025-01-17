@@ -49,7 +49,7 @@ class Track:
         self.level = level
         self.keyframe_ids = list(keyframe_ids)
         self.notes = notes
-        self.room_id = None
+        self.room_id = room_id
 
     def compute_vis_centroid(self, level=None, height_by_level=False):
         local_points = np.asarray(self.local_pcd.points)

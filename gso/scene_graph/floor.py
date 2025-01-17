@@ -66,7 +66,7 @@ class Floor:
         with open(path + "/" + str(self.floor_id) + ".json") as json_file:
             metadata = json.load(json_file)
             self.name = metadata["name"]
-            self.rooms = metadata["rooms"]
+            # self.rooms = metadata["rooms"]
             self.vertices = np.asarray(metadata["vertices"])
             self.floor_height = metadata["floor_height"]
             self.floor_zero_level = metadata["floor_zero_level"]
@@ -120,7 +120,9 @@ def segment_floors(
         plt.figure()
         plt.plot(z_hist[1][:-1], z_hist_smooth)
         plt.plot(z_hist[1][peaks], z_hist_smooth[peaks], "x")
-        plt.hlines(min_peak_height, np.min(z_hist[1]), np.max(z_hist[1]), colors="r")
+        plt.hlines(
+            min_peak_height, np.min(z_hist[1]), np.max(z_hist[1]), colors="r"
+        )
         plt.savefig(os.path.join(graph_tmp_folder, "floor_histogram.png"))
 
     # cluster the peaks using DBSCAN
@@ -134,6 +136,21 @@ def segment_floors(
         plt.plot(z_hist[1][:-1], z_hist_smooth)
         plt.plot(z_hist[1][peaks], z_hist_smooth[peaks], "x")
         plt.hlines(min_peak_height, np.min(z_hist[1]), np.max(z_hist[1]), colors="r")
+        plt.savefig(os.path.join(graph_tmp_folder, "floor_histogram.png"))
+
+    # cluster the peaks using DBSCAN
+    peaks_locations = z_hist[1][peaks]
+    clustering = DBSCAN(eps=1, min_samples=1).fit(peaks_locations.reshape(-1, 1))
+    labels = clustering.labels_
+
+    # plot the histogram
+    if save_intermediate_results:
+        plt.figure()
+        plt.plot(z_hist[1][:-1], z_hist_smooth)
+        plt.plot(z_hist[1][peaks], z_hist_smooth[peaks], "x")
+        plt.hlines(
+            min_peak_height, np.min(z_hist[1]), np.max(z_hist[1]), colors="r"
+        )
         # plot the clusters
         for i in range(len(np.unique(labels))):
             plt.plot(
@@ -141,7 +158,9 @@ def segment_floors(
                 z_hist_smooth[peaks[labels == i]],
                 "o",
             )
-        plt.savefig(os.path.join(graph_tmp_folder, "floor_histogram_cluster.png"))
+        plt.savefig(
+            os.path.join(graph_tmp_folder, "floor_histogram_cluster.png")
+        )
 
     # for each cluster find the top 2 peaks
     clustred_peaks = []
@@ -162,15 +181,11 @@ def segment_floors(
     print("clustred_peaks", clustred_peaks)
 
     floors = []
-    if len(np.unique(labels)) < 2:
-        print("Only one peak detected; treating entire range as a single floor.")
-        floors = [[np.min(downpcd[:, 1]), np.max(downpcd[:, 1])]]
-    else:
-        # for every two consecutive peaks with 2m distance, assign floor level
-        for i in range(0, len(clustred_peaks) - 1, 2):
-            floors.append([clustred_peaks[i], clustred_peaks[i + 1]])
-        print("floors", floors)
-        # for the first floor extend the floor to the ground
+    # for every two consecutive peaks with 2m distance, assign floor level
+    for i in range(0, len(clustred_peaks) - 1, 2):
+        floors.append([clustred_peaks[i], clustred_peaks[i + 1]])
+    print("floors", floors)
+    # for the first floor extend the floor to the ground
     floors[0][0] = (floors[0][0] + np.min(downpcd[:, 1])) / 2
     # for the last floor extend the floor to the ceiling
     floors[-1][1] = (floors[-1][1] + np.max(downpcd[:, 1])) / 2

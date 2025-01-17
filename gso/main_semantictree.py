@@ -140,9 +140,6 @@ def main_semantictree(cfg: DictConfig):
         )
 
         if counter > 0 and counter % 3 == 0:
-            semantic_tree.tracks = caption_consolidator.perceive(
-                semantic_tree.tracks, color_np
-            )
             consolidated_edges = edge_consolidator.perceive(
                 semantic_tree.tracks,
                 semantic_tree.detections_for_consolidation,
@@ -150,7 +147,11 @@ def main_semantictree(cfg: DictConfig):
                 edges_buffer=semantic_tree.edges_for_consolidation,
             )
             semantic_tree.merge_edge_buffer(consolidated_edges)
-
+        if counter > 0 and counter % 6 == 0:
+            semantic_tree.tracks = caption_consolidator.perceive(
+                semantic_tree.tracks, color_np
+            )
+            
         semantic_tree.integrate_generic_log(llm_response, detections, frame_idx)
 
         perceptor.save_results(

@@ -97,25 +97,32 @@ class SemanticTree:
 
         if load_floors:
             self.floors = []
-            floor_files = os.listdir(os.path.join(folder, "floors"))
+            floor_files = os.listdir(os.path.join(folder, "semantic_tree/floors"))
             floor_files.sort()
             floor_files = sorted([f for f in floor_files if f.endswith(".ply")])
             for floor_file in floor_files:
                 floor_file = floor_file.split(".")[0]
                 floor = Floor(str(floor_file), name="floor_" + str(floor_file))
-                floor.load(os.path.join(folder, "floors"))
+                floor.load(os.path.join(folder, "semantic_tree/floors"))
                 self.floors.append(floor)
 
         if load_rooms:
             self.rooms = {}
-            room_files = os.listdir(os.path.join(folder, "rooms"))
+            room_files = os.listdir(os.path.join(folder, "semantic_tree/rooms"))
             room_files.sort()
             room_files = [f for f in room_files if f.endswith(".ply")]
             for room_file in room_files:
                 room_file = room_file.split(".")[0]
                 room = Room(str(room_file), room_file.split("_")[0])
-                room.load(os.path.join(folder, "rooms"))
-                self.rooms[room.room_id].append(room)
+                room.load(os.path.join(folder, "semantic_tree/rooms"))
+                
+                floor = None
+                for i in range(len(self.floors)):
+                    if self.floors[i].floor_id == room.floor_id:
+                        floor = self.floors[i]
+                        break
+                floor.rooms.append(room)
+                self.rooms[room.room_id] = room
 
     def extract_visual_memory(self, visual_memory_k):
         self.visual_memory = []
@@ -395,7 +402,7 @@ class SemanticTree:
         np.savetxt(save_dir / "track_ids.txt", np.array(self.track_ids, dtype=np.int32))
 
         rooms_folder = os.path.join(save_dir, "rooms")
-        floors_folder = os.path.join(save_dir, "rooms")
+        floors_folder = os.path.join(save_dir, "floors")
         shutil.rmtree(rooms_folder, ignore_errors=True)
         shutil.rmtree(floors_folder, ignore_errors=True)
         os.makedirs(rooms_folder, exist_ok=True)

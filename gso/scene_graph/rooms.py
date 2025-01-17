@@ -25,6 +25,7 @@ from hovsg.utils.graph_utils import (
     distance_transform,
     feats_denoise_dbscan,
     find_intersection_share,
+    find_containment,
     map_grid_to_point_cloud,
 )
 from omegaconf import DictConfig
@@ -97,76 +98,11 @@ class Room:
         unique, counts = np.unique(col_ids, return_counts=True)
         unique_id = np.argmax(counts)
         type_id = unique[unique_id]
-        self.name = default_room_types[type_id]
+        self.name = default_room_types[type_id] + ' ' + str(self.room_id)
         print(f"The room view ids are {self.represent_images}")
         print(f"The room type is {default_room_types[type_id]}")
         return default_room_types[type_id]
-
-    def infer_room_type_from_objects(
-        self,
-        infer_method: str = "label",
-        default_room_types: List[str] = None,
-        clip_model: Any = None,
-        clip_feat_dim: int = None,
-    ) -> str:
-        """Use the objects contained in the room to infer a room type. We want to ask GPT what kind of room it is from
-        the names for the objects contained in the room.
-
-        Args:
-            infer_method (str): "label" if we want to directly use the pre-computed object names in the children nodes.
-                                "obj_embedding" if we want to use the embedding of the room node's children to infer the
-                                room type. default_room_types can not be None if infer_method is "embedding".
-            default_room_types (List[str] = None): the output room type should only be a room type from the list.
-            clip_model (Any): when the generate_method is set to "embedding", a clip model needs to be
-                              provided to the method.
-            clip_feat_dim (int): when the generate_method is set to "embedding", the clip features dimension
-                                 needs to be provided to this method
-
-        Returns:
-            str: room type name
-        """
-        from llm.llm_utils import infer_room_type_from_object_list_chat
-
-        if infer_method == "label":
-            objects_list = []
-            for obj_i, obj in enumerate(self.objects):
-                obj: Object
-                if not any(
-                    substring in obj.name.lower()
-                    for substring in [
-                        "wall",
-                        "floor",
-                        "ceiling",
-                        "railing",
-                        "roof",
-                        "void",
-                        "unlabeled",
-                        "misc",
-                    ]
-                ):
-                    objects_list.append(obj.name)
-            room_type = infer_room_type_from_object_list_chat(
-                objects_list, default_room_type=default_room_types
-            )
-            self.name = room_type
-        if infer_method == "obj_embedding":
-            assert (
-                default_room_types
-            ), "default_room_types can not be None if infer_method is 'embedding'"
-            object_embs = []
-            for obj_i, obj in enumerate(self.objects):
-                obj: Object
-                object_embs.append(obj.embedding)
-
-            represent_feat = feats_denoise_dbscan(object_embs).reshape((1, -1))
-            text_feats = get_text_feats_multiple_templates(
-                default_room_types, clip_model, clip_feat_dim
-            )
-            sim_mat = compute_similarity(represent_feat, text_feats)
-            col_id = np.argmax(sim_mat)
-            self.name = default_room_types[col_id]
-        print("room_id, name: ", self.room_id, self.name)
-
+    
     def save(self, path):
         """
         Save the room in folder as ply for the point cloud
@@ -217,11 +153,12 @@ class Room:
 def assign_tracks_to_rooms(tracks: List[Track], global_pcd, floors):
     """
     Assigns each track to the room with the highest overlap and populates the room_id attribute.
+    Uses both overlap-based and distance-based assignment strategies.
 
     Args:
-        tracks (List[Track]): List of Track objects to process.
-        global_pcd (o3d.geometry.PointCloud): The global point cloud for the scene.
-        floors (List[Floor]): List of Floor objects containing rooms.
+    tracks (List[Track]): List of Track objects to process.
+    global_pcd (o3d.geometry.PointCloud): The global point cloud for the scene.
+    floors (List[Floor]): List of Floor objects containing rooms.
     """
     margin = 0.2  # Height margin for associating tracks to floors
 
@@ -229,47 +166,131 @@ def assign_tracks_to_rooms(tracks: List[Track], global_pcd, floors):
     track_keys = tracks.keys()
     for id in track_keys:
         track = tracks[id]
-        # Compute the local point cloud for the track
-        local_pcd = track.compute_local_pcd(global_pcd)
-        local_pcd_points = np.asarray(local_pcd.points)
-
-        # Initialize variables to track the best match
-        best_room_id = None
-        max_overlap = 0
         try:
+            # Compute the local point cloud for the track
+            local_pcd = track.compute_local_pcd()
+            local_pcd_points = np.asarray(local_pcd.points)
+
+            # Initialize variables to track the best match
+            best_room_name = "unknown"
+            best_association = float('-inf')  # Changed to handle negative distances
+
             # Iterate through all floors to find the best room
             for floor in floors:
                 min_z = np.min(local_pcd_points[:, 1])
                 max_z = np.max(local_pcd_points[:, 1])
 
                 # Check if the track lies within the current floor's height range
-                if min_z > floor.floor_zero_level - margin and max_z < (
-                    floor.floor_zero_level + floor.floor_height + margin
-                ):
-                    # Iterate through the rooms in the floor
+                if min_z > floor.floor_zero_level - margin:
+                    # Calculate room associations for all rooms in the floor
+                    room_assoc = []
                     for room in floor.rooms:
-                        # Calculate the overlap between the room and the track's local point cloud
+                        # Calculate overlap between room and track's local point cloud
                         overlap = find_intersection_share(
-                            room.vertices, local_pcd_points[:, [0, 2]], 0.2
+                            room.vertices,
+                            local_pcd_points[:, [0, 2]],
+                            0.2
                         )
+                        room_assoc.append(overlap)
 
-                        # Update the best match if this room has a higher overlap
-                        if overlap > max_overlap:
-                            max_overlap = overlap
-                            best_room_id = room.room_id
+                    # If no overlap found with any room, use distance-based assignment
+                    if np.sum(room_assoc) == 0:
+                        track_center = np.mean(local_pcd_points[:, [0, 2]], axis=0)
+                        for r_idx, room in enumerate(floor.rooms):
+                            # Calculate negative distance (higher is better)
+                            room_center = np.mean(room.vertices, axis=0)
+                            distance = -1 * np.linalg.norm(room_center - track_center)
+                            room_assoc[r_idx] = distance
+
+                    # Find the best room match for this floor
+                    max_assoc = max(room_assoc)
+                    if max_assoc > best_association:
+                        best_association = max_assoc
+                        best_room_idx = np.argmax(room_assoc)
+                        best_room_name = floor.rooms[best_room_idx].name
+
             # Assign the best matching room ID to the track
-            track.room_id = best_room_id
-            # Optionally, log information for debugging
-            print(
-                f"Track {track.id} ('{track.label}') assigned to Room {best_room_id} with overlap {max_overlap:.2f}"
-            )
-        except:
-            print("removing track due to pcd issues", track.name)
-            del tracks[id]
+            track.room_id = best_room_name
+
+            # Log assignment information
+            assignment_type = "overlap" if best_association >= 0 else "distance"
+            print(f"Track {track.id} ('{track.label}') assigned to Room {best_room_name} "
+                  f"with {assignment_type}-based score {best_association:.2f}")
+
+        except Exception as e:
+            print(f"Error processing track {track.name}: {str(e)}")
             continue
 
     return tracks
 
+def assign_frames_to_rooms(poses, global_pcd, floors):
+    """
+    Assigns each camera pose to a room using both overlap and distance-based methods.
+
+    Args:
+        poses (List[np.ndarray]): List of camera poses, each as [x, y, z] coordinates
+        global_pcd (o3d.geometry.PointCloud): The global point cloud for the scene
+        floors (List[Floor]): List of Floor objects containing rooms
+
+    Returns:
+        List[str]: List of room names corresponding to each pose
+    """
+    margin = 0.2  # Height margin for associating poses to floors
+    room_ids = []
+
+    # Iterate through all poses
+    for i, pose in enumerate(poses):
+        try:
+            # Extract pose coordinates
+            x, y, z = pose[0], pose[1], pose[2]
+            pose_point = np.array([[x, z]])  # Using x,z for 2D plane
+
+            # Initialize variables to track the best match
+            best_room_name = "unknown"
+            best_association = float('-inf')  # Handle both overlap and distance scores
+
+            # Iterate through all floors to find the best room
+            for floor in floors:
+                # Check if the pose lies within the current floor's height range
+                if y > floor.floor_zero_level - margin:
+                    # Calculate room associations for all rooms in the floor
+                    room_assoc = []
+                    
+                    for room in floor.rooms:
+                        # Check if point is inside room polygon
+                        room_vertices = room.vertices  # Assuming vertices are in (x,z) format
+                        overlap = find_intersection_share(room_vertices, pose_point, 0.2)
+                        room_assoc.append(overlap)
+
+                    # If no overlap found with any room, use distance-based assignment
+                    if np.sum(room_assoc) == 0:
+                        for r_idx, room in enumerate(floor.rooms):
+                            # Calculate negative distance to room center (higher is better)
+                            room_center = np.mean(room.vertices, axis=0)
+                            distance = -1 * np.linalg.norm(room_center - pose_point[0])
+                            room_assoc[r_idx] = distance
+
+                    # Find the best room match for this floor
+                    max_assoc = max(room_assoc)
+                    if max_assoc > best_association:
+                        best_association = max_assoc
+                        best_room_idx = np.argmax(room_assoc)
+                        best_room_name = floor.rooms[best_room_idx].name
+
+            # Add the best matching room ID to the list
+            room_ids.append(best_room_name)
+
+            # Log assignment information
+            assignment_type = "overlap" if best_association >= 0 else "distance"
+            print(f"Frame {i} assigned to Room {best_room_name} "
+                  f"with {assignment_type}-based score {best_association:.2f}")
+
+        except Exception as e:
+            print(f"Error processing pose {i}: {str(e)}")
+            room_ids.append("unknown")  # Add default value for failed assignments
+            continue
+
+    return room_ids
 
 def segment_rooms(
     floor: Floor,

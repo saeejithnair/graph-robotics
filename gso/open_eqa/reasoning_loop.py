@@ -189,16 +189,21 @@ def reasoning_loop_only_graph(
             )
         )
     ]
+
     for i, id in enumerate(frame_ids):
         prompt.append(Part.from_text(f"Frame Index {id}:"))
         prompt.append(Part.from_image(Image.load_from_file(images_prompt[i])))
+    # for i in range(0, len(dataset), 7):
+    #     prompt.append(Part.from_text(f"Frame Index {i}:"))
+    #     prompt.append(Part.from_image(Image.load_from_file(dataset.color_paths[i])))
+
     prompt = Content(role="user", parts=prompt)
     response = chat.send_message(prompt)
     for i in range(20):
         parts = response.candidates[0].content.parts
         if len(parts) == 1 and not "function_call" in parts[0].to_dict():
             response = chat.send_message(
-                f"In a few words, summarize your answer to the question '{question}'? Do not include any explanation or justification for your answer."
+                f"In a few words, summarize your most answer to the question '{question}'? Do not include any explanation or justification for your answer. Even if you are not certain, confidently and precisely state your most likely answer."
             )
             answer = response.candidates[0].content.parts[0].text.strip()
             break

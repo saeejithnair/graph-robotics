@@ -86,7 +86,6 @@ def main(cfg: DictConfig):
     pose_list = []
     frame_list = []
     for frame_idx in tqdm(range(0, len(dataset), 7)):  # len(dataset)
-
         # color and depth tensors, and camera instrinsics matrix
         color_tensor, depth_tensor, intrinsics, *_ = dataset[frame_idx]
 
@@ -163,12 +162,13 @@ if __name__ == "__main__":
 
     # scene_ids = os.listdir("/pub3/qasim/hm3d/data/concept-graphs/with_edges")
     scene_ids = [
-        # "000-hm3d-BFRyYbPCCPE",
-        # "002-hm3d-wcojb4TFT35",
-        # "003-hm3d-c5eTyR3Rxyh",
+        "000-hm3d-BFRyYbPCCPE",
+        "001-hm3d-TPhiubUHKcP",
+        "002-hm3d-wcojb4TFT35",
+        "003-hm3d-c5eTyR3Rxyh",
         # "004-hm3d-66seV3BWPoX",
         # "005-hm3d-yZME6UR9dUN",
-        "006-hm3d-q3hn1WQ12rz",
+        # "006-hm3d-q3hn1WQ12rz",
         # "007-hm3d-bxsVRursffK",
         # "011-hm3d-bzCsHPLDztK",
         # "012-hm3d-XB4GS9ShBRE",

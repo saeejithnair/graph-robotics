@@ -215,6 +215,7 @@ class Perceptor(ABC):
             except Exception as e:
                 print("VLM Error:", e)
                 traceback.print_exc()
+                time.sleep(0.2)
                 continue
         if llm_response is None:
             raise Exception("Model could not generate bounding boxes")
