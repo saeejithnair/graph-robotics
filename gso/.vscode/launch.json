@@ -35,7 +35,7 @@
             "justMyCode": false
         },
         {
-            "name": "evaluate-predictions.py (baseline)",
+            "name": "evaluate-predictions.py (baseline 1.5)",
             "type": "debugpy",
             "request": "launch",
             "program": "open_eqa/evaluate-predictions.py",
@@ -45,12 +45,32 @@
             "justMyCode": false
         },
         {
-            "name": "evaluate-predictions.py (ours)",
+            "name": "evaluate-predictions.py (baseline 2.0)",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "open_eqa/evaluate-predictions.py",
+            "console": "integratedTerminal",
+            "args": ["/home/qasim/Projects/graph-robotics/gso/open_eqa/results/baseline-open-eqa-v0-gemini-2.0-flash-exp.json", "--force"],
+            // "/home/qasim/Projects/graph-robotics/gso/open_eqa/results/open-eqa-v0-gemini-1.5-flash-latest-flat_graph.json"
+            "justMyCode": false
+        },
+        {
+            "name": "evaluate-predictions (ours 1.5)",
             "type": "debugpy",
             "request": "launch",
             "program": "open_eqa/evaluate-predictions.py",
             "console": "integratedTerminal",
             "args": ["/home/qasim/Projects/graph-robotics/gso/open_eqa/results/open-eqa-v0-gemini-1.5-flash-latest-flat_graph.json", "--force"],
+            // "/home/qasim/Projects/graph-robotics/gso/open_eqa/results/open-eqa-v0-gemini-1.5-flash-latest-flat_graph.json"
+            "justMyCode": false
+        },
+        {
+            "name": "evaluate-predictions (ours 2.0)",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "open_eqa/evaluate-predictions.py",
+            "console": "integratedTerminal",
+            "args": ["/home/qasim/Projects/graph-robotics/gso/open_eqa/results/open-eqa-v0-gemini-2.0-flash-exp-flat_graph.json", "--force"],
             // "/home/qasim/Projects/graph-robotics/gso/open_eqa/results/open-eqa-v0-gemini-1.5-flash-latest-flat_graph.json"
             "justMyCode": false
         },

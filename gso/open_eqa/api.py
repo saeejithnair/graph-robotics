@@ -53,88 +53,17 @@ class API(ABC):
         raise NotImplementedError()
 
 
-class API_TextualQA(API):
-    def __init__(self, prompt_reasoning_loop, prompt_reasoning_final, device="cuda"):
-        super().__init__(prompt_reasoning_loop, prompt_reasoning_final, device)
-        self.perceptor = PerceptorWithTextPrompt(
-            json_detection_key="Detections",
-            json_other_keys=["Finding"],
-            prompt_file="open_eqa/prompts/gso/refine_textual_response.txt",
-            device=self.device,
-        )
-        self.perceptor.init()
-
-    def call(
-        self,
-        request_json,
-        dataset,
-        result_path,
-        semantic_tree: SemanticTree,
-        obj_pcd_max_points,
-    ):
-        keyframe_id = int(request_json["frame_id"])
-        assert keyframe_id < len(dataset)
-        query = request_json["query"]
-
-        text_prompt = self.perceptor.text_prompt_template
-        text_prompt = text_prompt.format(request=query)
-        color_tensor, depth_tensor, intrinsics, *_ = dataset[keyframe_id]
-        depth_tensor = depth_tensor[..., 0]
-        depth_array = depth_tensor.cpu().numpy()
-        depth_cloud = create_depth_cloud(depth_array, dataset.get_cam_K())
-        unt_pose = dataset.poses[keyframe_id]
-        trans_pose = unt_pose.cpu().numpy()
-        color_np = color_tensor.cpu().numpy()  # (H, W, 3)
-        image_rgb = (color_np).astype(np.uint8)  # (H, W, 3)
-        assert image_rgb.max() > 1, "Image is not in range [0, 255]"
-
-        detections, response = self.perceptor.perceive(color_np, text_prompt)
-        detections.extract_pcd(
-            depth_cloud,
-            color_np,
-            semantic_tree.geometry_map,
-            trans_pose,
-            obj_pcd_max_points,
-        )
-        self.feature_computer.compute_features(
-            image_rgb, semantic_tree.geometry_map, detections
-        )
-
-        det_matched, matched_tracks = features.associate_dets_to_tracks(
-            detections, semantic_tree.get_tracks()
-        )
-
-        semantic_tree.integrate_detections(
-            detections, det_matched, matched_tracks, keyframe_id, consolidate=False
-        )
-
-        navigation_log_refinement = dict(Request=query)
-        navigation_log_refinement.update(response)
-        semantic_tree.integrate_refinement_log(
-            query, navigation_log_refinement, keyframe_id
-        )
-
-        # perceptor.save_results(
-        #     llm_response, detections, perception_result_dir, frame_idx
-        # )
-        # detections.save(perception_result_dir / str(frame_idx), perceptor.img)
-
-        api_log = dict()
-        api_log["call"] = query
-        api_log["keyframe_path"] = dataset.color_paths[keyframe_id]
-        api_log["response"] = response
-
-        return semantic_tree, response, api_log
-
-
 class API_GraphAPI(API):
-    def __init__(self, prompt_reasoning_loop, prompt_reasoning_final, device="cuda"):
+    def __init__(
+        self, prompt_reasoning_loop, prompt_reasoning_final, gemini_model, device="cuda"
+    ):
         super().__init__(prompt_reasoning_loop, prompt_reasoning_final, device)
         self.find_objects_perceptor = PerceptorWithTextPrompt(
             json_detection_key="Detections",
             json_other_keys=["your notes"],
             prompt_file="open_eqa/prompts/gso/refine_find_objects_v2.txt",
             device=self.device,
+            gemini_model=gemini_model,
             with_edges=False,
         )
         self.analyze_frame_perceptor = PerceptorWithTextPrompt(
@@ -142,12 +71,14 @@ class API_GraphAPI(API):
             json_other_keys=["your notes"],
             prompt_file="open_eqa/prompts/gso/analyze_frame.txt",
             device=self.device,
+            gemini_model=gemini_model,
             with_edges=False,
         )
         self.analyze_objects_perceptor = PerceptorWithTextPrompt(
             json_detection_key=None,
             json_other_keys=["name", "your notes"],
             prompt_file="open_eqa/prompts/gso/refine_analyze_objects.txt",
+            gemini_model=gemini_model,
             device=self.device,
         )
         self.find_objects_perceptor.init()
@@ -359,9 +290,8 @@ def extract_scene_prompts(
                 ]
             del log["Generic Mapping"]["Present Room"]
 
-            semantic_tree
-
-        navigation_log.append(log)
+            navigation_log.append(log)
+        # navigation_log.append(log)
 
     if prompt_img_interleaved or prompt_img_seperate:
         for frame_id in semantic_tree.visual_memory:
@@ -424,22 +354,22 @@ def extract_scene_prompts(
     #     level += 1
 
     # Option 2: Flat Edges
-    for track in semantic_tree.tracks.values():
-        edges = [e.json() for e in track.edges]
-        _ = [e.pop("frame_id") for e in edges]
-        _ = [e.pop("subject") for e in edges]
-        graph.append(
-            {
-                "name": track.name,
-                "visual caption": track.captions[0],
-                "your notes": track.notes,
-                "times scene": track.times_scene,
-                "room": track.room_id,
-                "hierarchy level": track.level,
-                "centroid": track.features.centroid.tolist(),
-                "relationships": edges,
-            }
-        )
+    # for track in semantic_tree.tracks.values():
+    #     edges = [e.json() for e in track.edges]
+    #     _ = [e.pop("frame_id") for e in edges]
+    #     _ = [e.pop("subject") for e in edges]
+    #     graph.append(
+    #         {
+    #             "name": track.name,
+    #             "visual caption": track.captions[0],
+    #             "your notes": track.notes,
+    #             "times scene": track.times_scene,
+    #             "room": track.room_id,
+    #             "hierarchy level": track.level,
+    #             "centroid": track.features.centroid.tolist(),
+    #             "relationships": edges,
+    #         }
+    #     )
 
     # # Option 3: Edges at in seperate key
     # graph = {"Nodes": []}
@@ -479,6 +409,31 @@ def extract_scene_prompts(
     #             "edges": [e.json() for e in track.edges],
     #         }
     #     )
+
+    # Option 5: Flat Edges, Seperate Scratchpad
+    scratchpad = []
+    for track in semantic_tree.tracks.values():
+        edges = [e.json() for e in track.edges]
+        _ = [e.pop("frame_id") for e in edges]
+        _ = [e.pop("subject") for e in edges]
+        graph.append(
+            {
+                "name": track.name,
+                "visual caption": track.captions[0],
+                "times scene": track.times_scene,
+                "room": track.room_id,
+                "hierarchy level": track.level,
+                "centroid": track.features.centroid.tolist(),
+                "relationships": edges,
+            }
+        )
+        scratchpad.append(
+            {
+                "name": track.name,
+                "query-relevant notes": track.notes,
+            }
+        )
+    return graph, scratchpad, navigation_log, images_prompt, semantic_tree.visual_memory
 
     return graph, navigation_log, images_prompt, semantic_tree.visual_memory
 

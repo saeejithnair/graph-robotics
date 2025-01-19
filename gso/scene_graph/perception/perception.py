@@ -32,10 +32,11 @@ class Perceptor(ABC):
         self,
         # prompt_file="scene_graph/perception/prompts/generic_mapping_localize_edges_v2.txt",
         prompt_file="scene_graph/perception/prompts/generic_mapping_localize_v3.txt",
+        gemini_model: str = "gemini-2.0-flash-exp",  # "gemini-1.   5-flash-002" "gemini-2.0-flash-exp"
         json_detection_key="Detections",
         json_other_keys=[],
         with_edges=False,
-        device="cuda:0",
+        device="cpu",
         sam_model_type="vit_h",
         sam_checkpoint_path="checkpoints/sam_vit_h_4b8939.pth",
         edge_types=[
@@ -60,6 +61,7 @@ class Perceptor(ABC):
             skip_bg=False,
         )
         self.detection_model.set_classes(self.obj_classes.get_classes_arr())
+        self.gemini_model = gemini_model
         # self.prompt_file = 'perception/prompts/generic_spatial_mapping_claude.txt'
 
         self.prompt_file = prompt_file
@@ -181,12 +183,11 @@ class Perceptor(ABC):
         img,
         text_prompt,
         img_size,
-        gemini_model: str = "gemini-1.5-flash-latest",
     ) -> Optional[str]:
 
         # vertexai.init(project='302560724657', location="northamerica-northeast2")
         # model = GenerativeModel(model_name=gemini_model)
-        model = genai.GenerativeModel(model_name=gemini_model)
+        model = genai.GenerativeModel(model_name=self.gemini_model)
 
         # text_prompt = Part.from_text(text_prompt)
         # image_prompt = [Part.from_image(vertexai.generative_models.Image.load_from_file(i)) for i in init_images]
@@ -495,7 +496,6 @@ class EdgeConsolidator(Perceptor):
         detections_buffer,
         frame_buffer,
         edges_buffer=None,
-        gemini_model: str = "gemini-1.5-flash-latest",
     ):
         response = {}
         assert len(detections_buffer) == len(frame_buffer)
@@ -542,7 +542,7 @@ class EdgeConsolidator(Perceptor):
         relationships_output = []
         for i in range(4):
             try:
-                model = genai.GenerativeModel(model_name=gemini_model)
+                model = genai.GenerativeModel(model_name=self.gemini_model)
                 response = call_gemini(model, prompt).strip()
                 response = json.loads(
                     response.replace("```json", "").replace("```", "")
@@ -587,7 +587,6 @@ class CaptionConsolidator(Perceptor):
         self,
         tracks,
         img,
-        gemini_model: str = "gemini-1.5-flash-latest",
     ):
         track_message = []
         for id in tracks:
@@ -611,7 +610,7 @@ class CaptionConsolidator(Perceptor):
         for r in llm_response:
             tracks[get_trackid_by_name(tracks, r["label"])].captions = [r["caption"]]
         return tracks
-    
+
     def verify_json_response(self, response):
         # This code is very hacked. This is because of find_objects prompt returns a list, which I process into a JSON where 'keys' =  detections.
         assert "```json" in response
@@ -624,6 +623,7 @@ class CaptionConsolidator(Perceptor):
                 assert "label" in obj
                 assert "caption" in obj
         return response
+
 
 class PerceptorWithTextPrompt(Perceptor):
     def perceive(self, img, text_prompt):
@@ -730,7 +730,7 @@ if __name__ == "__main__":
     # sample_folder = '/home/qasim/Projects/graph-robotics/scene-graph/perception/sample_images'
     # result_folder = '/home/qasim/Projects/graph-robotics/scene-graph/perception/sample_results'
     # img_resize = (768,432)
-    # device='cuda:0'
+    # device='cpu'
     # sam_model_type = "vit_h"
     # sam_checkpoint_path = "checkpoints/sam_vit_h_4b8939.pth"
     # perceptor = Perceptor()

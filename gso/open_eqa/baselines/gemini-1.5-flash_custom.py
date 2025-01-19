@@ -30,7 +30,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--model",
         type=str,
-        default="gemini-1.5-flash-002",
+        default="gemini-2.0-flash-exp",
         help="Google model (default: gemini-1.5-flash-latest)",
     )
     parser.add_argument(
@@ -48,7 +48,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--step-size",
         type=int,
-        default=7,
+        default=5,
         help="number of frames (default: 15)",
     )
     parser.add_argument(
@@ -187,7 +187,7 @@ def main(args: argparse.Namespace):
     for idx, item in enumerate(tqdm.tqdm(dataset)):
         if args.dry_run and idx >= 5:
             break
-        if idx >= 43:
+        if idx >= 54:
             break
         # skip completed questions
         question_id = item["question_id"]

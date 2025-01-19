@@ -19,7 +19,7 @@ from vertexai.generative_models import GenerativeModel, Part
 
 import open_eqa.reasoning_loop as reasoning_loop
 import scene_graph.utils as utils
-from open_eqa.api import API_GraphAPI, API_TextualQA
+from open_eqa.api import API_GraphAPI
 from open_eqa.reasoning_loop import reasoning_loop_only_graph
 from scene_graph.datasets import get_dataset
 
@@ -57,12 +57,6 @@ def parse_args() -> argparse.Namespace:
         help="image size (default: 512)",
     )
     parser.add_argument(
-        "--model",
-        type=str,
-        default="gemini-1.5-flash-latest",
-        help="Gemini model (default: gpt-4-0613)",
-    )
-    parser.add_argument(
         "--seed",
         type=int,
         default=1234,
@@ -84,6 +78,12 @@ def parse_args() -> argparse.Namespace:
         "--force",
         default=False,
         action="store_true",
+        help="continue running on API errors (default: false)",
+    )
+    parser.add_argument(
+        "--max_depth",
+        type=int,
+        default=20,
         help="continue running on API errors (default: false)",
     )
     parser.add_argument(
@@ -127,12 +127,20 @@ def main(cfg: DictConfig):
     # only run particular questions
 
     subset_questions = [
-        "5460114d-e885-4eae-8bdc-a273deb3df0a",
-        "77c6644e-6018-4ef3-a683-276d3d2af67f",
-        "21f8ed6a-4ca4-465f-986d-c4390984d8a9",
-        "500e6924-0ea3-45c8-89ce-db3d37e142bf",
-        "ecad68d2-a16f-4a3e-b8a1-a70ec1c5cf00",
-        "5c1d30b9-5827-49fc-b74f-5ee9909a75b8",
+        # "a86ef102-5500-4fbf-8fae-cdbeb20a3b7b",
+        # "35bfcf60-4227-4bbb-9213-e1bf643b2325",
+        # "6fddec60-f221-4944-88c3-a132dfbfd1ed",
+        # "025257b6-8b7e-4f6f-aacc-1788069cbfad",
+        # "915cb310-31be-4114-846c-242fc59b581d",
+        # "ecad68d2-a16f-4a3e-b8a1-a70ec1c5cf00",
+        # "0c6b5dce-8baf-4d95-b7ca-26fe915c4bd7",
+        # "21f8ed6a-4ca4-465f-986d-c4390984d8a9",
+        # "5460114d-e885-4eae-8bdc-a273deb3df0a",
+        # "77c6644e-6018-4ef3-a683-276d3d2af67f",
+        # "21f8ed6a-4ca4-465f-986d-c4390984d8a9",
+        # "500e6924-0ea3-45c8-89ce-db3d37e142bf",
+        # "ecad68d2-a16f-4a3e-b8a1-a70ec1c5cf00",
+        # "5c1d30b9-5827-49fc-b74f-5ee9909a75b8",
     ]
     # subset_questions = [
     #     "d36c5ac4-65b9-4979-881c-56c7d0870a50",
@@ -181,16 +189,17 @@ def main(cfg: DictConfig):
     #     device,
     # )
     api = API_GraphAPI(
-        "open_eqa/prompts/gso/flat_graph_v13_withimages.txt",
-        "open_eqa/prompts/gso/flat_graph_final.txt",
-        device,
+        prompt_reasoning_loop="open_eqa/prompts/gso/flat_graph_v13_withimages.txt",
+        prompt_reasoning_final="open_eqa/prompts/gso/flat_graph_final.txt",
+        device=device,
+        gemini_model=cfg.questions_model,  # "gemini-1.   5-flash-002" "gemini-2.0-flash-exp"
     )
 
     # process data
     for idx, item in enumerate(tqdm.tqdm(questions)):
         if cfg.questions_dry_run and idx >= 5:
             break
-        if idx >= 43:
+        if idx >= 54:
             break
 
         # skip completed questions
@@ -226,6 +235,8 @@ def main(cfg: DictConfig):
             obj_pcd_max_points=cfg.obj_pcd_max_points,
             downsample_voxel_size=cfg.downsample_voxel_size,
             gemini_model=cfg.questions_model,
+            visual_memory_size=cfg.visual_memory_size,
+            max_search_depth=cfg.max_search_depth,
             load_floors=True,
             load_rooms=True,
         )

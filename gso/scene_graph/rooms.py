@@ -24,8 +24,8 @@ from hovsg.utils.graph_utils import (
     compute_room_embeddings,
     distance_transform,
     feats_denoise_dbscan,
-    find_intersection_share,
     find_containment,
+    find_intersection_share,
     map_grid_to_point_cloud,
 )
 from omegaconf import DictConfig
@@ -98,11 +98,11 @@ class Room:
         unique, counts = np.unique(col_ids, return_counts=True)
         unique_id = np.argmax(counts)
         type_id = unique[unique_id]
-        self.name = default_room_types[type_id] + ' ' + str(self.room_id)
+        self.name = default_room_types[type_id] + " " + str(self.room_id)
         print(f"The room view ids are {self.represent_images}")
         print(f"The room type is {default_room_types[type_id]}")
         return default_room_types[type_id]
-    
+
     def save(self, path):
         """
         Save the room in folder as ply for the point cloud
@@ -173,7 +173,7 @@ def assign_tracks_to_rooms(tracks: List[Track], global_pcd, floors):
 
             # Initialize variables to track the best match
             best_room_name = "unknown"
-            best_association = float('-inf')  # Changed to handle negative distances
+            best_association = float("-inf")  # Changed to handle negative distances
 
             # Iterate through all floors to find the best room
             for floor in floors:
@@ -187,9 +187,7 @@ def assign_tracks_to_rooms(tracks: List[Track], global_pcd, floors):
                     for room in floor.rooms:
                         # Calculate overlap between room and track's local point cloud
                         overlap = find_intersection_share(
-                            room.vertices,
-                            local_pcd_points[:, [0, 2]],
-                            0.2
+                            room.vertices, local_pcd_points[:, [0, 2]], 0.2
                         )
                         room_assoc.append(overlap)
 
@@ -214,14 +212,17 @@ def assign_tracks_to_rooms(tracks: List[Track], global_pcd, floors):
 
             # Log assignment information
             assignment_type = "overlap" if best_association >= 0 else "distance"
-            print(f"Track {track.id} ('{track.label}') assigned to Room {best_room_name} "
-                  f"with {assignment_type}-based score {best_association:.2f}")
+            print(
+                f"Track {track.id} ('{track.label}') assigned to Room {best_room_name} "
+                f"with {assignment_type}-based score {best_association:.2f}"
+            )
 
         except Exception as e:
             print(f"Error processing track {track.name}: {str(e)}")
             continue
 
     return tracks
+
 
 def assign_frames_to_rooms(poses, global_pcd, floors):
     """
@@ -247,7 +248,7 @@ def assign_frames_to_rooms(poses, global_pcd, floors):
 
             # Initialize variables to track the best match
             best_room_name = "unknown"
-            best_association = float('-inf')  # Handle both overlap and distance scores
+            best_association = float("-inf")  # Handle both overlap and distance scores
 
             # Iterate through all floors to find the best room
             for floor in floors:
@@ -255,11 +256,15 @@ def assign_frames_to_rooms(poses, global_pcd, floors):
                 if y > floor.floor_zero_level - margin:
                     # Calculate room associations for all rooms in the floor
                     room_assoc = []
-                    
+
                     for room in floor.rooms:
                         # Check if point is inside room polygon
-                        room_vertices = room.vertices  # Assuming vertices are in (x,z) format
-                        overlap = find_intersection_share(room_vertices, pose_point, 0.2)
+                        room_vertices = (
+                            room.vertices
+                        )  # Assuming vertices are in (x,z) format
+                        overlap = find_intersection_share(
+                            room_vertices, pose_point, 0.2
+                        )
                         room_assoc.append(overlap)
 
                     # If no overlap found with any room, use distance-based assignment
@@ -282,8 +287,10 @@ def assign_frames_to_rooms(poses, global_pcd, floors):
 
             # Log assignment information
             assignment_type = "overlap" if best_association >= 0 else "distance"
-            print(f"Frame {i} assigned to Room {best_room_name} "
-                  f"with {assignment_type}-based score {best_association:.2f}")
+            print(
+                f"Frame {i} assigned to Room {best_room_name} "
+                f"with {assignment_type}-based score {best_association:.2f}"
+            )
 
         except Exception as e:
             print(f"Error processing pose {i}: {str(e)}")
@@ -291,6 +298,7 @@ def assign_frames_to_rooms(poses, global_pcd, floors):
             continue
 
     return room_ids
+
 
 def segment_rooms(
     floor: Floor,
@@ -302,7 +310,7 @@ def segment_rooms(
     frameidx_list,
     graph_tmp_folder="outputs/",
     save_intermediate_results=False,
-    device="cuda:0",
+    device="cpu",
 ):
     """
     Segment the rooms from the floor point cloud

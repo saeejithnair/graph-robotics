@@ -14,13 +14,13 @@ from transformers import AutoModel, AutoProcessor, AutoTokenizer
 from .detection import DetectionList, Edge
 from .floor import Floor, segment_floors
 from .pointcloud import pcd_denoise_dbscan
-from .rooms import Room, assign_tracks_to_rooms, segment_rooms, assign_frames_to_rooms
+from .rooms import Room, assign_frames_to_rooms, assign_tracks_to_rooms, segment_rooms
 from .track import get_trackid_by_name, load_tracks, object_to_track
 from .visualizer import Visualizer2D, Visualizer3D
 
 
 class SemanticTree:
-    def __init__(self, device="cuda"):
+    def __init__(self, visual_memory_size, device="cuda"):
         self.geometry_map = o3d.geometry.PointCloud()
         self.device = device
         self.hierarchy_matrix = None
@@ -31,7 +31,7 @@ class SemanticTree:
         self.tracks = {}
         self.navigation_log = []
         self.visual_memory = []
-        self.visual_memory_k = 4
+        self.visual_memory_size = visual_memory_size
 
         # variables for consolidate_edges
         self.imgs_for_consolidation = []
@@ -70,7 +70,7 @@ class SemanticTree:
         with open(navigation_log_path) as f:
             self.navigation_log = json.load(f)
         shutil.rmtree(folder / self.temp_refine_dir, ignore_errors=True)
-        self.extract_visual_memory(self.visual_memory_k)
+        self.extract_visual_memory(self.visual_memory_size)
 
         with open(folder / "semantic_tree/hierarchy_matrix.json") as f:
             json_data = json.load(f)
@@ -115,7 +115,7 @@ class SemanticTree:
                 room_file = room_file.split(".")[0]
                 room = Room(str(room_file), room_file.split("_")[0])
                 room.load(os.path.join(folder, "semantic_tree/rooms"))
-                
+
                 floor = None
                 for i in range(len(self.floors)):
                     if self.floors[i].floor_id == room.floor_id:
@@ -124,14 +124,15 @@ class SemanticTree:
                 floor.rooms.append(room)
                 self.rooms[room.room_id] = room
 
-    def extract_visual_memory(self, visual_memory_k):
+    def extract_visual_memory(self, visual_memory_size):
         self.visual_memory = []
         for i, log in enumerate(self.navigation_log):
             if log.get("Generic Mapping") != None:
                 self.visual_memory.append(i)
         k_indices = np.linspace(
-            0, len(self.visual_memory) - 1, num=visual_memory_k, dtype=np.int32
+            0, len(self.visual_memory) - 1, num=visual_memory_size, dtype=np.int32
         )
+        k_indices = np.unique(k_indices)
         self.visual_memory = [
             self.visual_memory[i] for i in k_indices
         ]  # only keep k frames in the memory
@@ -282,7 +283,7 @@ class SemanticTree:
         pose_list,
         frame_list,
         debug_folder,
-        device="cuda:0",
+        device="cpu",
     ):
         self.clip_model = self.clip_model.to(device)
         self.floors = segment_floors(
@@ -316,9 +317,9 @@ class SemanticTree:
                 print("room id", room.room_id, "is", room_type)
                 self.rooms[room.room_id] = room
 
-        poses_xyz = [p.detach().numpy()[:3,3] for p in pose_list]
+        poses_xyz = [p.detach().numpy()[:3, 3] for p in pose_list]
         room_ids = assign_frames_to_rooms(poses_xyz, self.geometry_map, self.floors)
-        for i,frame_id in enumerate(frame_list):
+        for i, frame_id in enumerate(frame_list):
             frame_id_to_rooms[frame_id] = room_ids[i]
 
         for frame_id in frame_list:
@@ -453,5 +454,5 @@ class SemanticTree:
                 children_locs=[self.tracks[c].vis_centroid for c in children_ids],
                 children_labels=[self.tracks[c].label for c in children_ids],
                 points_xyz=self.tracks[id].compute_local_pcd().points,
-                points_colors=self.tracks[id].compute_local_pcd().colors
+                points_colors=self.tracks[id].compute_local_pcd().colors,
             )

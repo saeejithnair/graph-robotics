@@ -75,6 +75,123 @@ class Floor:
         return f"Floor ID: {self.floor_id}, Name: {self.name}, Rooms: {len(self.rooms)}"
 
 
+# def segment_floors(
+#     full_pcd,
+#     graph_tmp_folder,
+#     save_intermediate_results=False,
+#     flip_zy=False,
+# ):
+#     """
+#     Segment the floors from the full point cloud
+#     :param path: str, The path to save the intermediate results
+#     """
+#     # downsample the point cloud
+#     downpcd = full_pcd.voxel_down_sample(voxel_size=0.05)
+#     # flip the z and y axis
+#     if flip_zy:
+#         downpcd.points = o3d.utility.Vector3dVector(
+#             np.array(downpcd.points)[:, [0, 2, 1]]
+#         )
+#         downpcd.transform(np.eye(4) * np.array([1, 1, -1, 1]))
+#     # rotate the point cloud to align floor with the y axis
+#     T1 = np.eye(4)
+#     T1[:3, :3] = Rotation.from_euler("x", 90, degrees=True).as_matrix()
+#     downpcd = np.asarray(downpcd.points)
+#     print("downpcd", downpcd.shape)
+
+#     # divide z axis range into 0.01m bin
+#     reselotion = 0.01
+#     bins = np.abs(np.max(downpcd[:, 1]) - np.min(downpcd[:, 1])) / reselotion
+#     print("bins", bins)
+#     z_hist = np.histogram(downpcd[:, 1], bins=int(bins))
+#     # smooth the histogram
+#     z_hist_smooth = gaussian_filter1d(z_hist[0], sigma=2)
+#     # Find the peaks in this histogram.
+#     distance = 0.2 / reselotion
+#     print("distance", distance)
+#     # set the min peak height based on the histogram
+#     print(np.mean(z_hist_smooth))
+#     min_peak_height = np.percentile(z_hist_smooth, 90)
+#     print("min_peak_height", min_peak_height)
+#     peaks, _ = find_peaks(z_hist_smooth, distance=distance, height=min_peak_height)
+
+#     # plot the histogram
+#     if save_intermediate_results:
+#         plt.figure()
+#         plt.plot(z_hist[1][:-1], z_hist_smooth)
+#         plt.plot(z_hist[1][peaks], z_hist_smooth[peaks], "x")
+#         plt.hlines(min_peak_height, np.min(z_hist[1]), np.max(z_hist[1]), colors="r")
+#         plt.savefig(os.path.join(graph_tmp_folder, "floor_histogram.png"))
+
+#     # cluster the peaks using DBSCAN
+#     peaks_locations = z_hist[1][peaks]
+#     clustering = DBSCAN(eps=1, min_samples=2).fit(peaks_locations.reshape(-1, 1))
+#     labels = clustering.labels_
+
+#     # plot the histogram
+#     if save_intermediate_results:
+#         plt.figure()
+#         plt.plot(z_hist[1][:-1], z_hist_smooth)
+#         plt.plot(z_hist[1][peaks], z_hist_smooth[peaks], "x")
+#         plt.hlines(min_peak_height, np.min(z_hist[1]), np.max(z_hist[1]), colors="r")
+#         # plot the clusters
+#         for i in range(len(np.unique(labels))):
+#             plt.plot(
+#                 z_hist[1][peaks[labels == i]],
+#                 z_hist_smooth[peaks[labels == i]],
+#                 "o",
+#             )
+#         plt.savefig(os.path.join(graph_tmp_folder, "floor_histogram_cluster.png"))
+
+#     # for each cluster find the top 2 peaks
+#     clustred_peaks = []
+#     for i in range(len(np.unique(labels))):
+#         # for first and last cluster, find the top 1 peak
+#         if i == 0 or i == len(np.unique(labels)) - 1:
+#             p = peaks[labels == i]
+#             top_p = p[np.argsort(z_hist_smooth[p])[-1:]].tolist()
+#             top_p = [z_hist[1][p] for p in top_p]
+#             clustred_peaks.append(top_p)
+#             continue
+#         p = peaks[labels == i]
+#         top_p = p[np.argsort(z_hist_smooth[p])[-2:]].tolist()
+#         top_p = [z_hist[1][p] for p in top_p]
+#         clustred_peaks.append(top_p)
+#     clustred_peaks = [item for sublist in clustred_peaks for item in sublist]
+#     clustred_peaks = np.sort(clustred_peaks)
+#     print("clustred_peaks", clustred_peaks)
+
+#     floors = []
+#     # for every two consecutive peaks with 2m distance, assign floor level
+#     for i in range(0, len(clustred_peaks) - 1, 2):
+#         floors.append([clustred_peaks[i], clustred_peaks[i + 1]])
+#     print("floors", floors)
+#     # for the first floor extend the floor to the ground
+#     floors[0][0] = (floors[0][0] + np.min(downpcd[:, 1])) / 2
+#     # for the last floor extend the floor to the ceiling
+#     floors[-1][1] = (floors[-1][1] + np.max(downpcd[:, 1])) / 2
+#     print("number of floors: ", len(floors))
+
+#     final_floors = []
+#     floors_pcd = []
+#     for i, floor in enumerate(floors):
+#         floor_obj = Floor(str(i), name="floor_" + str(i))
+#         floor_pcd = full_pcd.crop(
+#             o3d.geometry.AxisAlignedBoundingBox(
+#                 min_bound=(-np.inf, floor[0], -np.inf),
+#                 max_bound=(np.inf, floor[1], np.inf),
+#             )
+#         )
+#         bbox = floor_pcd.get_axis_aligned_bounding_box()
+#         floor_obj.vertices = np.asarray(bbox.get_box_points())
+#         floor_obj.pcd = floor_pcd
+#         floor_obj.floor_zero_level = np.min(np.array(floor_pcd.points)[:, 1])
+#         floor_obj.floor_height = floor[1] - floor_obj.floor_zero_level
+#         final_floors.append(floor_obj)
+#         floors_pcd.append(floor_pcd)
+#     return final_floors
+
+
 def segment_floors(
     full_pcd,
     graph_tmp_folder,
@@ -120,21 +237,6 @@ def segment_floors(
         plt.figure()
         plt.plot(z_hist[1][:-1], z_hist_smooth)
         plt.plot(z_hist[1][peaks], z_hist_smooth[peaks], "x")
-        plt.hlines(
-            min_peak_height, np.min(z_hist[1]), np.max(z_hist[1]), colors="r"
-        )
-        plt.savefig(os.path.join(graph_tmp_folder, "floor_histogram.png"))
-
-    # cluster the peaks using DBSCAN
-    peaks_locations = z_hist[1][peaks]
-    clustering = DBSCAN(eps=1, min_samples=1).fit(peaks_locations.reshape(-1, 1))
-    labels = clustering.labels_
-
-    # plot the histogram
-    if save_intermediate_results:
-        plt.figure()
-        plt.plot(z_hist[1][:-1], z_hist_smooth)
-        plt.plot(z_hist[1][peaks], z_hist_smooth[peaks], "x")
         plt.hlines(min_peak_height, np.min(z_hist[1]), np.max(z_hist[1]), colors="r")
         plt.savefig(os.path.join(graph_tmp_folder, "floor_histogram.png"))
 
@@ -148,9 +250,7 @@ def segment_floors(
         plt.figure()
         plt.plot(z_hist[1][:-1], z_hist_smooth)
         plt.plot(z_hist[1][peaks], z_hist_smooth[peaks], "x")
-        plt.hlines(
-            min_peak_height, np.min(z_hist[1]), np.max(z_hist[1]), colors="r"
-        )
+        plt.hlines(min_peak_height, np.min(z_hist[1]), np.max(z_hist[1]), colors="r")
         # plot the clusters
         for i in range(len(np.unique(labels))):
             plt.plot(
@@ -158,26 +258,43 @@ def segment_floors(
                 z_hist_smooth[peaks[labels == i]],
                 "o",
             )
-        plt.savefig(
-            os.path.join(graph_tmp_folder, "floor_histogram_cluster.png")
-        )
+        plt.savefig(os.path.join(graph_tmp_folder, "floor_histogram_cluster.png"))
 
     # for each cluster find the top 2 peaks
     clustred_peaks = []
-    for i in range(len(np.unique(labels))):
-        # for first and last cluster, find the top 1 peak
-        if i == 0 or i == len(np.unique(labels)) - 1:
+    n_clusters = len(np.unique(labels))
+    if n_clusters == 1:
+        p = peaks[labels == 0]  # all peaks belong to the same cluster (0)
+        if len(p) >= 2:  # check if there are at least 2 peaks
+            top_p = p[
+                np.argsort(z_hist_smooth[p])[-2:]
+            ].tolist()  # take the top 2 if there are 2 or more
+        else:
+            top_p = p[
+                np.argsort(z_hist_smooth[p])[-1:]
+            ].tolist()  # take the top 1 if there is only 1
+        top_p = [z_hist[1][p] for p in top_p]
+        clustred_peaks = top_p  # assign to the list directly
+        clustred_peaks = np.sort(clustred_peaks)
+        if len(clustred_peaks) == 1:  # if there is only one peak
+            clustred_peaks = np.array(
+                [clustred_peaks[0] - 0.1, clustred_peaks[0] + 0.1]
+            )  # create a dummy floor and ceiling
+    else:
+        for i in range(n_clusters):
+            # for first and last cluster, find the top 1 peak
+            if i == 0 or i == n_clusters - 1:
+                p = peaks[labels == i]
+                top_p = p[np.argsort(z_hist_smooth[p])[-1:]].tolist()
+                top_p = [z_hist[1][p] for p in top_p]
+                clustred_peaks.append(top_p)
+                continue
             p = peaks[labels == i]
-            top_p = p[np.argsort(z_hist_smooth[p])[-1:]].tolist()
+            top_p = p[np.argsort(z_hist_smooth[p])[-2:]].tolist()
             top_p = [z_hist[1][p] for p in top_p]
             clustred_peaks.append(top_p)
-            continue
-        p = peaks[labels == i]
-        top_p = p[np.argsort(z_hist_smooth[p])[-2:]].tolist()
-        top_p = [z_hist[1][p] for p in top_p]
-        clustred_peaks.append(top_p)
-    clustred_peaks = [item for sublist in clustred_peaks for item in sublist]
-    clustred_peaks = np.sort(clustred_peaks)
+        clustred_peaks = [item for sublist in clustred_peaks for item in sublist]
+        clustred_peaks = np.sort(clustred_peaks)
     print("clustred_peaks", clustred_peaks)
 
     floors = []
