@@ -41,9 +41,9 @@ def read_conceptgraph(graph_path, image_paths):
 
 
 def read_hamsg_flatgraph(
-    graph_path, device="cpu", load_floors=True, load_rooms=True
+    graph_path, device="cuda:1", load_floors=True, load_rooms=True
 ) -> SemanticTree:
-    semantic_tree = SemanticTree(device)
+    semantic_tree = SemanticTree(visual_memory_size, device=device)
     semantic_tree.load(graph_path, load_floors=load_floors, load_rooms=load_rooms)
     return semantic_tree
 

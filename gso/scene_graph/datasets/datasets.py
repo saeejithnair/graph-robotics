@@ -86,7 +86,7 @@ class GradSLAMDataset(torch.utils.data.Dataset):
         desired_width: int = 640,
         channels_first: bool = False,
         normalize_color: bool = False,
-        device="cpu",
+        device="cuda:1",
         dtype=torch.float,
         load_embeddings: bool = False,
         embedding_dir: str = "feat_lseg_240_320",

@@ -40,7 +40,7 @@ def main_geometry(cfg: DictConfig):
         sequence=cfg.scene_id,
         desired_height=cfg.image_height,
         desired_width=cfg.image_width,
-        device="cpu",
+        device="cuda:1",
         dtype=torch.float,
         # relative_pose=True
     )
@@ -66,8 +66,8 @@ def main_geometry(cfg: DictConfig):
 
         # Covert to numpy and do some sanity checks
         depth_tensor = depth_tensor[..., 0]
-        depth_array = depth_tensor.cpu().numpy()
-        color_np = color_tensor.cpu().numpy()  # (H, W, 3)
+        depth_array = depth_tensor.cuda:1().numpy()
+        color_np = color_tensor.cuda:1().numpy()  # (H, W, 3)
         image_rgb = (color_np).astype(np.uint8)  # (H, W, 3)
         assert image_rgb.max() > 1, "Image is not in range [0, 255]"
 
@@ -75,7 +75,7 @@ def main_geometry(cfg: DictConfig):
         unt_pose = dataset.poses[frame_idx]
         # unt_pose = np.eye(4) # dataset.poses[frame_idx]
         # unt_pose = dataset.transformed_poses[frame_idx]
-        unt_pose = unt_pose.cpu().numpy()
+        unt_pose = unt_pose.cuda:1().numpy()
 
         # Don't apply any transformation otherwise
         adjusted_pose = unt_pose
@@ -163,7 +163,7 @@ if __name__ == "__main__":
         # "094-hm3d-Qpor2mEya8F",
         # "096-hm3d-uLz9jNga3kC",
         # "097-hm3d-QHhQZWdMpGJ",
-        "098-hm3d-bCPU9suPUw9",
+        "098-hm3d-bcuda:19suPUw9",
         "099-hm3d-q5QZSEeHe5g",
     ]
     sorted(scene_ids)

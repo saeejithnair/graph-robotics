@@ -283,7 +283,7 @@ class SemanticTree:
         pose_list,
         frame_list,
         debug_folder,
-        device="cpu",
+        device="cuda:1",
     ):
         self.clip_model = self.clip_model.to(device)
         self.floors = segment_floors(
@@ -317,7 +317,7 @@ class SemanticTree:
                 print("room id", room.room_id, "is", room_type)
                 self.rooms[room.room_id] = room
 
-        poses_xyz = [p.detach().numpy()[:3, 3] for p in pose_list]
+        poses_xyz = [p.cpu().detach().numpy()[:3, 3] for p in pose_list]
         room_ids = assign_frames_to_rooms(poses_xyz, self.geometry_map, self.floors)
         for i, frame_id in enumerate(frame_list):
             frame_id_to_rooms[frame_id] = room_ids[i]

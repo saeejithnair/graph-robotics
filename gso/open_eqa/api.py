@@ -53,9 +53,92 @@ class API(ABC):
         raise NotImplementedError()
 
 
+def get_api_declaration(api_type):
+    if api_type == "frame_level":
+        return [
+            {
+                "name": "analyze_frame",
+                "description": "Analyzes an image based on a given query. Returns an image of the requested frame, an updated Scene Graph, updated Scratch Pad, and updated Observation Log.",
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "frame_id": {
+                            "type": "integer",
+                            "description": "Frame index of the image to analyze. Can refer to any frame in the Observation Log.",
+                        },
+                        "query": {
+                            "type": "string",
+                            "description": "The analysis query (e.g., 'What is the relationship between the table and the chair?', 'Is the door open?', 'What is the material of the countertop?')",
+                        },
+                        "explanation": {
+                            "type": "string",
+                            "description": "Explanation why you choose to search the requested frame and why you choose the requested query.",
+                        },
+                    },
+                    "required": ["frame_id", "query"],
+                },
+            }
+        ]
+    else:
+        return [
+            {
+                "name": "find_objects_in_frame",
+                "description": "Adds new objects to the Scene Graph. Searches a scene for items present in the scene but not yet represented in the Scene Graph.",
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "frame_id": {
+                            "type": "integer",
+                            "description": "Frame index of image to search. Can refer to any frame in the Observation Log.",
+                        },
+                        "query": {
+                            "type": "string",
+                            "description": "Search query (e.g., object characteristics, function, location)",
+                        },
+                        "explanation": {
+                            "type": "string",
+                            "description": "Explanation of why this is the best Tool to use. Also explain why you choose the particular frame to search instead of others.",
+                        },
+                    },
+                    "required": ["frame_id", "query"],
+                },
+            },
+            {
+                "name": "analyze_objects_in_frame",
+                "description": "Analyzes existing detections in a specific frame based on a query. Adds resulting insights to the 'query-relevant notes' of the visible detections in the requested frame to the Scratch Pad. Returns an image frame and updated Scratch Pad. Only examines existing detections as described in the Scene Graph, does not search or find new objects.",
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "frame_id": {
+                            "type": "integer",
+                            "description": "Frame index of image to examine. Can refer to any frame in the Observation Log. ",
+                        },
+                        "query": {
+                            "type": "string",
+                            "description": "Analysis query (e.g., object state, features, comparisons, spatial relationships)",
+                        },
+                        "nodes": {
+                            "type": "string",
+                            "description": "Labels of objects your query is relevent to. Should correspond to objects in the Scene Graph. use the Observation Log to ensure that the requested nodes are indeed visible in the requested frame.",
+                        },
+                        "explanation": {
+                            "type": "string",
+                            "description": "Explanation of why this is the best Tool to use. Also explain why you choose the particular frame to search instead of others.",
+                        },
+                    },
+                    "required": ["frame_id", "query", "nodes"],
+                },
+            },
+        ]
+
+
 class API_GraphAPI(API):
     def __init__(
-        self, prompt_reasoning_loop, prompt_reasoning_final, gemini_model, device="cuda"
+        self,
+        gemini_model,
+        prompt_reasoning_loop=None,
+        prompt_reasoning_final=None,
+        device="cuda",
     ):
         super().__init__(prompt_reasoning_loop, prompt_reasoning_final, device)
         self.find_objects_perceptor = PerceptorWithTextPrompt(
@@ -99,18 +182,22 @@ class API_GraphAPI(API):
         assert keyframe_id < len(dataset)
         clarify_class_valid = True
         if request["type"] == "analyze_objects_in_frame" and "nodes" in request:
-            for name in request["nodes"].split(","):
-                name = name.strip()
-                if (
-                    not name
-                    in semantic_tree.navigation_log[keyframe_id]["Generic Mapping"][
-                        "Detections"
-                    ]
-                ):
-                    clarify_class_valid = False
-                    break
+            try:
+                request["nodes"] = request["nodes"][0].split(",")
+                for name in request["nodes"]:
+                    name = name.strip()
+                    if (
+                        not name
+                        in semantic_tree.navigation_log[keyframe_id]["Generic Mapping"][
+                            "Detections"
+                        ]
+                    ):
+                        clarify_class_valid = False
+                        break
+            except:
+                pass
         if not clarify_class_valid and request["type"] == "analyze_objects_in_frame":
-            request["type"] = "find_objects_in_frame"
+            request["type"] = "analyze_frame"
 
         query = request["query"]
 
@@ -222,11 +309,6 @@ class API_GraphAPI(API):
                 semantic_tree.visual_memory.append(keyframe_id)
                 print("Swapped ", remove_id, "for", keyframe_id)
                 semantic_tree.visual_memory.sort()
-        elif request["type"] == "swap_image":
-            assert request["removed_frame_id"] in semantic_tree.visual_memory
-            assert request["insert_frame_id"] < len(dataset)
-            semantic_tree.visual_memory.remove(int(request["removed_frame_id"]))
-            semantic_tree.visual_memory.append(int(request["insert_frame_id"]))
         else:
             raise Exception("Unknown request type: " + request["type"])
 
@@ -289,6 +371,10 @@ def extract_scene_prompts(
                     "Present Room"
                 ]
             del log["Generic Mapping"]["Present Room"]
+
+            for k in log["Generic Mapping"]:
+                log[k] = log["Generic Mapping"][k]
+            del log["Generic Mapping"]
 
             navigation_log.append(log)
         # navigation_log.append(log)

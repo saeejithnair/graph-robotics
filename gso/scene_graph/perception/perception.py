@@ -36,7 +36,7 @@ class Perceptor(ABC):
         json_detection_key="Detections",
         json_other_keys=[],
         with_edges=False,
-        device="cpu",
+        device="cuda:1",
         sam_model_type="vit_h",
         sam_checkpoint_path="checkpoints/sam_vit_h_4b8939.pth",
         edge_types=[
@@ -368,13 +368,13 @@ class GenericMapperYOLO(Perceptor):
 
         # Do initial object detection
         results = self.detection_model.predict(self.img, conf=0.1, verbose=False)
-        detection_class_ids = results[0].boxes.cls.cpu().numpy().astype(int)
+        detection_class_ids = results[0].boxes.cls.cpu().detach().numpy().astype(int)
         detection_class_labels = [
             f"{self.obj_classes.get_classes_arr()[class_id]}"
             for class_idx, class_id in enumerate(detection_class_ids)
         ]
         xyxy_tensor = results[0].boxes.xyxy
-        xyxy_np = xyxy_tensor.cpu().numpy()
+        xyxy_np = xyxy_tensor.cpu().detach().numpy()
         yolo_detections = []
         width, height = self.img.shape[1], self.img.shape[0]
 
@@ -730,7 +730,7 @@ if __name__ == "__main__":
     # sample_folder = '/home/qasim/Projects/graph-robotics/scene-graph/perception/sample_images'
     # result_folder = '/home/qasim/Projects/graph-robotics/scene-graph/perception/sample_results'
     # img_resize = (768,432)
-    # device='cpu'
+    # device='cuda:1'
     # sam_model_type = "vit_h"
     # sam_checkpoint_path = "checkpoints/sam_vit_h_4b8939.pth"
     # perceptor = Perceptor()

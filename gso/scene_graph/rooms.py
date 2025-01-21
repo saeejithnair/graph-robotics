@@ -310,7 +310,7 @@ def segment_rooms(
     frameidx_list,
     graph_tmp_folder="outputs/",
     save_intermediate_results=False,
-    device="cpu",
+    device="cuda:1",
 ):
     """
     Segment the rooms from the floor point cloud
@@ -475,7 +475,7 @@ def segment_rooms(
     #     F_g_list.append(F_g)
     batch = get_siglip_img_feats(rgb_list, clip_processor, clip_model, device=device)
     for i in range(batch.shape[0]):
-        F_g_list.append(batch[i].detach().cpu().numpy())
+        F_g_list.append(batch[i].cpu().detach().numpy())
 
     np.savez(
         os.path.join(graph_tmp_folder, "room_views.npz"),

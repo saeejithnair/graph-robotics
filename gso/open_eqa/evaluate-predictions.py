@@ -16,7 +16,7 @@ from tqdm import tqdm
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        "results",
+        "--results",
         type=Path,
         help="path to a results file",
     )

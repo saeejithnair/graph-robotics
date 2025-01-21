@@ -22,6 +22,7 @@ from vertexai.generative_models import (
 
 import read_graphs
 from scene_graph.perception import call_gemini
+from scene_graph.semantic_tree import SemanticTree
 
 from .api import API, create_gemini_video_prompt, extract_scene_prompts
 
@@ -36,95 +37,30 @@ def parse_output(output: str) -> str:
     return output[start_idx:end_idx].replace("A:", "").strip()
 
 
-api_declarations = [
-    {
-        "name": "analyze_frame",
-        "description": "Analyzes an image based on a given query and updates the Scene Graph with the findings. Returns an image of the requested frame and an updated Scene Graph and Observation Log with the analysis.",
-        "parameters": {
-            "type": "object",
-            "properties": {
-                "frame_id": {
-                    "type": "integer",
-                    "description": "Frame index of the image to analyze",
-                },
-                "query": {
-                    "type": "string",
-                    "description": "The analysis query (e.g., 'What is the relationship between the table and the chair?', 'Is the door open?', 'What is the material of the countertop?')",
-                },
-                "justification": {
-                    "type": "string",
-                    "description": "Explanation why you choose to search the requested frame and why you choose the requested query.",
-                },
-            },
-            "required": ["frame_id", "query", "justification"],
-        },
-    },
-    # {
-    #     "name": "find_objects_in_frame",
-    #     "description": "Adds new objects to the Scene Graph by discovering items present in the scene but not yet represented.",
-    #     "parameters": {
-    #         "type": "object",
-    #         "properties": {
-    #             "frame_id": {
-    #                 "type": "integer",
-    #                 "description": "Frame index of image to search",
-    #             },
-    #             "query": {
-    #                 "type": "string",
-    #                 "description": "Search query (e.g., object characteristics, function, location)",
-    #             },
-    #             "justification": {
-    #                 "type": "string",
-    #                 "description": "Explanation of why this is the best Tool to use. Also explain why you choose the particular frame to search instead of others.",
-    #             },
-    #         },
-    #         "required": ["frame_id", "query", "justification"],
-    #     },
-    # },
-    # {
-    #     "name": "analyze_objects_in_frame",
-    #     "description": "Analyzes an image to clarify the attributes of existing Scene Graph nodes. Does not add new nodes to the Scene Graph.",
-    #     "parameters": {
-    #         "type": "object",
-    #         "properties": {
-    #             "frame_id": {
-    #                 "type": "integer",
-    #                 "description": "Frame index of image to search",
-    #             },
-    #             "query": {
-    #                 "type": "string",
-    #                 "description": "Analysis query (e.g., object state, features, comparisons, spatial relationships)",
-    #             },
-    #             "nodes": {
-    #                 "type": "string",
-    #                 "description": "Labels of objects your query is relevent to. Should correspond to objects in the Scene Graph.",
-    #             },
-    #             "justification": {
-    #                 "type": "string",
-    #                 "description": "Explanation of why this is the best Tool to use. Also explain why you choose the particular frame to search instead of others.",
-    #             },
-    #         },
-    #         "required": ["frame_id", "query", "justification", "nodes"],
-    #     },
-    # },
-]
 # with open("open_eqa/prompts/gso/system_prompt_single-api.txt", "r") as f:
 #     system_prompt = f.read().strip()
 # with open("open_eqa/prompts/gso/system_prompt_multi-api.txt", "r") as f:
 #     system_prompt = f.read().strip()
-with open("open_eqa/prompts/gso/system_prompt_single-api_visualevidence.txt", "r") as f:
-    system_prompt = f.read().strip()
 
 
-def reasoning_loop_only_graph(
+def format_scene_jsons(question, graph, navigation_log, scratchpad):
+    return f"Your question is: {question} \nYour current Scene Graph: {graph} \nYour current Observation Log: {navigation_log} \nYour current ScratchPad: {scratchpad}"
+
+
+def inference_time_search(
     question: str,
     api: API,
     dataset,
+    gemini_model,
     graph_result_path: str,
     result_path: str,
+    device,
+    api_declarations,
+    visual_memory_size,
+    max_search_depth,
+    system_prompt,
     obj_pcd_max_points=5000,
     downsample_voxel_size=0.02,
-    gemini_model: str = "gemini-1.5-flash-latest",
     gemini_seed: int = 1234,
     gemini_max_tokens: int = 128,
     gemini_temperature: float = 0.2,
@@ -133,14 +69,11 @@ def reasoning_loop_only_graph(
     load_rooms=False,
 ) -> Optional[str]:
 
-    semantic_tree = read_graphs.read_hamsg_flatgraph(
+    semantic_tree = SemanticTree(visual_memory_size, device=device)
+    semantic_tree.load(
         graph_result_path, load_floors=load_floors, load_rooms=load_rooms
     )
     semantic_tree.compute_node_levels()
-    with open(api.prompt_reasoning_loop, "r") as f:
-        text_prompt_template = f.read().strip()
-    with open(api.prompt_reasoning_final, "r") as f:
-        text_prompt_final_template = f.read().strip()
 
     # vertexai.init(project='302560724657', location="northamerica-northeast2")
     # model = GenerativeModel(model_name=gemini_model)
@@ -161,7 +94,7 @@ def reasoning_loop_only_graph(
     # vertexai.init(project="robotics-447921")
 
     model = GenerativeModel(
-        model_name="gemini-1.5-flash-002",  # "gemini-1.5-flash-002" "gemini-2.0-flash-exp"
+        model_name=gemini_model,
         tools=[Tool([FunctionDeclaration(**a) for a in api_declarations])],
         system_instruction=system_prompt,
     )
@@ -169,8 +102,19 @@ def reasoning_loop_only_graph(
 
     answer = None
     api_logs = []
+    token_counts = []
 
-    graph_prompt, navigation_log_prompt, images_prompt, frame_ids = (
+    # graph_prompt, navigation_log_prompt, images_prompt, frame_ids = (
+    #     extract_scene_prompts(
+    #         semantic_tree,
+    #         dataset,
+    #         video_uri=video_uri,
+    #         fps=video_fps,
+    #         prompt_video=prompt_video,
+    #         prompt_img_seperate=prompt_img_seperate,
+    #     )
+    # )
+    graph_prompt, scratchpad_prompt, navigation_log_prompt, images_prompt, frame_ids = (
         extract_scene_prompts(
             semantic_tree,
             dataset,
@@ -180,12 +124,14 @@ def reasoning_loop_only_graph(
             prompt_img_seperate=prompt_img_seperate,
         )
     )
+
     prompt = [
         Part.from_text(
-            text_prompt_template.format(
+            format_scene_jsons(
                 question=question,
-                graph=json.dumps(graph_prompt, indent=2),
-                navigation_log=json.dumps(navigation_log_prompt, indent=2),
+                graph=json.dumps(graph_prompt),
+                navigation_log=json.dumps(navigation_log_prompt),
+                scratchpad=scratchpad_prompt,
             )
         )
     ]
@@ -193,17 +139,23 @@ def reasoning_loop_only_graph(
     for i, id in enumerate(frame_ids):
         prompt.append(Part.from_text(f"Frame Index {id}:"))
         prompt.append(Part.from_image(Image.load_from_file(images_prompt[i])))
-    # for i in range(0, len(dataset), 7):
+    # for i in range(0, len(dataset), 5):
     #     prompt.append(Part.from_text(f"Frame Index {i}:"))
     #     prompt.append(Part.from_image(Image.load_from_file(dataset.color_paths[i])))
 
     prompt = Content(role="user", parts=prompt)
     response = chat.send_message(prompt)
-    for i in range(20):
+    token_counts.append(
+        {
+            "prompt_token_count": response.usage_metadata.prompt_token_count,
+            "candidates_token_count": response.usage_metadata.candidates_token_count,
+        }
+    )
+    for i in range(max_search_depth):
         parts = response.candidates[0].content.parts
         if len(parts) == 1 and not "function_call" in parts[0].to_dict():
             response = chat.send_message(
-                f"In a few words, summarize your most answer to the question '{question}'? Do not include any explanation or justification for your answer. Even if you are not certain, confidently and precisely state your most likely answer."
+                f"In a few words, summarize your answer to the question '{question}'? Do not include any explanation or justification for your answer. If you are uncertain in your answer, then state your most likely answer."
             )
             answer = response.candidates[0].content.parts[0].text.strip()
             break
@@ -227,11 +179,16 @@ def reasoning_loop_only_graph(
                 downsample_voxel_size=downsample_voxel_size,
             )
             api_logs.append(api_log)
-            graph_prompt, navigation_log_prompt, images_prompt, frame_ids = (
-                extract_scene_prompts(semantic_tree, dataset, prompt_video=prompt_video)
-            )
+            (
+                graph_prompt,
+                scratchpad_prompt,
+                navigation_log_prompt,
+                images_prompt,
+                frame_ids,
+            ) = extract_scene_prompts(semantic_tree, dataset, prompt_video=prompt_video)
             text_response = {
                 "Updated SceneGraph": json.dumps(graph_prompt, indent=2),
+                "Updated Scratchpad": json.dumps(scratchpad_prompt, indent=2),
                 "Updated Observation Log": json.dumps(navigation_log_prompt, indent=2),
             }
             call_response.append(
@@ -243,88 +200,21 @@ def reasoning_loop_only_graph(
                 parts=call_response,
             )
         )
+        token_counts.append(
+            {
+                "prompt_token_count": response.usage_metadata.prompt_token_count,
+                "candidates_token_count": response.usage_metadata.candidates_token_count,
+            }
+        )
     if answer == None:
-        graph_prompt, navigation_log_prompt, images_prompt, frame_ids = (
-            extract_scene_prompts(semantic_tree, dataset, prompt_video=prompt_video)
+        response = chat.send_message(
+            f"In a few words, summarize your answer to the question '{question}'? Do not include any explanation or justification for your answer. If you are uncertain in your answer, then state your most likely answer."
         )
-        # Bug, this prompt should return a JSON
-        text_prompt_final = text_prompt_final_template.format(
-            question=question,
-            graph=json.dumps(graph_prompt, indent=2),
-            navigation_log=json.dumps(navigation_log_prompt, indent=2),
-            frame_ids=frame_ids,
+        answer = response.candidates[0].content.parts[0].text.strip()
+        token_counts.append(
+            {
+                "prompt_token_count": response.usage_metadata.prompt_token_count,
+                "candidates_token_count": response.usage_metadata.candidates_token_count,
+            }
         )
-        answer = call_gemini(model, [text_prompt_final] + images_prompt)
-        answer = json.loads(answer.replace("```json", "").replace("```", ""))
-    return answer, api_logs
-
-
-def images_and_graph(
-    question: str,
-    image_paths,
-    graph_path: str,
-    gemini_model: str = "gemini-1.5-flash-latest",
-    gemini_seed: int = 1234,
-    gemini_max_tokens: int = 128,
-    gemini_temperature: float = 0.2,
-    force: bool = False,
-) -> Optional[str]:
-    import utils
-
-    graph, keyframes = read_graphs.read_conceptgraph(graph_path, image_paths)
-    # graph, navigation_log, valid_keyframes = read_graphs.read_hamsg_flatgraph(
-    #     graph_path, image_paths
-    # )
-
-    with open("open_eqa/sg-reasoner/prompts/images_with_graph.txt", "r") as f:
-        text_prompt_template = f.read().strip()
-    with open("sg-reasoner/prompts/images_with_graph_final.txt", "r") as f:
-        text_prompt_final = f.read().strip()
-
-    # init_images = utils.sample_images(keyframes, n=5)
-    # image_prompt = [utils.open_image(i) for i in init_images]
-
-    # vertexai.init(project='302560724657', location="northamerica-northeast2")
-    # model = GenerativeModel(model_name=gemini_model)
-    # text_prompt = Part.from_text(text_prompt)
-    # image_prompt = [Part.from_image(vertexai.generative_models.Image.load_from_file(i)) for i in init_images]
-    # prompt = [text_prompt] + image_prompt
-
-    model = genai.GenerativeModel(model_name="gemini-1.5-flash-002")
-    text_prompt = text_prompt_template.format(
-        question=question, graph=json.dumps(graph)
-    )
-
-    answer = None
-    for i in range(3):
-        response = call_gemini(model, [text_prompt] + image_prompt)
-        if response.startswith("Get Image:"):
-            objects = response.removeprefix("Get Image: ").strip().split(", ")
-            new_keyframes = utils.sample_images(
-                utils.subset_dict(keyframes, objects), n=4
-            )
-            image_prompt = image_prompt + [utils.open_image(i) for i in new_keyframes]
-        else:
-            answer = response
-            break
-    if answer == None:
-        answer = call_gemini(model, [text_prompt_final] + image_prompt)
-    return answer.removeprefix("Answer: ").strip()
-
-    try:
-        raise Exception("Pause")
-        prompt = load_prompt("blind-llm")
-        set_openai_key(key=openai_key)
-        messages = prepare_openai_messages(prompt.format(question=question))
-        output = call_openai_api(
-            messages=messages,
-            model=gemini_model,
-            seed=gemini_seed,
-            max_tokens=gemini_max_tokens,
-            temperature=gemini_temperature,
-        )
-        return parse_output(output)
-    except Exception as e:
-        if not force:
-            traceback.print_exc()
-            raise e
+    return answer, api_logs, token_counts

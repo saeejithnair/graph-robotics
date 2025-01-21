@@ -3,14 +3,15 @@ import os
 import pickle
 from pathlib import Path
 
+import numpy as np
 import supervision as sv
 import torch
 from transformers import AutoModel, AutoProcessor, AutoTokenizer
-import numpy as np
 
 from . import utils
-from .pointcloud import dynamic_downsample, find_nearest_points, denoise_pcd
+from .pointcloud import denoise_pcd, dynamic_downsample, find_nearest_points
 from .utils import get_crop
+
 
 class Features:
     def __init__(
@@ -117,8 +118,8 @@ class FeatureComputer:
             # text_features /= text_features.norm(dim=-1, keepdim=True)
 
         # Convert to numpy
-        image_feats = image_features.detach().cpu().numpy()
-        # text_feats = text_features.cpu().numpy()
+        image_feats = image_features.cpu().detach().cpu().detach().numpy()
+        # text_feats = text_features.cuda:1().numpy()
         # image_feats = []
 
         return image_crops, image_feats
@@ -148,4 +149,3 @@ class FeatureComputer:
 
         feat_vector = np.mean(np.stack(feats, 0), 0)
         return feat_vector
-    
