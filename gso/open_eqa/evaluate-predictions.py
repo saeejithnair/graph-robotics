@@ -85,9 +85,9 @@ def main(args: argparse.Namespace):
 
     # load scores
     all_scores = {}
-    # if args.output_path.exists():
-    #     all_scores = json.load(args.output_path.open("r"))
-    #     print("found {:,} existing scores".format(len(all_scores)))
+    if args.output_path.exists():
+        all_scores = json.load(args.output_path.open("r"))
+        print("found {:,} existing scores".format(len(all_scores)))
 
     # evaluate predictions
     for idx, question_id in enumerate(tqdm(results_question_ids)):

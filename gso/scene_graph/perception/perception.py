@@ -54,13 +54,15 @@ class Perceptor(ABC):
         self.sam = sam_model_registry[sam_model_type](checkpoint=sam_checkpoint_path)
         self.sam.to(device=device)
         self.mask_predictor = SamPredictor(self.sam)
-        self.detection_model = YOLO("yolov8l-world.pt")
+        self.detection_model = YOLO("yolov8l-world.pt").to(device)
         self.obj_classes = utils.ObjectClasses(
             classes_file_path="scene_graph/perception/scannet200_classes.txt",
             bg_classes=["wall", "floor", "ceiling"],
             skip_bg=False,
         )
-        self.detection_model.set_classes(self.obj_classes.get_classes_arr())
+        self.detection_model.set_classes(
+            self.obj_classes.get_classes_arr(), device=device
+        )
         self.gemini_model = gemini_model
         # self.prompt_file = 'perception/prompts/generic_spatial_mapping_claude.txt'
 
@@ -216,7 +218,7 @@ class Perceptor(ABC):
             except Exception as e:
                 print("VLM Error:", e)
                 traceback.print_exc()
-                time.sleep(0.2)
+                time.sleep(1)
                 continue
         if llm_response is None:
             raise Exception("Model could not generate bounding boxes")

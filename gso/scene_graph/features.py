@@ -4,6 +4,7 @@ import pickle
 from pathlib import Path
 
 import numpy as np
+import open3d as o3d
 import supervision as sv
 import torch
 from transformers import AutoModel, AutoProcessor, AutoTokenizer
@@ -61,11 +62,30 @@ class FeatureComputer:
             )
 
     def get_bounding_box(self, pcd):
-        try:
-            return pcd.get_oriented_bounding_box(robust=True)
-        except RuntimeError as e:
-            print(f"Met {e}, use axis aligned bounding box instead")
+        # First check if we have enough points
+        if len(pcd.points) < 4:
+            print("Too few points for oriented bounding box")
             return pcd.get_axis_aligned_bounding_box()
+
+        try:
+            # Add a small amount of noise to prevent degenerate cases
+            pcd_noisy = o3d.geometry.PointCloud()
+            pcd_noisy.points = o3d.utility.Vector3dVector(
+                np.asarray(pcd.points)
+                + np.random.rand(*np.asarray(pcd.points).shape) * 1e-6
+            )
+            pcd_noisy.colors = pcd.colors
+
+            # Try getting oriented bounding box with the noisy point cloud
+            return pcd_noisy.get_oriented_bounding_box(robust=True)
+        except RuntimeError as e:
+            print(f"Met {e}, attempting alternative approach")
+            try:
+                # Try without noise but with different parameters
+                return pcd.get_oriented_bounding_box(robust=True)
+            except RuntimeError as e:
+                print(f"Met {e}, use axis aligned bounding box instead")
+                return pcd.get_axis_aligned_bounding_box()
 
     def compute_sentence_features(self, captions):
         encoded_input = self.sentence_tokenizer(

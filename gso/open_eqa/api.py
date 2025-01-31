@@ -210,6 +210,7 @@ class API_GraphAPI(API):
         color_np = color_tensor.cpu().numpy()  # (H, W, 3)
         image_rgb = (color_np).astype(np.uint8)  # (H, W, 3)
         assert image_rgb.max() > 1, "Image is not in range [0, 255]"
+        new_nodes = []
 
         _, prev_detections = load_objects(
             result_path, keyframe_id, temp_refine=semantic_tree.temp_refine_dir
@@ -289,6 +290,24 @@ class API_GraphAPI(API):
                 self.analyze_frame_perceptor.save_results(
                     detections, result_path / "temp-refine", keyframe_id
                 )
+
+            # Update new_nodes
+            for i in range(len(response)):
+                if det_matched[i]:
+                    continue
+                id = get_trackid_by_name(
+                    semantic_tree.tracks, detections[i].matched_track_name
+                )
+                new_nodes.append(
+                    {
+                        "name": detections[i].matched_track_name,
+                        "visual caption": detections[i].visual_caption[0],
+                        "times scene": semantic_tree.tracks[id].times_scene,
+                        "room": semantic_tree.tracks[id].room_id,
+                        "centroid": semantic_tree.tracks[id].features.centroid.tolist(),
+                    }
+                )
+
         elif request["type"] == "analyze_objects_in_frame":
             text_prompt = self.analyze_objects_perceptor.text_prompt_template
             text_prompt = text_prompt.format(
@@ -329,7 +348,48 @@ class API_GraphAPI(API):
         api_log["keyframe_path"] = dataset.color_paths[keyframe_id]
         api_log["response"] = response
 
-        return semantic_tree, response, api_log
+        return semantic_tree, response, api_log, new_nodes
+
+
+def search_name_recursive(graph, search_name, edge_types):
+    for i in range(len(graph)):
+        if graph[i]["name"] == search_name:
+            return graph.pop(i)
+        for type in edge_types:
+            rel_name = "Items " + type
+            node = search_name_recursive(graph[i][rel_name], search_name, edge_types)
+            if not (node is None):
+                return node
+    return None
+
+
+def extract_field_recursive(graph, field, edge_types):
+    ret = []
+    for i in range(len(graph)):
+        if graph[i] == None:
+            graph.pop(i)
+            continue
+        node = {
+            "name": graph[i]["name"],
+            "query-relevant notes": graph[i]["query-relevant notes"],
+        }
+        del graph[i]["query-relevant notes"]
+        for type in edge_types:
+            rel_name = "Items " + type
+            node[rel_name] = extract_field_recursive(
+                graph[i][rel_name], field, edge_types
+            )
+        ret.append(node)
+    return ret
+
+
+def get_room_name(room_name):
+    if room_name == "unknown" or not " " in room_name or not "_" in room_name:
+        return room_name
+    floor_name = room_name.split(" ")[-1][0]
+    id = room_name.split(" ")[-1][-1]
+    room_string = " ".join(room_name.split(" ")[:-1]) + f" {id} on floor {floor_name}"
+    return room_string
 
 
 def extract_scene_prompts(
@@ -367,14 +427,15 @@ def extract_scene_prompts(
             # Replace the Estimated Current Location with the Present Room
             log["Generic Mapping"]["Current Room"] = "unknown"
             if log["Generic Mapping"]["Present Room"] != "unknown":
-                log["Generic Mapping"]["Current Room"] = log["Generic Mapping"][
-                    "Present Room"
-                ]
+                log["Generic Mapping"]["Current Room"] = get_room_name(
+                    log["Generic Mapping"]["Present Room"]
+                )
             del log["Generic Mapping"]["Present Room"]
 
             for k in log["Generic Mapping"]:
                 log[k] = log["Generic Mapping"][k]
             del log["Generic Mapping"]
+            del log["Focused Analyses and Search"]
 
             navigation_log.append(log)
         # navigation_log.append(log)
@@ -402,6 +463,7 @@ def extract_scene_prompts(
         images_prompt.append(video_uri)
 
     graph = []
+    scratchpad = []
 
     # Option 1: Nested JSON
     # not_in_graph = set(semantic_tree.track_ids)
@@ -413,31 +475,34 @@ def extract_scene_prompts(
     #             node = {
     #                 "name": semantic_tree.tracks[id].name,
     #                 "visual caption": semantic_tree.tracks[id].captions[0],
-    #                 "your notes": semantic_tree.tracks[id].notes,
-    #                 "times scene": semantic_tree.tracks[id].times_scene,
-    #                 "room": semantic_tree.tracks[id].room_id,
-    #                 "hierarchy level": semantic_tree.tracks[id].level,
-    #                 "centroid": semantic_tree.tracks[id].features.centroid.tolist(),
+    #                 "room": get_room_name(semantic_tree.tracks[id].room_id),
+    #                 # "hierarchy level": semantic_tree.tracks[id].level,
+    #                 "centroid": ", ".join(
+    #                     f"{x:.4f}"
+    #                     for x in semantic_tree.tracks[id].features.centroid.tolist()
+    #                 ),
+    #                 "query-relevant notes": semantic_tree.tracks[id].notes,
     #             }
     #             for type in edge_types:
     #                 node["Items " + type] = []
+
     #             children_id = semantic_tree.get_children_ids(
     #                 id, semantic_tree.hierarchy_matrix
     #             )
     #             for child_id in children_id:
     #                 if semantic_tree.tracks[child_id].level >= level:
     #                     continue
-    #                 for i in range(len(graph)):
-    #                     if graph[i]["name"] == semantic_tree.tracks[child_id].name:
-    #                         node[
-    #                             "Items "
-    #                             + semantic_tree.hierarchy_type_matrix[id][child_id]
-    #                         ].append(graph.pop(i))
-    #                         break
+    #                 child_node = search_name_recursive(
+    #                     graph, semantic_tree.tracks[child_id].name, edge_types
+    #                 )
+    #                 node[
+    #                     "Items " + semantic_tree.hierarchy_type_matrix[id][child_id]
+    #                 ].append(child_node)
     #             graph.append(node)
     #             in_graph.add(id)
     #     not_in_graph = not_in_graph - in_graph
     #     level += 1
+    # scratchpad = extract_field_recursive(graph, "query-relevant notes", edge_types)
 
     # Option 2: Flat Edges
     # for track in semantic_tree.tracks.values():
@@ -450,7 +515,7 @@ def extract_scene_prompts(
     #             "visual caption": track.captions[0],
     #             "your notes": track.notes,
     #             "times scene": track.times_scene,
-    #             "room": track.room_id,
+    #             "room": get_room_name(track.room_id),
     #             "hierarchy level": track.level,
     #             "centroid": track.features.centroid.tolist(),
     #             "relationships": edges,
@@ -467,7 +532,7 @@ def extract_scene_prompts(
     #             "visual caption": track.captions[0],
     #             "your notes": track.notes,
     #             "times scene": track.times_scene,
-    #             "room": track.room_id,
+    #             "room": get_room_name(track.room_id),
     #             "hierarchy level": track.level,
     #             "centroid": track.features.centroid.tolist(),
     #         }
@@ -479,25 +544,37 @@ def extract_scene_prompts(
     # graph["Relationships"] = edges
 
     # Option 4: Hierarchy with room nodes
-    # edges = []
-    # for room in semantic_tree.rooms:
-    #     graph[room.name] = {"Objects": []}
+    # graph = {"unknown": {"Objects": []}}
+    # for id in semantic_tree.rooms:
+    #     graph[get_room_name(semantic_tree.rooms[id].name)] = {"Objects": []}
+    # scratchpad = copy.deepcopy(graph)
     # for track in semantic_tree.tracks.values():
-    #     room_name = track.room_id
+    #     room_name = get_room_name(track.room_id)
+    #     if not room_name in graph:
+    #         room_name = "unknown"
+    #     edges = [e.json() for e in track.edges]
+    #     _ = [e.pop("frame_id") for e in edges]
+    #     _ = [e.pop("subject") for e in edges]
     #     graph[room_name]["Objects"].append(
     #         {
     #             "name": track.name,
     #             "visual caption": track.captions[0],
-    #             "your notes": track.notes,
-    #             "times scene": track.times_scene,
-    #             "hierarchy level": track.level,
-    #             "centroid": track.features.centroid.tolist(),
-    #             "edges": [e.json() for e in track.edges],
+    #             # "times scene": track.times_scene,
+    #             # "hierarchy level": track.level,
+    #             "centroid": ", ".join(
+    #                 f"{x:.4f}" for x in track.features.centroid.tolist()
+    #             ),
+    #             "edges": edges,
+    #         }
+    #     )
+    #     scratchpad[room_name]["Objects"].append(
+    #         {
+    #             "name": track.name,
+    #             "query-relevant notes": track.notes,
     #         }
     #     )
 
-    # Option 5: Flat Edges, Seperate Scratchpad
-    scratchpad = []
+    # Option 5: Flat Edges
     for track in semantic_tree.tracks.values():
         edges = [e.json() for e in track.edges]
         _ = [e.pop("frame_id") for e in edges]
@@ -507,8 +584,8 @@ def extract_scene_prompts(
                 "name": track.name,
                 "visual caption": track.captions[0],
                 "times scene": track.times_scene,
-                "room": track.room_id,
-                "hierarchy level": track.level,
+                "room": get_room_name(track.room_id),
+                # "hierarchy level": track.level,
                 "centroid": track.features.centroid.tolist(),
                 "relationships": edges,
             }

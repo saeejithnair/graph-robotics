@@ -342,6 +342,68 @@ class GradSLAMDataset(torch.utils.data.Dataset):
         """
         raise NotImplementedError()
 
+class ScannetDataset(GradSLAMDataset):
+    def __init__(
+        self,
+        config_dict,
+        basedir,
+        sequence,
+        stride: Optional[int] = None,
+        start: Optional[int] = 0,
+        end: Optional[int] = -1,
+        desired_height: Optional[int] = 968,
+        desired_width: Optional[int] = 1296,
+        load_embeddings: Optional[bool] = False,
+        embedding_dir: Optional[str] = "embeddings",
+        embedding_dim: Optional[int] = 512,
+        **kwargs,
+    ):
+        self.input_folder = os.path.join(basedir, sequence)
+        self.pose_path = None
+
+        # Load the intrinsic matrix from the file in each scene
+        scene_intrinsic_path = os.path.join(self.input_folder, "intrinsic_color.txt")
+        scene_intrinsic = np.loadtxt(scene_intrinsic_path)
+        config_dict['camera_params']['fx'] = scene_intrinsic[0, 0]
+        config_dict['camera_params']['fy'] = scene_intrinsic[1, 1]
+        config_dict['camera_params']['cx'] = scene_intrinsic[0, 2]
+        config_dict['camera_params']['cy'] = scene_intrinsic[1, 2]
+        
+        super().__init__(
+            config_dict,
+            stride=stride,
+            start=start,
+            end=end,
+            desired_height=desired_height,
+            desired_width=desired_width,
+            load_embeddings=load_embeddings,
+            embedding_dir=embedding_dir,
+            embedding_dim=embedding_dim,
+            **kwargs,
+        )
+
+    def get_filepaths(self):
+        color_paths = natsorted(glob.glob(f"{self.input_folder}/*-rgb.png"))
+        depth_paths = natsorted(glob.glob(f"{self.input_folder}/*-depth.png"))
+        embedding_paths = None
+        if self.load_embeddings:
+            embedding_paths = natsorted(
+                glob.glob(f"{self.input_folder}/{self.embedding_dir}/*.pt")
+            )
+        return color_paths, depth_paths, embedding_paths
+
+    def load_poses(self):
+        poses = []
+        posefiles = natsorted(glob.glob(f"{self.input_folder}/00*.txt"))
+        for posefile in posefiles:
+            _pose = torch.from_numpy(np.loadtxt(posefile))
+            poses.append(_pose)
+        return poses
+
+    def read_embedding_from_file(self, embedding_file_path):
+        print(embedding_file_path)
+        embedding = torch.load(embedding_file_path, map_location="cpu")
+        return embedding.permute(0, 2, 3, 1)  # (1, H, W, embedding_dim)
 
 class Hm3dDataset(GradSLAMDataset):
     def __init__(

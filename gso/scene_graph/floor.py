@@ -203,7 +203,15 @@ def segment_floors(
     :param path: str, The path to save the intermediate results
     """
     # downsample the point cloud
-    downpcd = full_pcd.voxel_down_sample(voxel_size=0.05)
+    downpcd = o3d.geometry.PointCloud()
+    downpcd.points = o3d.utility.Vector3dVector(
+        np.array(full_pcd.points)[~np.isnan(np.array(full_pcd.points)).any(axis=1)]
+    )
+    downpcd.colors = o3d.utility.Vector3dVector(
+        np.array(full_pcd.colors)[~np.isnan(np.array(full_pcd.points)).any(axis=1)]
+    )
+    downpcd = downpcd.voxel_down_sample(voxel_size=0.05)
+
     # flip the z and y axis
     if flip_zy:
         downpcd.points = o3d.utility.Vector3dVector(
@@ -214,6 +222,7 @@ def segment_floors(
     T1 = np.eye(4)
     T1[:3, :3] = Rotation.from_euler("x", 90, degrees=True).as_matrix()
     downpcd = np.asarray(downpcd.points)
+    downpcd = downpcd[~np.isnan(downpcd).any(axis=1)]
     print("downpcd", downpcd.shape)
 
     # divide z axis range into 0.01m bin

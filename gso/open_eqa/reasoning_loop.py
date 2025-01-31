@@ -22,6 +22,7 @@ from vertexai.generative_models import (
 
 import read_graphs
 from scene_graph.perception import call_gemini
+from scene_graph.relationship_scorer import RelationshipScorer
 from scene_graph.semantic_tree import SemanticTree
 
 from .api import API, create_gemini_video_prompt, extract_scene_prompts
@@ -59,6 +60,7 @@ def inference_time_search(
     visual_memory_size,
     max_search_depth,
     system_prompt,
+    skip_frame,
     obj_pcd_max_points=5000,
     downsample_voxel_size=0.02,
     gemini_seed: int = 1234,
@@ -73,7 +75,12 @@ def inference_time_search(
     semantic_tree.load(
         graph_result_path, load_floors=load_floors, load_rooms=load_rooms
     )
-    semantic_tree.compute_node_levels()
+
+    relationship_scorer = RelationshipScorer(downsample_voxel_size=0.02)
+    hierarchy_matrix, hierarchy_type_matrix = relationship_scorer.infer_hierarchy_vlm(
+        semantic_tree.tracks
+    )
+    semantic_tree.compute_node_levels(hierarchy_matrix, hierarchy_type_matrix)
 
     # vertexai.init(project='302560724657', location="northamerica-northeast2")
     # model = GenerativeModel(model_name=gemini_model)
@@ -170,7 +177,7 @@ def inference_time_search(
             call_response.append(
                 Part.from_image(Image.load_from_file(dataset.color_paths[keyframe]))
             )
-            semantic_tree, api_response, api_log = api.call(
+            semantic_tree, api_response, api_log, new_nodes = api.call(
                 {"type": tool.name, **tool.args},
                 dataset,
                 result_path,
@@ -187,9 +194,10 @@ def inference_time_search(
                 frame_ids,
             ) = extract_scene_prompts(semantic_tree, dataset, prompt_video=prompt_video)
             text_response = {
-                "Updated SceneGraph": json.dumps(graph_prompt, indent=2),
-                "Updated Scratchpad": json.dumps(scratchpad_prompt, indent=2),
-                "Updated Observation Log": json.dumps(navigation_log_prompt, indent=2),
+                "New SceneGraph": json.dumps(graph_prompt),
+                # f"New Observation Log for frame {keyframe}": json.dumps(navigation_log_prompt[keyframe % skip_frame]),
+                f"New Observation Log": json.dumps(navigation_log_prompt),
+                "New Scratchpad": json.dumps(scratchpad_prompt),
             }
             call_response.append(
                 Part.from_function_response(name=tool.name, response=text_response)

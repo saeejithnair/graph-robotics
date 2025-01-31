@@ -323,8 +323,12 @@ class SemanticTree:
             frame_id_to_rooms[frame_id] = room_ids[i]
 
         for frame_id in frame_list:
+            if frame_id >= len(self.navigation_log):
+                continue
             log = self.navigation_log[frame_id]
             assert int(log["Frame Index"]) == frame_id
+            if log["Generic Mapping"] is None:
+                continue
             if frame_id_to_rooms.get(frame_id):
                 log["Generic Mapping"]["Present Room"] = frame_id_to_rooms[frame_id]
             else:

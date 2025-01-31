@@ -1,6 +1,6 @@
 import yaml
 
-from .datasets import Hm3dDataset
+from .datasets import Hm3dDataset, ScannetDataset
 
 
 def update_recursive(dict1, dict2):
