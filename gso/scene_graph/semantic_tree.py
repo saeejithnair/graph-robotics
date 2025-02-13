@@ -41,18 +41,43 @@ class SemanticTree:
         # floors and rooms
         self.rooms = {}
         self.floors = []
+        # self.room_types = [
+        #     "kitchen",
+        #     "living room",
+        #     "bedroom",
+        #     "dinning room",
+        #     "living and dining area",
+        #     "bathroom",
+        #     "washroom",
+        #     "hallway",
+        #     "garage",
+        #     "corridor",
+        #     "office",
+        # ]
         self.room_types = [
-            "kitchen",
-            "living room",
-            "bedroom",
-            "dinning room",
-            "living and dining area",
+            "apartment",
             "bathroom",
-            "washroom",
+            "bedroom",
+            "library",
+            "bookstore" "classroom",
+            "closet",
+            "computer cluster",
+            "conference room",
+            "copy/mail room",
+            "dining room",
+            "game room",
+            "gym",
             "hallway",
-            "garage",
-            "corridor",
+            "kitchen",
+            "laundry room",
+            "living room",
+            "lobby",
             "office",
+            "stairs",
+            "storage",
+            "basement",
+            "garage",
+            "misc",
         ]
         self.clip_processor = AutoProcessor.from_pretrained(
             "google/siglip-base-patch16-224"
