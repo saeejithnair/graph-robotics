@@ -1,0 +1,8 @@
+You will receive a list of objects, where each object is associated with multiple captions. Each caption describes different aspects of the object or reflects varying levels of certainty, created from different perspectives and views of the object.
+
+Your task is to generate a single, coherent caption for each object by consolidating the provided captions. Ensure the consolidated caption captures the most relevant and confident details about the object.
+Detections: {tracks}
+
+Return a JSON list, where each entry contains the following keys:
+label: The label of the object. The label should correspond exactly to a detection in the provided list of detections.
+caption: A consolidated description that synthesizes the individual captions into one coherent caption.

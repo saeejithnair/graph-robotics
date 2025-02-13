@@ -9,17 +9,35 @@ defaults:
   - logging_level
   - _self_
 
-result_root: /pub3/qasim/hm3d/data/concept-graphs
+result_root: /pub3/qasim/hm3d/data/ham-sg
 image_height: 1080
 image_width: 1920
 max_frames: 10
 
-detections_exp_suffix: s_detections # helpful label to identify your detections
-force_detection: !!bool False
+detections_exp_suffix: detections # helpful label to identify your detections
+force_detection: !!bool True
 save_detections: !!bool True
+detections_model: gemini-2.0-flash-exp
 
 make_edges: !!bool False
 
+
+# main_semantictree
+skip_frame: 5
+# OpenEQA
+questions: open_eqa/data/open-eqa-v0.json
+questions_graph_dir: /pub3/qasim/hm3d/data/ham-sg/
+questions_model: gemini-2.0-flash-exp
+questions_output_dir: open_eqa/results
+questions_exp_name: flexgraph
+questions_dry_run : False
+questions_ignore_old_results : False
+max_search_depth: 20
+visual_memory_size: 5
+api_type: frame_level
+# Rooms and Floors
+room_grid_resolution: 0.2
+debug_folder: /home/qasim/Projects/graph-robotics/gso/debug
 stride: 1
 exp_suffix: r_mapping # helpful label to identify your mapping experiment
 
@@ -27,6 +45,7 @@ exp_suffix: r_mapping # helpful label to identify your mapping experiment
 save_video: !!bool False
 save_objects_all_frames: !!bool False
 
+neighbour_radius: 0.02
 downsample_voxel_size: 0.01
 obj_pcd_max_points: 5000
 

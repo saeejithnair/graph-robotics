@@ -1,6 +1,0 @@
-defaults:
-  - base_paths
-
-dataset_root: /pub3/qasim/hm3d/data/frames
-dataset_config: ${repo_root}/configs/dataconfigs/hm3d.yaml
-scene_id: 004-hm3d-66seV3BWPoX # 000-hm3d-BFRyYbPCCPE # 002-hm3d-wcojb4TFT35

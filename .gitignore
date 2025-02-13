@@ -1,3 +1,5 @@
+api_keys/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -160,3 +162,189 @@ cython_debug/
 #  and can be added to the global gitignore or merged into this file.  For a more nuclear
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
+
+### CONCEPT GRAPH GITIGNORE
+concept-graphs/*.pt
+concept-graphs/conceptgraph/*.pt
+concept-graphs/conceptgraph/slam/*.pt
+concept-graphs/conceptgraph/outputs
+concept-graphs/conceptgraph/scripts/wandb
+concept-graphs/conceptgraph/results
+concept-graphs/conceptgraph/tmp
+concept-graphs/manipulation/contact_graspnet/examples
+concept-graphs/manipulation/contact_graspnet/test_data
+concept-graphs/manipulation/contact_graspnet/checkpoints
+concept-graphs/manipulation/dataset
+
+concept-graphs/outputs
+concept-graphs/wandb
+
+# Byte-compiled / optimized / DLL files
+concept-graphs/__pycache__/
+concept-graphs/*.py[cod]
+concept-graphs/*$py.class
+
+# C extensions
+concept-graphs/*.so
+
+# Distribution / packaging
+concept-graphs/.Python
+concept-graphs/build/
+concept-graphs/develop-eggs/
+concept-graphs/dist/
+concept-graphs/downloads/
+concept-graphs/eggs/
+concept-graphs/.eggs/
+concept-graphs/lib/
+concept-graphs/lib64/
+concept-graphs/parts/
+concept-graphs/sdist/
+concept-graphs/var/
+concept-graphs/wheels/
+concept-graphs/share/python-wheels/
+concept-graphs/*.egg-info/
+concept-graphs/.installed.cfg
+concept-graphs/*.egg
+MANIFEST
+
+# PyInstaller
+#  Usually these files are written by a python script from a template
+#  before PyInstaller builds the exe, so as to inject date/other infos into it.
+*.manifest
+*.spec
+
+# Installer logs
+concept-graphs/pip-log.txt
+concept-graphs/pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+concept-graphs/htmlcov/
+concept-graphs/.tox/
+concept-graphs/.nox/
+concept-graphs/.coverage
+concept-graphs/.coverage.*
+concept-graphs/.cache
+concept-graphs/nosetests.xml
+concept-graphs/coverage.xml
+concept-graphs/*.cover
+concept-graphs/*.py,cover
+concept-graphs/.hypothesis/
+concept-graphs/.pytest_cache/
+concept-graphs/cover/
+
+# Translations
+concept-graphs/*.mo
+concept-graphs/*.pot
+
+# Django stuff:
+concept-graphs/*.log
+concept-graphs/local_settings.py
+concept-graphs/db.sqlite3
+concept-graphs/db.sqlite3-journal
+
+# Flask stuff:
+concept-graphs/instance/
+concept-graphs/.webassets-cache
+
+# Scrapy stuff:
+concept-graphs/.scrapy
+
+# Sphinx documentation
+concept-graphs/docs/_build/
+
+# PyBuilder
+concept-graphs/.pybuilder/
+concept-graphs/target/
+
+# Jupyter Notebook
+concept-graphs/.ipynb_checkpoints
+
+# IPython
+concept-graphs/profile_default/
+concept-graphs/ipython_config.py
+
+# pyenv
+#   For a library or package, you might want to ignore these files since the code is
+#   intended to run in multiple environments; otherwise, check them in:
+# .python-version
+
+# pipenv
+#   According to pypa/pipenv#598, it is recommended to include Pipfile.lock in version control.
+#   However, in case of collaboration, if having platform-specific dependencies or dependencies
+#   having no cross-platform support, pipenv may install dependencies that don't work, or not
+#   install all needed dependencies.
+#Pipfile.lock
+
+# poetry
+#   Similar to Pipfile.lock, it is generally recommended to include poetry.lock in version control.
+#   This is especially recommended for binary packages to ensure reproducibility, and is more
+#   commonly ignored for libraries.
+#   https://python-poetry.org/docs/basic-usage/#commit-your-poetrylock-file-to-version-control
+#poetry.lock
+
+# pdm
+#   Similar to Pipfile.lock, it is generally recommended to include pdm.lock in version control.
+#pdm.lock
+#   pdm stores project-wide configurations in .pdm.toml, but it is recommended to not include it
+#   in version control.
+#   https://pdm.fming.dev/#use-with-ide
+.pdm.toml
+
+# PEP 582; used by e.g. github.com/David-OConnor/pyflow and github.com/pdm-project/pdm
+concept-graphs/__pypackages__/
+
+# Celery stuff
+concept-graphs/celerybeat-schedule
+concept-graphs/celerybeat.pid
+
+# SageMath parsed files
+concept-graphs/*.sage.py
+
+# Environments
+concept-graphs/.env
+concept-graphs/.venv
+concept-graphs/env/
+concept-graphs/venv/
+concept-graphs/ENV/
+concept-graphs/env.bak/
+concept-graphs/venv.bak/
+
+# Spyder project settings
+concept-graphs/.spyderproject
+concept-graphs/.spyproject
+
+# Rope project settings
+concept-graphs/.ropeproject
+
+# mkdocs documentation
+concept-graphs//site
+
+# mypy
+concept-graphs/.mypy_cache/
+concept-graphs/.dmypy.json
+concept-graphs/dmypy.json
+
+# Pyre type checker
+concept-graphs/.pyre/
+
+# pytype static type analyzer
+concept-graphs/.pytype/
+
+# Cython debug symbols
+concept-graphs/cython_debug/
+
+# PyCharm
+#  JetBrains specific template is maintained in a separate JetBrains.gitignore that can
+#  be found at https://github.com/github/gitignore/blob/main/Global/JetBrains.gitignore
+#  and can be added to the global gitignore or merged into this file.  For a more nuclear
+#  option (not recommended) you can uncomment the following to ignore the entire idea folder.
+#.idea/
+concept-graphs/cfslam/debug.png
+concept-graphs/cfslam/debug_hungarian.png
+concept-graphs/cfslam/tmp.bash
+concept-graphs/cfslam/wandb
+concept-graphs/cfslam/tmp.png
+concept-graphs/cfslam/temp.json
+concept-graphs/outputs
+
+

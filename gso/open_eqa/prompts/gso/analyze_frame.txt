@@ -1,0 +1,7 @@
+Detect items to help answer the question "{query}".
+
+Return a JSON list of detections, with each entry containing:
+label: A unique identifier containing a few words (e.g. "kitchen counter"). 
+visual caption: A description of the object's visual appearence. An example of a valid caption would be "A kitchen counter with a granite countertop".
+bbox: A 1D array of four integers representing the bounding box: [ymin, xmin, ymax, xmax].
+your notes: Detailed and precise information about the object that can aid in answering the query. 

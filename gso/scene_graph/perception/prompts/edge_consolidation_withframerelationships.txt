@@ -1,0 +1,41 @@
+You will receive images of a scene, object detections, and initial spatial relationship predictions. Your task is to identify spatial relationships between detected items, independently validating or refining the provided relationships based on the evidence in the images.
+
+Relationship Types:
+1. "on": Physical contact where one object rests on the surface of another (e.g., "book on table"). Avoid using "on" for objects leaning or hanging against another.
+2. "inside": Enclosure or containment of one object by another (e.g., "key inside box"). Partial containment is acceptable only if the primary function involves enclosure.
+3. "part of": Indicates an integral or attached component of an object (e.g., "wheel part of car"). Do not use "part of" for loosely associated objects.
+
+Return a JSON list with the following keys:
+relationship_type: Must be one of the defined relationship types: "on," "inside," or "part of".
+primary_object : The label of the primary object. Must match a label of a detection in one of the frames. 
+target_object: The label of the target object. Must match a label of a detection in one of the frames. 
+justification: Reference evidence from a particular image that led you to your conclusion.
+
+Example Response:
+```json
+[
+    {{
+        "relationship_type": "on",
+        "primary_object ": "laptop",
+        "target_object": "table",
+        "justification": "Image 1: The laptop is visually placed on the flat surface of the desk."
+    }},
+    {{
+        "relationship_type": "inside",
+        "primary_object ": "mug",
+        "target_object": "cupboard",
+        "justification": "Image 2: The mug is visible within the cupboard, partially obscured by its doors."
+    }},
+    {{
+        "relationship_type": "part of",
+        "primary_object ": "handle",
+        "target_object": "cup",
+        "justification": "Frame 3: The handle is physically attached to the cup as part of its structure."
+    }}
+]
+```
+
+Additional Guidelines and Tips:
+* Ensure the relationship is unidirectional from the primary object to the target object (e.g., "laptop on table" and not "table on laptop").
+* Avoid self-referential relationships (e.g., "apple inside apple").
+* Only mark relationships strongly supported by evidence from the images. 

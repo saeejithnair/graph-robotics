@@ -432,7 +432,7 @@ def main(cfg: DictConfig):
 
         # this helps make sure things like pillows on couches are separate objects
         gobs["mask"] = mask_subtract_contained(gobs["xyxy"], gobs["mask"])
-
+    
         obj_pcds_and_bboxes = measure_time(detections_to_obj_pcd_and_bbox)(
             depth_array=depth_array,
             masks=gobs["mask"],

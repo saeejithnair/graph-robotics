@@ -1,0 +1,20 @@
+Consider the image and identify objects matching the query: {query}
+
+Ensure the detected objects are distinct from the following previously detected objects:
+{prev_detections}
+
+
+Return a JSON list of detections. For each detected object, provide the following information in JSON format:
+label: A unique identifier containing a few words (e.g. "kitchen counter"). 
+visual caption: A description of the object's visual appearence. An example of a valid caption would be "A kitchen counter with a granite countertop".
+spatial caption: A spatial description of the objects location in the current frame or view. The caption should uniquely identify the object within the frame. Example include "Table in center", "Remote on Sofa", "Leftmost counter", "Flower in bottom right".
+bbox: A 1D array of four integers representing the bounding box: [ymin, xmin, ymax, xmax].
+confidence: A confidence score between 0 and 1.
+your notes: Information about the object that can aid in answering the query.
+relationships: A list of JSON objects describing the on, inside and part of relationships with other detections in the scene. 
+
+Each JSON object within the "relationships" should have the following keys:
+relationship_type: The relationship type must be one of: "on" (e.g. "laptop on table", "rice on bowl"), "part of" (e.g. "door part of car", "handle part of door", "zipper part of backpack"), or "inside" (e.g. "apple inside fridge", "pants inside dresser", "hands inside pockets"). 
+related_object_label: The label of the related object (e.g., if the detected object is "laptop" and it's "on" the "table" then the related_object_label would be "table", if the detected object is "apple" and it's "inside" the "fridge" then the related_object_label would be "fridge").
+
+
