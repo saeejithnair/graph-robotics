@@ -182,8 +182,6 @@ def main(cfg: DictConfig):
             print("found {:,} existing results".format(len(results)))
     completed = [item["question_id"] for item in results]
 
-    scenes_available = os.listdir(cfg.questions_graph_dir)
-
     device = "cuda:1"
     # api = API_TextualQA(
     #     "open_eqa/prompts/gso/flat_graph_v3.txt",
@@ -222,8 +220,6 @@ def main(cfg: DictConfig):
         if question_id in completed:
             continue  # skip existing
         scene_id = os.path.basename(item["episode_history"])
-        if not scene_id in scenes_available:
-            continue
 
         dataset = get_dataset(
             dataconfig=cfg.dataset_config,
@@ -250,8 +246,16 @@ def main(cfg: DictConfig):
                     api=api,
                     dataset=dataset,
                     system_prompt=system_prompt,
-                    graph_result_path=Path(cfg.questions_graph_dir) / scene_id,
-                    result_path=Path(cfg.result_root) / scene_id,
+                    skip_frame=cfg.skip_frame,
+                    result_dir_embodied_memory=Path(cfg.result_root)
+                    / scene_id
+                    / "embodied_memory",
+                    result_dir_detections=Path(cfg.result_root)
+                    / scene_id
+                    / "detections",
+                    temp_workspace_dir=Path(cfg.result_root)
+                    / scene_id
+                    / "qa-temp-workspace",
                     obj_pcd_max_points=cfg.obj_pcd_max_points,
                     downsample_voxel_size=cfg.downsample_voxel_size,
                     gemini_model=cfg.questions_model,

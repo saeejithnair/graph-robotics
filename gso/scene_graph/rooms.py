@@ -35,7 +35,7 @@ from scipy.spatial import cKDTree
 from scipy.spatial.transform import Rotation
 
 from scene_graph.floor import Floor
-from scene_graph.track import Track
+from scene_graph.scene_graph import SceneGraph
 
 
 class Room:
@@ -65,7 +65,7 @@ class Room:
         return str(self.room_id) + " " + self.room_type
 
     def infer_room_type_from_view_embedding(
-        self, default_room_types: List[str], clip_tokenizer, clip_model
+        self, default_room_types: List[str], clip_tokenizer, clip_model, device
     ) -> str:
         """Use the embeddings stored inside the room to infer room type. We should already
            save k views CLIP embeddings for each room. We match the k embeddings with room
@@ -86,10 +86,10 @@ class Room:
             print("empty embeddings")
             return "unknown room type"
         text_feats = custom_siglip_textfeats(
-            default_room_types, clip_tokenizer, clip_model
+            default_room_types, clip_tokenizer, clip_model, device
         )
         embeddings = np.array(self.embeddings)
-        sim_mat = np.dot(embeddings, text_feats.T)
+        sim_mat = np.dot(embeddings, text_feats.cpu().T)
         # sim_mat = compute_similarity(embeddings, text_feats)
         print(sim_mat)
         col_ids = np.argmax(sim_mat, axis=1)
@@ -150,7 +150,7 @@ class Room:
         return f"Room ID: {self.room_id}, Name: {self.name}, Floor ID: {self.floor_id}, Objects: {len(self.objects)}"
 
 
-def assign_tracks_to_rooms(tracks: List[Track], global_pcd, floors):
+def assign_nodes_to_rooms(scene_graph: SceneGraph, global_pcd, floors):
     """
     Assigns each track to the room with the highest overlap and populates the room_id attribute.
     Uses both overlap-based and distance-based assignment strategies.
@@ -162,13 +162,13 @@ def assign_tracks_to_rooms(tracks: List[Track], global_pcd, floors):
     """
     margin = 0.2  # Height margin for associating tracks to floors
 
-    # Iterate through all tracks
-    track_keys = tracks.keys()
-    for id in track_keys:
-        track = tracks[id]
+    # Iterate through all nodes
+    node_ids = scene_graph.get_node_ids()
+    for id in node_ids:
+        node = scene_graph[id]
         try:
-            # Compute the local point cloud for the track
-            local_pcd = track.compute_local_pcd()
+            # Compute the local point cloud for the node
+            local_pcd = node.compute_local_pcd()
             local_pcd_points = np.asarray(local_pcd.points)
 
             # Initialize variables to track the best match
@@ -180,12 +180,12 @@ def assign_tracks_to_rooms(tracks: List[Track], global_pcd, floors):
                 min_z = np.min(local_pcd_points[:, 1])
                 max_z = np.max(local_pcd_points[:, 1])
 
-                # Check if the track lies within the current floor's height range
+                # Check if the node lies within the current floor's height range
                 if min_z > floor.floor_zero_level - margin:
                     # Calculate room associations for all rooms in the floor
                     room_assoc = []
                     for room in floor.rooms:
-                        # Calculate overlap between room and track's local point cloud
+                        # Calculate overlap between room and node's local point cloud
                         overlap = find_intersection_share(
                             room.vertices, local_pcd_points[:, [0, 2]], 0.2
                         )
@@ -193,11 +193,11 @@ def assign_tracks_to_rooms(tracks: List[Track], global_pcd, floors):
 
                     # If no overlap found with any room, use distance-based assignment
                     if np.sum(room_assoc) == 0:
-                        track_center = np.mean(local_pcd_points[:, [0, 2]], axis=0)
+                        node_center = np.mean(local_pcd_points[:, [0, 2]], axis=0)
                         for r_idx, room in enumerate(floor.rooms):
                             # Calculate negative distance (higher is better)
                             room_center = np.mean(room.vertices, axis=0)
-                            distance = -1 * np.linalg.norm(room_center - track_center)
+                            distance = -1 * np.linalg.norm(room_center - node_center)
                             room_assoc[r_idx] = distance
 
                     # Find the best room match for this floor
@@ -208,20 +208,20 @@ def assign_tracks_to_rooms(tracks: List[Track], global_pcd, floors):
                         best_room_name = floor.rooms[best_room_idx].name
 
             # Assign the best matching room ID to the track
-            track.room_id = best_room_name
+            node.room_id = best_room_name
 
             # Log assignment information
             assignment_type = "overlap" if best_association >= 0 else "distance"
             print(
-                f"Track {track.id} ('{track.label}') assigned to Room {best_room_name} "
+                f"Node {node.id} ('{node.label}') assigned to Room {best_room_name} "
                 f"with {assignment_type}-based score {best_association:.2f}"
             )
 
         except Exception as e:
-            print(f"Error processing track {track.name}: {str(e)}")
+            print(f"Error processing track {node.name}: {str(e)}")
             continue
 
-    return tracks
+    return scene_graph
 
 
 def assign_frames_to_rooms(poses, global_pcd, floors):
@@ -308,6 +308,7 @@ def segment_rooms(
     rgb_list,
     pose_list,
     frameidx_list,
+    room_height_thresh=1.5,
     graph_tmp_folder="outputs/",
     save_intermediate_results=False,
     device="cuda:1",
@@ -336,7 +337,7 @@ def segment_rooms(
     floor_height = floor.floor_height
     ## Slice below the ceiling ##
     xyz = xyz[xyz[:, 1] < floor_zero_level + floor_height - 0.3]
-    xyz = xyz[xyz[:, 1] >= floor_zero_level + 1.5]
+    xyz = xyz[xyz[:, 1] >= floor_zero_level + room_height_thresh]
     xyz_full = xyz_full[xyz_full[:, 1] < floor_zero_level + floor_height - 0.2]
     ## Slice above the floor and below the ceiling ##
     # xyz = xyz[xyz[:, 1] < floor_zero_level + 1.8]
@@ -473,7 +474,7 @@ def segment_rooms(
     #         np.array(rgb_image), preprocess, clip_model, device=device
     #     )
     #     F_g_list.append(F_g)
-    batch = get_siglip_img_feats(rgb_list, clip_processor, clip_model, device=device)
+    batch = get_siglip_img_feats(rgb_list, clip_processor, clip_model.to(device), device=device)
     for i in range(batch.shape[0]):
         F_g_list.append(batch[i].cpu().detach().numpy())
 

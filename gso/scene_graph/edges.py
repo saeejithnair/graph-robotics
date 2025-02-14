@@ -1,5 +1,12 @@
 import json
 
+EDGE_TYPES = [
+    "enclosed within",
+    "resting on top of",
+    "directly connected to",
+    "subpart of",
+]
+
 
 class Edge:
     def __init__(

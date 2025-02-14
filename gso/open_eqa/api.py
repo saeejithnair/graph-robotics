@@ -1,42 +1,32 @@
-import argparse
 import base64
 import copy
 import io
-import json
-import os
 import random
 import time
-import traceback
 from abc import ABC
-from pathlib import Path
-from typing import Optional
 
 import cv2
-import google.auth
 import google.generativeai as genai
-import matplotlib.pyplot as plt
 import numpy as np
 from PIL import Image
-from vertexai.generative_models import GenerativeModel, Part
 
-import read_graphs
-import scene_graph.utils as utils
-from scene_graph.detection import Detection, DetectionList, Edge, load_objects
-from scene_graph.features import FeatureComputer
-from scene_graph.perception import PerceptorWithTextPrompt
+from scene_graph.detection import DetectionList, load_objects
+from scene_graph.detection_feature_extractor import DetectionFeatureExtractor
+from scene_graph.edges import EDGE_TYPES
+from scene_graph.embodied_memory import EmbodiedMemory
+from scene_graph.perception import VLMPrompterAPI
 from scene_graph.pointcloud import create_depth_cloud
-from scene_graph.relationship_scorer import RelationshipScorer
-from scene_graph.rooms import assign_tracks_to_rooms
-from scene_graph.semantic_tree import SemanticTree
-from scene_graph.track import associate_dets_to_tracks, get_trackid_by_name
+from scene_graph.relationship_scorer import HierarchyExtractor
+from scene_graph.rooms import assign_nodes_to_rooms
+from scene_graph.scene_graph import associate_dets_to_nodes, get_nodeid_by_name
 
 
 class API(ABC):
     def __init__(self, prompt_reasoning_loop, prompt_reasoning_final, device="cuda"):
         self.device = device
-        self.feature_computer = FeatureComputer(device)
+        self.feature_computer = DetectionFeatureExtractor(device)
         self.feature_computer.init()
-        self.relationship_scorer = RelationshipScorer(downsample_voxel_size=0.02)
+        self.relationship_scorer = HierarchyExtractor(downsample_voxel_size=0.02)
         self.prompt_reasoning_loop = prompt_reasoning_loop
         self.prompt_reasoning_final = prompt_reasoning_final
 
@@ -44,9 +34,10 @@ class API(ABC):
         self,
         request_json,
         dataset,
-        result_path,
+        result_dir_detections,
+        temp_workspace_dir,
         detections_folder,
-        semantic_tree: SemanticTree,
+        embodied_memory: EmbodiedMemory,
         obj_pcd_max_points,
         downsample_voxel_size=0.02,
     ):
@@ -141,25 +132,25 @@ class API_GraphAPI(API):
         device="cuda",
     ):
         super().__init__(prompt_reasoning_loop, prompt_reasoning_final, device)
-        self.find_objects_perceptor = PerceptorWithTextPrompt(
-            json_detection_key="Detections",
-            json_other_keys=["your notes"],
+        self.find_objects_perceptor = VLMPrompterAPI(
+            response_detection_key="Detections",
+            response_other_keys=["your notes"],
             prompt_file="open_eqa/prompts/gso/refine_find_objects_v2.txt",
             device=self.device,
             gemini_model=gemini_model,
             with_edges=False,
         )
-        self.analyze_frame_perceptor = PerceptorWithTextPrompt(
-            json_detection_key="Detections",
-            json_other_keys=["your notes"],
+        self.analyze_frame_perceptor = VLMPrompterAPI(
+            response_detection_key="Detections",
+            response_other_keys=["your notes"],
             prompt_file="open_eqa/prompts/gso/analyze_frame.txt",
             device=self.device,
             gemini_model=gemini_model,
             with_edges=False,
         )
-        self.analyze_objects_perceptor = PerceptorWithTextPrompt(
-            json_detection_key=None,
-            json_other_keys=["name", "your notes"],
+        self.analyze_objects_perceptor = VLMPrompterAPI(
+            response_detection_key=None,
+            response_other_keys=["name", "your notes"],
             prompt_file="open_eqa/prompts/gso/refine_analyze_objects.txt",
             gemini_model=gemini_model,
             device=self.device,
@@ -167,14 +158,15 @@ class API_GraphAPI(API):
         self.find_objects_perceptor.init()
         self.analyze_objects_perceptor.init()
         self.analyze_frame_perceptor.init()
-        self.relationship_scorer = RelationshipScorer(downsample_voxel_size=0.02)
+        self.hierarchy_extractor = HierarchyExtractor(downsample_voxel_size=0.02)
 
     def call(
         self,
         request,
         dataset,
-        result_path,
-        semantic_tree: SemanticTree,
+        result_dir_detections,
+        temp_workspace_dir,
+        embodied_memory: EmbodiedMemory,
         obj_pcd_max_points,
         downsample_voxel_size=0.02,
     ):
@@ -188,9 +180,9 @@ class API_GraphAPI(API):
                     name = name.strip()
                     if (
                         not name
-                        in semantic_tree.navigation_log[keyframe_id]["Generic Mapping"][
-                            "Detections"
-                        ]
+                        in embodied_memory.navigation_log[keyframe_id][
+                            "Generic Mapping"
+                        ]["Detections"]
                     ):
                         clarify_class_valid = False
                         break
@@ -213,10 +205,10 @@ class API_GraphAPI(API):
         new_nodes = []
 
         _, prev_detections = load_objects(
-            result_path, keyframe_id, temp_refine=semantic_tree.temp_refine_dir
+            result_dir_detections, keyframe_id, temp_dir=temp_workspace_dir
         )
         prev_detections_json = extract_detections_prompts(
-            prev_detections, semantic_tree.tracks
+            prev_detections, embodied_memory.scene_graph
         )
 
         if (
@@ -248,63 +240,67 @@ class API_GraphAPI(API):
                 obj_pcd_max_points=obj_pcd_max_points,
             )
             self.feature_computer.compute_features(image_rgb, detections)
-            det_matched, matched_tracks = associate_dets_to_tracks(
+            det_matched, matched_nodes = associate_dets_to_nodes(
                 detections,
-                semantic_tree.get_tracks(),
+                embodied_memory.scene_graph.get_nodes(),
                 downsample_voxel_size=downsample_voxel_size,
             )
-            detections, edges = semantic_tree.integrate_detections(
+            detections, edges = embodied_memory.update_scene_graph(
                 detections,
                 det_matched,
-                matched_tracks,
+                matched_nodes,
                 keyframe_id,
                 img=color_np,
                 consolidate=False,
             )
 
             for i in range(len(response)):
-                id = get_trackid_by_name(
-                    semantic_tree.tracks, detections[i].matched_track_name
+                id = get_nodeid_by_name(
+                    embodied_memory.scene_graph, detections[i].matched_node_name
                 )
                 if id is None:
                     continue
-                semantic_tree.tracks[id].notes = response[i]["your notes"]
+                embodied_memory.scene_graph[id].notes = response[i]["your notes"]
 
             hierarchy_matrix, hierarchy_type_matrix = (
-                self.relationship_scorer.infer_hierarchy_vlm(semantic_tree.tracks)
+                self.hierarchy_extractor.infer_hierarchy(embodied_memory.scene_graph)
             )
-            semantic_tree.compute_node_levels(hierarchy_matrix, hierarchy_type_matrix)
+            embodied_memory.compute_node_levels(hierarchy_matrix, hierarchy_type_matrix)
 
-            semantic_tree.tracks = assign_tracks_to_rooms(
-                semantic_tree.tracks, semantic_tree.geometry_map, semantic_tree.floors
+            embodied_memory.scene_graph = assign_nodes_to_rooms(
+                embodied_memory.scene_graph,
+                embodied_memory.full_scene_pcd.pcd,
+                embodied_memory.floors,
             )
             for det in prev_detections:
                 if det.label in detections.get_field("label"):
                     continue
                 detections.add_object(det)
             if request["type"] == "find_objects_in_frame":
-                self.find_objects_perceptor.save_results(
-                    detections, result_path / "temp-refine", keyframe_id
+                self.find_objects_perceptor.save_detection_results(
+                    detections, temp_workspace_dir, keyframe_id
                 )
             else:
-                self.analyze_frame_perceptor.save_results(
-                    detections, result_path / "temp-refine", keyframe_id
+                self.analyze_frame_perceptor.save_detection_results(
+                    detections, temp_workspace_dir, keyframe_id
                 )
 
             # Update new_nodes
             for i in range(len(response)):
                 if det_matched[i]:
                     continue
-                id = get_trackid_by_name(
-                    semantic_tree.tracks, detections[i].matched_track_name
+                id = get_nodeid_by_name(
+                    embodied_memory.scene_graph, detections[i].matched_node_name
                 )
                 new_nodes.append(
                     {
-                        "name": detections[i].matched_track_name,
+                        "name": detections[i].matched_node_name,
                         "visual caption": detections[i].visual_caption[0],
-                        "times scene": semantic_tree.tracks[id].times_scene,
-                        "room": semantic_tree.tracks[id].room_id,
-                        "centroid": semantic_tree.tracks[id].features.centroid.tolist(),
+                        "times scene": embodied_memory.scene_graph[id].times_scene,
+                        "room": embodied_memory.scene_graph[id].room_id,
+                        "centroid": embodied_memory.scene_graph[
+                            id
+                        ].features.centroid.tolist(),
                     }
                 )
 
@@ -317,23 +313,25 @@ class API_GraphAPI(API):
                 color_np, text_prompt
             )
             for i in range(len(response)):
-                id = get_trackid_by_name(semantic_tree.tracks, response[i]["name"])
+                id = get_nodeid_by_name(
+                    embodied_memory.scene_graph, response[i]["name"]
+                )
                 if id is None:
                     continue
-                semantic_tree.tracks[id].notes = response[i]["your notes"]
+                embodied_memory.scene_graph[id].notes = response[i]["your notes"]
 
-            if not keyframe_id in semantic_tree.visual_memory:
-                remove_id = random.choice(semantic_tree.visual_memory)
-                semantic_tree.visual_memory.remove(remove_id)
-                semantic_tree.visual_memory.append(keyframe_id)
+            if not keyframe_id in embodied_memory.visual_memory:
+                remove_id = random.choice(embodied_memory.visual_memory)
+                embodied_memory.visual_memory.remove(remove_id)
+                embodied_memory.visual_memory.append(keyframe_id)
                 print("Swapped ", remove_id, "for", keyframe_id)
-                semantic_tree.visual_memory.sort()
+                embodied_memory.visual_memory.sort()
         else:
             raise Exception("Unknown request type: " + request["type"])
 
         navigation_log_refinement = dict(request=request)
         navigation_log_refinement["response"] = response
-        semantic_tree.integrate_refinement_log(
+        embodied_memory.integrate_refinement_log(
             query, navigation_log_refinement, keyframe_id, detections=detections
         )
 
@@ -348,22 +346,22 @@ class API_GraphAPI(API):
         api_log["keyframe_path"] = dataset.color_paths[keyframe_id]
         api_log["response"] = response
 
-        return semantic_tree, response, api_log, new_nodes
+        return embodied_memory, response, api_log, new_nodes
 
 
-def search_name_recursive(graph, search_name, edge_types):
+def search_name_recursive(graph, search_name):
     for i in range(len(graph)):
         if graph[i]["name"] == search_name:
             return graph.pop(i)
-        for type in edge_types:
+        for type in EDGE_TYPES:
             rel_name = "Items " + type
-            node = search_name_recursive(graph[i][rel_name], search_name, edge_types)
+            node = search_name_recursive(graph[i][rel_name], search_name, EDGE_TYPES)
             if not (node is None):
                 return node
     return None
 
 
-def extract_field_recursive(graph, field, edge_types):
+def extract_field_recursive(graph, field):
     ret = []
     for i in range(len(graph)):
         if graph[i] == None:
@@ -374,11 +372,9 @@ def extract_field_recursive(graph, field, edge_types):
             "query-relevant notes": graph[i]["query-relevant notes"],
         }
         del graph[i]["query-relevant notes"]
-        for type in edge_types:
+        for type in EDGE_TYPES:
             rel_name = "Items " + type
-            node[rel_name] = extract_field_recursive(
-                graph[i][rel_name], field, edge_types
-            )
+            node[rel_name] = extract_field_recursive(graph[i][rel_name], field)
         ret.append(node)
     return ret
 
@@ -393,14 +389,8 @@ def get_room_name(room_name):
 
 
 def extract_scene_prompts(
-    semantic_tree: SemanticTree,
+    embodied_memory: EmbodiedMemory,
     dataset,
-    edge_types=[
-        "enclosed within",
-        "resting on top of",
-        "directly connected to",
-        "subpart of",
-    ],
     prompt_img_interleaved=False,
     prompt_img_seperate=False,
     prompt_video=False,
@@ -410,8 +400,8 @@ def extract_scene_prompts(
     navigation_log = []
     images_prompt = []
 
-    for i in range(len(semantic_tree.navigation_log)):
-        log = copy.deepcopy(semantic_tree.navigation_log[i])
+    for i in range(len(embodied_memory.navigation_log)):
+        log = copy.deepcopy(embodied_memory.navigation_log[i])
 
         if prompt_video:
             log["Timestamp"] = get_frame_timestamp(log["Frame Index"], fps)
@@ -441,7 +431,7 @@ def extract_scene_prompts(
         # navigation_log.append(log)
 
     if prompt_img_interleaved or prompt_img_seperate:
-        for frame_id in semantic_tree.visual_memory:
+        for frame_id in embodied_memory.visual_memory:
             with Image.open(dataset.color_paths[frame_id]) as image:
                 resized_image = image.resize((1000, 1000))
                 buffered = io.BytesIO()
@@ -466,58 +456,58 @@ def extract_scene_prompts(
     scratchpad = []
 
     # Option 1: Nested JSON
-    # not_in_graph = set(semantic_tree.track_ids)
+    # not_in_graph = set(embodied_memory.scene_graph.get_node_ids())
     # in_graph = set()
     # level = 0
     # while len(not_in_graph) > 0:
     #     for id in not_in_graph:
-    #         if semantic_tree.tracks[id].level == level:
+    #         if embodied_memory.scene_graph[id].level == level:
     #             node = {
-    #                 "name": semantic_tree.tracks[id].name,
-    #                 "visual caption": semantic_tree.tracks[id].captions[0],
-    #                 "room": get_room_name(semantic_tree.tracks[id].room_id),
-    #                 # "hierarchy level": semantic_tree.tracks[id].level,
+    #                 "name": embodied_memory.scene_graph[id].name,
+    #                 "visual caption": embodied_memory.scene_graph[id].captions[0],
+    #                 "room": get_room_name(embodied_memory.scene_graph[id].room_id),
+    #                 # "hierarchy level": embodied_memory.scene_graph[id].level,
     #                 "centroid": ", ".join(
     #                     f"{x:.4f}"
-    #                     for x in semantic_tree.tracks[id].features.centroid.tolist()
+    #                     for x in embodied_memory.scene_graph[id].features.centroid.tolist()
     #                 ),
-    #                 "query-relevant notes": semantic_tree.tracks[id].notes,
+    #                 "query-relevant notes": embodied_memory.scene_graph[id].notes,
     #             }
-    #             for type in edge_types:
+    #             for type in EDGE_TYPES:
     #                 node["Items " + type] = []
 
-    #             children_id = semantic_tree.get_children_ids(
-    #                 id, semantic_tree.hierarchy_matrix
+    #             children_id = embodied_memory.get_children_ids(
+    #                 id, embodied_memory.hierarchy_matrix
     #             )
     #             for child_id in children_id:
-    #                 if semantic_tree.tracks[child_id].level >= level:
+    #                 if embodied_memory.scene_graph[child_id].level >= level:
     #                     continue
     #                 child_node = search_name_recursive(
-    #                     graph, semantic_tree.tracks[child_id].name, edge_types
+    #                     graph, embodied_memory.scene_graph[child_id].name
     #                 )
     #                 node[
-    #                     "Items " + semantic_tree.hierarchy_type_matrix[id][child_id]
+    #                     "Items " + embodied_memory.hierarchy_type_matrix[id][child_id]
     #                 ].append(child_node)
     #             graph.append(node)
     #             in_graph.add(id)
     #     not_in_graph = not_in_graph - in_graph
     #     level += 1
-    # scratchpad = extract_field_recursive(graph, "query-relevant notes", edge_types)
+    # scratchpad = extract_field_recursive(graph, "query-relevant notes")
 
     # Option 2: Flat Edges
-    # for track in semantic_tree.tracks.values():
-    #     edges = [e.json() for e in track.edges]
+    # for node in embodied_memory.scene_graph.nodes():
+    #     edges = [e.json() for e in node.edges]
     #     _ = [e.pop("frame_id") for e in edges]
     #     _ = [e.pop("subject") for e in edges]
     #     graph.append(
     #         {
-    #             "name": track.name,
-    #             "visual caption": track.captions[0],
-    #             "your notes": track.notes,
-    #             "times scene": track.times_scene,
-    #             "room": get_room_name(track.room_id),
-    #             "hierarchy level": track.level,
-    #             "centroid": track.features.centroid.tolist(),
+    #             "name": node.name,
+    #             "visual caption": node.captions[0],
+    #             "your notes": node.notes,
+    #             "times scene": node.times_scene,
+    #             "room": get_room_name(node.room_id),
+    #             "hierarchy level": node.level,
+    #             "centroid": node.features.centroid.tolist(),
     #             "relationships": edges,
     #         }
     #     )
@@ -525,19 +515,19 @@ def extract_scene_prompts(
     # # Option 3: Edges at in seperate key
     # graph = {"Nodes": []}
     # edges = []
-    # for track in semantic_tree.tracks.values():
+    # for node in embodied_memory.scene_graph.get_nodes():
     #     graph["Nodes"].append(
     #         {
-    #             "name": track.name,
-    #             "visual caption": track.captions[0],
-    #             "your notes": track.notes,
-    #             "times scene": track.times_scene,
-    #             "room": get_room_name(track.room_id),
-    #             "hierarchy level": track.level,
-    #             "centroid": track.features.centroid.tolist(),
+    #             "name": node.name,
+    #             "visual caption": node.captions[0],
+    #             "your notes": node.notes,
+    #             "times scene": node.times_scene,
+    #             "room": get_room_name(node.room_id),
+    #             "hierarchy level": node.level,
+    #             "centroid": node.features.centroid.tolist(),
     #         }
     #     )
-    #     new_edges = [e.json() for e in track.edges]
+    #     new_edges = [e.json() for e in node.edges]
     #     _ = [e.pop("frame_id") for e in new_edges]
     #     _ = [e.pop("subject") for e in new_edges]
     #     edges += new_edges
@@ -545,74 +535,78 @@ def extract_scene_prompts(
 
     # Option 4: Hierarchy with room nodes
     # graph = {"unknown": {"Objects": []}}
-    # for id in semantic_tree.rooms:
-    #     graph[get_room_name(semantic_tree.rooms[id].name)] = {"Objects": []}
+    # for id in embodied_memory.rooms:
+    #     graph[get_room_name(embodied_memory.rooms[id].name)] = {"Objects": []}
     # scratchpad = copy.deepcopy(graph)
-    # for track in semantic_tree.tracks.values():
-    #     room_name = get_room_name(track.room_id)
+    # for node in embodied_memory.scene_graph.get_nodes():
+    #     room_name = get_room_name(node.room_id)
     #     if not room_name in graph:
     #         room_name = "unknown"
-    #     edges = [e.json() for e in track.edges]
+    #     edges = [e.json() for e in node.edges]
     #     _ = [e.pop("frame_id") for e in edges]
     #     _ = [e.pop("subject") for e in edges]
     #     graph[room_name]["Objects"].append(
     #         {
-    #             "name": track.name,
-    #             "visual caption": track.captions[0],
-    #             # "times scene": track.times_scene,
-    #             # "hierarchy level": track.level,
+    #             "name": node.name,
+    #             "visual caption": node.captions[0],
+    #             # "times scene": node.times_scene,
+    #             # "hierarchy level": node.level,
     #             "centroid": ", ".join(
-    #                 f"{x:.4f}" for x in track.features.centroid.tolist()
+    #                 f"{x:.4f}" for x in node.features.centroid.tolist()
     #             ),
     #             "edges": edges,
     #         }
     #     )
     #     scratchpad[room_name]["Objects"].append(
     #         {
-    #             "name": track.name,
-    #             "query-relevant notes": track.notes,
+    #             "name": node.name,
+    #             "query-relevant notes": node.notes,
     #         }
     #     )
 
     # Option 5: Flat Edges
-    for track in semantic_tree.tracks.values():
-        edges = [e.json() for e in track.edges]
+    for node in embodied_memory.scene_graph.get_nodes():
+        edges = [e.json() for e in node.edges]
         _ = [e.pop("frame_id") for e in edges]
         _ = [e.pop("subject") for e in edges]
         graph.append(
             {
-                "name": track.name,
-                "visual caption": track.captions[0],
-                "times scene": track.times_scene,
-                "room": get_room_name(track.room_id),
-                # "hierarchy level": track.level,
-                "centroid": track.features.centroid.tolist(),
+                "name": node.name,
+                "visual caption": node.captions[0],
+                "times scene": node.times_scene,
+                "room": get_room_name(node.room_id),
+                # "hierarchy level": node.level,
+                "centroid": node.features.centroid.tolist(),
                 "relationships": edges,
             }
         )
         scratchpad.append(
             {
-                "name": track.name,
-                "query-relevant notes": track.notes,
+                "name": node.name,
+                "query-relevant notes": node.notes,
             }
         )
-    return graph, scratchpad, navigation_log, images_prompt, semantic_tree.visual_memory
+    return (
+        graph,
+        scratchpad,
+        navigation_log,
+        images_prompt,
+        embodied_memory.visual_memory,
+    )
 
-    return graph, navigation_log, images_prompt, semantic_tree.visual_memory
 
-
-def extract_detections_prompts(detections: DetectionList, tracks):
+def extract_detections_prompts(detections: DetectionList, scene_graph):
     prev_detections_json = []
     for obj in detections:
-        id = get_trackid_by_name(tracks, obj.matched_track_name)
+        id = get_nodeid_by_name(scene_graph, obj.matched_node_name)
         prev_detections_json.append(
             {
-                "track name": obj.matched_track_name,
+                "track name": obj.matched_node_name,
                 "visual caption": obj.visual_caption,
                 "spatial caption": obj.spatial_caption,
                 "bbox": obj.bbox,
                 "edges": [str(edge) for edge in obj.edges],
-                "your notes": tracks[id].notes,
+                "your notes": scene_graph[id].notes,
             }
         )
     return prev_detections_json

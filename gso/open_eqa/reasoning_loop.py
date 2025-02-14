@@ -1,9 +1,6 @@
-import argparse
 import json
 import os
-import time
-import traceback
-from pathlib import Path
+import shutil
 from typing import Optional
 
 import google.generativeai as genai
@@ -20,10 +17,9 @@ from vertexai.generative_models import (
     Tool,
 )
 
-import read_graphs
-from scene_graph.perception import call_gemini
-from scene_graph.relationship_scorer import RelationshipScorer
-from scene_graph.semantic_tree import SemanticTree
+from scene_graph.embodied_memory import EmbodiedMemory
+from scene_graph.relationship_scorer import HierarchyExtractor
+from scene_graph.utils import call_gemini
 
 from .api import API, create_gemini_video_prompt, extract_scene_prompts
 
@@ -53,8 +49,9 @@ def inference_time_search(
     api: API,
     dataset,
     gemini_model,
-    graph_result_path: str,
-    result_path: str,
+    result_dir_embodied_memory: str,
+    result_dir_detections: str,
+    temp_workspace_dir: str,
     device,
     api_declarations,
     visual_memory_size,
@@ -71,16 +68,16 @@ def inference_time_search(
     load_rooms=False,
 ) -> Optional[str]:
 
-    semantic_tree = SemanticTree(visual_memory_size, device=device)
-    semantic_tree.load(
-        graph_result_path, load_floors=load_floors, load_rooms=load_rooms
+    embodied_memory = EmbodiedMemory(visual_memory_size, cfg.room_types, device=device)
+    embodied_memory.load(
+        result_dir_embodied_memory, load_floors=load_floors, load_rooms=load_rooms
     )
 
-    relationship_scorer = RelationshipScorer(downsample_voxel_size=0.02)
-    hierarchy_matrix, hierarchy_type_matrix = relationship_scorer.infer_hierarchy_vlm(
-        semantic_tree.tracks
+    hierarchy_extractor = HierarchyExtractor(downsample_voxel_size=0.02)
+    hierarchy_matrix, hierarchy_type_matrix = hierarchy_extractor.infer_hierarchy(
+        embodied_memory.scene_graph
     )
-    semantic_tree.compute_node_levels(hierarchy_matrix, hierarchy_type_matrix)
+    embodied_memory.compute_node_levels(hierarchy_matrix, hierarchy_type_matrix)
 
     # vertexai.init(project='302560724657', location="northamerica-northeast2")
     # model = GenerativeModel(model_name=gemini_model)
@@ -110,10 +107,12 @@ def inference_time_search(
     answer = None
     api_logs = []
     token_counts = []
+    shutil.rmtree(temp_workspace_dir, ignore_errors=True)
+    os.makedirs(temp_workspace_dir)
 
     # graph_prompt, navigation_log_prompt, images_prompt, frame_ids = (
     #     extract_scene_prompts(
-    #         semantic_tree,
+    #         embodied_memory,
     #         dataset,
     #         video_uri=video_uri,
     #         fps=video_fps,
@@ -123,7 +122,7 @@ def inference_time_search(
     # )
     graph_prompt, scratchpad_prompt, navigation_log_prompt, images_prompt, frame_ids = (
         extract_scene_prompts(
-            semantic_tree,
+            embodied_memory,
             dataset,
             video_uri=video_uri,
             fps=video_fps,
@@ -172,16 +171,17 @@ def inference_time_search(
                 continue
             tool = part.function_call
             keyframe = int(tool.args["frame_id"])
-            # if not keyframe in semantic_tree.visual_memory:
+            # if not keyframe in embodied_memory.visual_memory:
             call_response.append(Part.from_text(f"Frame Index {keyframe}:"))
             call_response.append(
                 Part.from_image(Image.load_from_file(dataset.color_paths[keyframe]))
             )
-            semantic_tree, api_response, api_log, new_nodes = api.call(
+            embodied_memory, api_response, api_log, new_nodes = api.call(
                 {"type": tool.name, **tool.args},
                 dataset,
-                result_path,
-                semantic_tree,
+                result_dir_detections,
+                temp_workspace_dir,
+                embodied_memory,
                 obj_pcd_max_points,
                 downsample_voxel_size=downsample_voxel_size,
             )
@@ -192,7 +192,9 @@ def inference_time_search(
                 navigation_log_prompt,
                 images_prompt,
                 frame_ids,
-            ) = extract_scene_prompts(semantic_tree, dataset, prompt_video=prompt_video)
+            ) = extract_scene_prompts(
+                embodied_memory, dataset, prompt_video=prompt_video
+            )
             text_response = {
                 "New SceneGraph": json.dumps(graph_prompt),
                 # f"New Observation Log for frame {keyframe}": json.dumps(navigation_log_prompt[keyframe % skip_frame]),
@@ -225,4 +227,7 @@ def inference_time_search(
                 "candidates_token_count": response.usage_metadata.candidates_token_count,
             }
         )
+
+    shutil.rmtree(temp_workspace_dir, ignore_errors=True)
+
     return answer, api_logs, token_counts

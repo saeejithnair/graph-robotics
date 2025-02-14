@@ -16,14 +16,22 @@
             }
         },
         {
-            "name": "main_semantictree.py",
+            "name": "main_rooms.py",
             "type": "debugpy",
             "request": "launch",
-            "program": "main_semantictree.py",
+            "program": "main_rooms.py",
+            "console": "integratedTerminal",
+            "justMyCode": false
+        },
+        {
+            "name": "main_embodied_memory.py",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "main_embodied_memory.py",
             "console": "integratedTerminal",
             "justMyCode": false,
             "env": {
-                "CUDA_VISIBLE_DEVICES": "2"
+                "CUDA_LAUNCH_BLOCKING": "1"
             }
         },
         {
@@ -31,6 +39,11 @@
             "type": "debugpy",
             "request": "launch",
             "program": "main_openeqa.py",
+            "args": [
+                "questions_exp_name=debug",
+                "visual_memory_size=4",
+                "max_search_depth=20"
+            ],
             "console": "integratedTerminal",
             "justMyCode": false
         },
@@ -89,15 +102,7 @@
             "program": "open_eqa/baselines/gemini-1.5-flash_custom.py",
             "console": "integratedTerminal",
             "justMyCode": false
-        },
-        {
-            "name": "main_rooms.py",
-            "type": "debugpy",
-            "request": "launch",
-            "program": "main_rooms.py",
-            "console": "integratedTerminal",
-            "justMyCode": false
-        },
+        }
     ],
     "compounds": [
         {

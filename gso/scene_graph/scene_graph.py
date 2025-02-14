@@ -14,10 +14,7 @@ from .detection import Detection, DetectionList, Edge, Features
 from .edges import load_edge
 from .pointcloud import denoise_pcd, find_nearest_points, union_bounding_boxes
 
-track_counter = 0
-
-
-class Track:
+class Node:
     def __init__(
         self,
         id,
@@ -118,77 +115,104 @@ class Track:
             run_dbscan=run_dbscan,
         )
 
+node_counter = 0
+def reset_node_counter():
+    global node_counter
+    node_counter = 0
 
-def save_tracks(track_list, save_dir):
-    os.makedirs(save_dir, exist_ok=True)
-    save_dir = Path(save_dir)
-    json_path = save_dir / "tracks.json"
-    masks_path = save_dir / "masks.npz"
-    bboxes_path = save_dir / "bboxes.npz"
-    visual_embs_path = save_dir / "visual_embs.npz"
-    caption_embs_path = save_dir / "caption_embs.npz"
-    bboxes3d_path = save_dir / "bboxes_3d.txt"
-    crops_path = save_dir / "crops.pkl"
+class SceneGraph:
+    def __init__(self, objects = {}):
+        # nodes is a dictionary mapping from id to the actual node object
+        self.nodes = {}
 
-    json_data = []
-    masks, bboxes, bboxes_3d, crops = [], [], [], []
-    visual_embs, caption_embs = [], []
-    for i in track_list:
-        trk = track_list[i]
-        masks.append(np.array(trk.masks))
-        bboxes.append(np.array(trk.bboxes))
+    def get_node_ids(self):
+        return list(self.nodes.keys())
+    def get_nodes(self):
+        return list(self.nodes.values())
+    def __iter__(self):
+        self.c = 0
+        return self
 
-        # Bug: Centroid is a moving average of centroid, not actual centroid
-        json_data.append(
-            {
-                "id": trk.id,
-                "label": trk.label,
-                "caption": trk.captions,
-                "level": trk.level,
-                "times_scene": trk.times_scene,
-                "keyframe_ids": trk.keyframe_ids,
-                "centroid": trk.features.centroid.tolist(),
-                "edges": [edge.json() for edge in trk.edges],
-                "notes": trk.notes,
-                "room_id": trk.room_id,
-            }
-        )
+    def __next__(self):
+        if self.c < len(self.nodes):
+            x = self.nodes[self.get_node_ids()[self.c]]
+            self.c += 1
+            return x
+        else:
+            raise StopIteration
+    
+    def __getitem__(self, item):
+        return self.nodes[item]
 
-        sample_crop = trk.crops[0]
-        plt.imsave(
-            save_dir / ("track-" + str(trk.id) + "-" + str(trk.label) + ".png"),
-            sample_crop,
-        )
-        
-        o3d.io.write_point_cloud(str(save_dir / Path('pcd-'+str(trk.id)+'.pcd')), trk.local_pcd)
-        
-        crops.append(trk.crops)
-        bboxes_3d.append(trk.features.bbox_3d)
-        visual_embs.append(trk.features.visual_emb)
-        caption_embs.append(trk.features.caption_emb)
+    def __len__(self):
+        return len(self.objects)
+    def add_node(self, node_id, node):
+        self.nodes[node_id] = node
+    def save(self, save_dir):
+        os.makedirs(save_dir, exist_ok=True)
+        save_dir = Path(save_dir)
+        json_path = save_dir / "scene_graph.json"
+        masks_path = save_dir / "masks.npz"
+        bboxes_path = save_dir / "bboxes.npz"
+        visual_embs_path = save_dir / "visual_embs.npz"
+        caption_embs_path = save_dir / "caption_embs.npz"
+        bboxes3d_path = save_dir / "bboxes_3d.txt"
+        crops_path = save_dir / "crops.pkl"
 
-    np.savez(masks_path, masks=masks)
-    np.savez(bboxes_path, bboxes=bboxes)
-    np.savez(visual_embs_path, visual_embs=visual_embs)
-    np.savez(caption_embs_path, caption_embs=caption_embs)
+        json_data = []
+        masks, bboxes, bboxes_3d, crops = [], [], [], []
+        visual_embs, caption_embs = [], []
+        for id in self.get_node_ids():
+            node = self.nodes[id]
+            masks.append(np.array(node.masks))
+            bboxes.append(np.array(node.bboxes))
 
-    utils.save_oriented_bounding_boxes(bboxes_3d, bboxes3d_path)
-    with open(crops_path, "wb") as f:
-        pickle.dump(crops, f)
+            # Bug: Centroid is a moving average of centroid, not actual centroid
+            json_data.append(
+                {
+                    "id": node.id,
+                    "label": node.label,
+                    "caption": node.captions,
+                    "level": node.level,
+                    "times_scene": node.times_scene,
+                    "keyframe_ids": node.keyframe_ids,
+                    "centroid": node.features.centroid.tolist(),
+                    "edges": [edge.json() for edge in node.edges],
+                    "notes": node.notes,
+                    "room_id": node.room_id,
+                }
+            )
 
-    with open(json_path, "w") as f:
-        json.dump(json_data, f, indent=2)
-    # Reset track counter
-    reset_track_counter()
+            sample_crop = node.crops[0]
+            plt.imsave(
+                save_dir / ("node-" + str(node.id) + "-" + str(node.label) + ".png"),
+                sample_crop,
+            )
+            
+            o3d.io.write_point_cloud(str(save_dir / Path('pcd-'+str(node.id)+'.pcd')), node.local_pcd)
+            
+            crops.append(node.crops)
+            bboxes_3d.append(node.features.bbox_3d)
+            visual_embs.append(node.features.visual_emb)
+            caption_embs.append(node.features.caption_emb)
+
+        np.savez(masks_path, masks=masks)
+        np.savez(bboxes_path, bboxes=bboxes)
+        np.savez(visual_embs_path, visual_embs=visual_embs)
+        np.savez(caption_embs_path, caption_embs=caption_embs)
+
+        utils.save_oriented_bounding_boxes(bboxes_3d, bboxes3d_path)
+        with open(crops_path, "wb") as f:
+            pickle.dump(crops, f)
+
+        with open(json_path, "w") as f:
+            json.dump(json_data, f, indent=2)
+        # Reset node counter
+        reset_node_counter()
 
 
-def reset_track_counter():
-    global track_counter
-    track_counter = 0
-
-
-def load_tracks(save_dir):
-    tracks = {}
+def load_scenegraph(save_dir):
+    nodes = {}
     save_dir = Path(save_dir)
     masks = np.load(save_dir / "masks.npz", allow_pickle=True)["masks"]
     bboxes = np.load(save_dir / "bboxes.npz", allow_pickle=True)["bboxes"]
@@ -199,7 +223,7 @@ def load_tracks(save_dir):
         "caption_embs"
     ]
 
-    with open(save_dir / "tracks.json") as f:
+    with open(save_dir / "scene_graph.json") as f:
         text_data = json.load(f)
     with open(save_dir / "crops.pkl", "rb") as f:
         crops = pickle.load(f)
@@ -214,7 +238,7 @@ def load_tracks(save_dir):
         )
         local_pcd = o3d.io.read_point_cloud(str(save_dir / Path('pcd-'+str(data["id"])+'.pcd')))
 
-        trk = Track(
+        trk = Node(
             id=data["id"],
             label=data["label"],
             captions=data["caption"],
@@ -230,24 +254,24 @@ def load_tracks(save_dir):
             room_id=data.get("room_id"),
             edges=[load_edge(e) for e in data["edges"]],
         )
-        tracks[data["id"]] = trk
+        nodes[data["id"]] = trk
         max_id = max(max_id, data["id"])
-    global track_counter
-    track_counter = max_id + 1
-    return tracks
+    global node_counter
+    node_counter = max_id + 1
+    return SceneGraph(nodes)
 
 
-def get_trackid_by_name(tracks, name):
-    for id in tracks.keys():
-        if tracks[id].name == name:
+def get_nodeid_by_name(scene_graph: SceneGraph, name):
+    for id in scene_graph.get_node_ids(): 
+        if scene_graph.nodes[id].name == name:
             return id
     return None
 
 
-def object_to_track(object: Detection, keyframe_id, edges=[]):
-    global track_counter
-    node = Track(
-        id=track_counter,
+def object_to_node(object: Detection, keyframe_id, edges=[]):
+    global node_counter
+    node = Node(
+        id=node_counter,
         label=object.label,
         captions=[object.visual_caption],
         features=object.features,
@@ -259,43 +283,43 @@ def object_to_track(object: Detection, keyframe_id, edges=[]):
         notes=object.notes,
         edges=edges,
     )
-    track_counter += 1
+    node_counter += 1
     return node
 
 
-def associate_dets_to_tracks(
-    new_objects: DetectionList, current_tracks, downsample_voxel_size
+def associate_dets_to_nodes(
+    new_objects: DetectionList, current_scene_graph, downsample_voxel_size
 ):
-    if len(current_tracks) == 0:
+    if len(current_scene_graph) == 0:
         return np.zeros((len(new_objects))), np.zeros(len(new_objects))
     elif len(new_objects) == 0:
         return [], []
 
-    track_pcds = [
-        np.asarray(trk.compute_local_pcd().points, dtype=np.float32)
-        for trk in current_tracks
+    node_pcds = [
+        np.asarray(node.compute_local_pcd().points, dtype=np.float32)
+        for node in current_scene_graph
     ]
-    indices = [faiss.IndexFlatL2(arr.shape[1]) for arr in track_pcds]
-    for index, arr in zip(indices, track_pcds):
+    indices = [faiss.IndexFlatL2(arr.shape[1]) for arr in node_pcds]
+    for index, arr in zip(indices, node_pcds):
         index.add(arr)
 
     # Compute the score matrix
-    visual_scores = np.zeros((len(new_objects), len(current_tracks)))
-    caption_scores = np.zeros((len(new_objects), len(current_tracks)))
-    geometry_scores = np.zeros((len(new_objects), len(current_tracks)))
-    centroid_distances = np.zeros((len(new_objects), len(current_tracks)))
+    visual_scores = np.zeros((len(new_objects), len(current_scene_graph)))
+    caption_scores = np.zeros((len(new_objects), len(current_scene_graph)))
+    geometry_scores = np.zeros((len(new_objects), len(current_scene_graph)))
+    centroid_distances = np.zeros((len(new_objects), len(current_scene_graph)))
     for i in range(len(new_objects)):
         new_obj_pcd = np.array(
             new_objects[i].compute_local_pcd().points, dtype=np.float32
         )
-        for j in range(len(current_tracks)):
+        for j in range(len(current_scene_graph)):
             visual_scores[i][j] = np.dot(
                 new_objects[i].features.visual_emb,
-                current_tracks[j].features.visual_emb,
+                current_scene_graph[j].features.visual_emb,
             )
             caption_scores[i][j] = np.dot(
                 new_objects[i].features.caption_emb,
-                current_tracks[j].features.caption_emb,
+                current_scene_graph[j].features.caption_emb,
             )
 
             D, I = indices[j].search(new_obj_pcd, 1)
@@ -303,7 +327,7 @@ def associate_dets_to_tracks(
 
             geometry_scores[i][j] = overlap / len(new_obj_pcd)
             centroid_distances[i][j] = np.linalg.norm(
-                new_objects[i].features.centroid - current_tracks[j].features.centroid
+                new_objects[i].features.centroid - current_scene_graph[j].features.centroid
             )
 
     score_matrix = np.mean(
@@ -322,9 +346,9 @@ def associate_dets_to_tracks(
 
     # Compute the matches
     is_matched = np.max(score_matrix, 1) > 0.5
-    matched_trackidx = np.argmax(score_matrix, 1)
+    matched_nodeidx = np.argmax(score_matrix, 1)
 
-    return is_matched, matched_trackidx
+    return is_matched, matched_nodeidx
 
 
 # class Detection:

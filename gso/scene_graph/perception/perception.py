@@ -23,33 +23,31 @@ from ultralytics import SAM, YOLO
 from vertexai.generative_models import GenerativeModel, Part
 
 from .. import utils
-from ..detection import Detection, DetectionList, Edge
-from ..track import get_trackid_by_name
+from ..detection import Detection, DetectionList
+from ..edges import EDGE_TYPES, Edge
+from ..scene_graph import get_nodeid_by_name
 
 
-class Perceptor(ABC):
+class VLMPrompter(ABC):
+    """
+    This class is used to prompt gemini.
+    Child classes will contain routines to help them re-prompt multiple times, and verify that the response is the correct format.
+    To use this class, make sure that your prompt requests json reponses. You could use this class for non-json responses, but it would complicate the code.
+    """
+
     def __init__(
         self,
-        # prompt_file="scene_graph/perception/prompts/generic_mapping_localize_edges_v2.txt",
         prompt_file="scene_graph/perception/prompts/generic_mapping_localize_v3.txt",
         gemini_model: str = "gemini-2.0-flash-exp",  # "gemini-1.   5-flash-002" "gemini-2.0-flash-exp"
-        json_detection_key="Detections",
-        json_other_keys=[],
+        response_detection_key="Detections",
+        response_other_keys=[],
         with_edges=False,
         device="cuda:1",
         sam_model_type="vit_h",
         sam_checkpoint_path="checkpoints/sam_vit_h_4b8939.pth",
-        edge_types=[
-            "enclosed within",
-            "resting on top of",
-            "directly connected to",
-            "subpart of",
-        ],
     ):
-        self.json_detection_key = json_detection_key
-        self.json_other_keys = json_other_keys
         self.with_edges = with_edges
-        self.edge_types = edge_types
+        self.edge_types = EDGE_TYPES
         self.device = device
         self.sam = sam_model_registry[sam_model_type](checkpoint=sam_checkpoint_path)
         self.sam.to(device=device)
@@ -64,11 +62,13 @@ class Perceptor(ABC):
             self.obj_classes.get_classes_arr(), device=device
         )
         self.gemini_model = gemini_model
-        # self.prompt_file = 'perception/prompts/generic_spatial_mapping_claude.txt'
-
         self.prompt_file = prompt_file
         with open(self.prompt_file, "r") as f:
             self.text_prompt_template = f.read().strip()
+        # If the response requires bounding box detections, then set the response_detection_key to the json key that will contain the bounding box detections.
+        self.response_detection_key = response_detection_key
+        # Other keys required in the prompt's json response.
+        self.response_other_keys = response_other_keys
 
     def init(self):
         utils.init_gemini()
@@ -82,6 +82,8 @@ class Perceptor(ABC):
         self.past_response = None
 
     def perceive(self, img, pose=None):
+        # This is the main function function
+        # It returns the responses as Detections and/or textual dictionary
         raise NotImplementedError()
 
     def format_objects_bbox(self, response, img_size):
@@ -95,15 +97,183 @@ class Perceptor(ABC):
             x2 = int(xmax / 1000 * width)
             y2 = int(ymax / 1000 * height)
             bbox = [x1, y1, x2, y2]
-            # box = [ y1, x1, y2, x2]
-            # box = np.array(box)
-
-            # resize bbox to match image size
-            # normalize_size = np.concatenate([img_size, img_size])
-            # resized_bbox = ((box/1000)*normalize_size).astype(np.int64)
-
             response[i]["bbox"] = bbox
         return response
+
+    def ask_gemini(
+        self,
+        img,
+        text_prompt,
+        img_size,
+    ) -> Optional[str]:
+        """
+        This routine calls gemini, often used in perceive()
+        """
+        model = genai.GenerativeModel(model_name=self.gemini_model)
+
+        if isinstance(img, (np.ndarray, np.generic)):
+            img = Image.fromarray(np.uint8(img))
+        resized_img = img.resize((1000, 1000))
+        image_prompt = [resized_img]
+        prompt = [text_prompt] + image_prompt
+
+        object_detections, llm_response = [], None
+        for _ in range(20):
+            try:
+                response = utils.call_gemini(model, prompt)
+                llm_response = self.verify_json_response(response)
+                if self.response_detection_key:
+                    object_detections = self.format_objects_bbox(
+                        llm_response[self.response_detection_key], img_size
+                    )
+                break
+            except Exception as e:
+                print("VLM Error:", e)
+                traceback.print_exc()
+                time.sleep(1)
+                continue
+        if llm_response is None:
+            raise Exception("Model could not generate bounding boxes")
+        return (
+            object_detections,
+            llm_response,
+        )
+
+    def verify_json_response(self, response):
+        assert "```json" in response
+        response = response.replace("```json", "")
+        response = response.replace("```", "")
+        response = response.strip()
+        response = json.loads(response)
+        # Make sure all 'other_keys' are present
+        for key in self.response_other_keys:
+            assert key in response
+        # If the response is expected to contain object detections, then make sure all keys are present
+        if self.response_detection_key:
+            assert self.response_detection_key in response
+            for obj in response[self.response_detection_key]:
+                assert "label" in obj
+                assert "visual caption" in obj
+                assert "bbox" in obj
+                # assert "confidence" in obj
+                assert len(obj["bbox"]) == 4
+                assert not ("/" in obj["label"])
+                if self.with_edges:
+                    assert "relationships" in obj
+                    for rel in obj["relationships"]:
+                        assert "related_object_label" in rel
+                        assert "relationship_type" in rel
+                        assert rel["relationship_type"].lower() in self.edge_types
+        return response
+
+    def save_detection_results(self, object_list, result_dir, frame, llm_response=None):
+        frame_dir = Path(result_dir) / str(frame)
+        os.makedirs(frame_dir, exist_ok=True)
+        annotated_img_path = frame_dir / "annotated_llm_detections.png"
+        img_path = frame_dir / "input_image.png"
+        if llm_response:
+            llm_response_path = frame_dir / "llm_response.json"
+            with open(llm_response_path, "w") as f:
+                json.dump(llm_response, f, indent=2)
+
+        img = np.copy(self.img)
+        plt.imsave(img_path, np.uint8(img))
+
+        if len(object_list) > 0:
+            annotated_img = utils.annotate_img_boxes(
+                img,
+                object_list.get_field("bbox"),
+                object_list.get_field("label"),
+            )
+            plt.imsave(annotated_img_path, np.uint8(annotated_img))
+
+        object_list.save(result_dir / str(frame), self.img)
+
+
+class VLMObjectDetector(VLMPrompter):
+
+    def perceive(self, img, pose=None):
+        self.img = np.uint8(img)
+        response = {}
+
+        if not (pose is None):
+            if self.past_pose is None:
+                relative_pose = np.zeros(pose.shape)
+            else:
+                relative_pose = pose - self.past_pose
+            self.past_pose = pose
+            relative_motion = self.categorize_pose(relative_pose)
+            response["Relative Motion"] = relative_motion
+
+        text_prompt = self.text_prompt_template
+        if not (self.past_response is None):
+            if relative_motion:
+                text_prompt += "Your current frame is {relative_motion}  relative to the previous frame. "
+            past_detections = []
+            for det in self.past_response[self.response_detection_key]:
+                past_detections.append(
+                    {"label": det["label"], "visual caption": det["visual caption"]}
+                )
+            text_prompt += (
+                "Track objects if they were present in the previous frame. Here were your detections on the previous frame: \n"
+                + json.dumps(past_detections, indent=2)
+            )
+
+        detections, llm_response = self.ask_gemini(
+            self.img,
+            text_prompt,
+            self.img.shape,
+        )
+        response.update(llm_response)
+
+        self.past_response = llm_response
+
+        self.num_detections = len(detections)
+
+        self.mask_predictor.set_image(np.uint8(img))
+        detection_list = DetectionList()
+        for i in range(self.num_detections):
+            box = detections[i]["bbox"]
+            sam_masks, iou_preds, _ = self.mask_predictor.predict(
+                box=np.array(box), multimask_output=False
+            )
+            crop = utils.get_crop(self.img, box)
+            if iou_preds < 0.7 or crop.shape[0] <= 1 or crop.shape[1] <= 1:
+                continue
+
+            edges = []
+            if self.with_edges:
+                for rel in detections[i]["relationships"]:
+                    edges.append(
+                        Edge(
+                            rel["relationship_type"].lower(),
+                            detections[i]["label"].lower(),
+                            rel["related_object_label"].lower(),
+                            (
+                                rel["related_object_spatial_caption"]
+                                if "related_object_spatial_caption" in rel
+                                else None
+                            ),
+                        )
+                    )
+
+            detection_list.add_object(
+                Detection(
+                    mask=sam_masks[0],
+                    crop=crop,
+                    label=detections[i]["label"].lower(),
+                    visual_caption=detections[i]["visual caption"],
+                    # spatial_caption=detections[i]["spatial caption"],
+                    bbox=box,
+                    # confidence=detections[i]["confidence"],
+                    edges=edges,
+                )
+            )
+
+        detection_names = detection_list.get_field("label")
+        detection_list.filter_edges(self.edge_types, detection_names)
+
+        return detection_list, response
 
     def categorize_pose(self, pose_matrix):
         """
@@ -180,190 +350,11 @@ class Perceptor(ABC):
         # Join actions descriptively
         return ", ".join(actions) if actions else "stationary"
 
-    def ask_question_gemini(
-        self,
-        img,
-        text_prompt,
-        img_size,
-    ) -> Optional[str]:
 
-        # vertexai.init(project='302560724657', location="northamerica-northeast2")
-        # model = GenerativeModel(model_name=gemini_model)
-        model = genai.GenerativeModel(model_name=self.gemini_model)
-
-        # text_prompt = Part.from_text(text_prompt)
-        # image_prompt = [Part.from_image(vertexai.generative_models.Image.load_from_file(i)) for i in init_images]
-        # prompt = [text_prompt] + image_prompt
-        # navigation_prompt = json.dumps(navigation_log)
-        # navigation_prompt = [
-        #     "Here is a navigation log you created, containing all the information from all the previous frames you have seen"
-        #     + navigation_prompt
-        # ]
-        if isinstance(img, (np.ndarray, np.generic)):
-            img = Image.fromarray(np.uint8(img))
-        resized_img = img.resize((1000, 1000))
-        image_prompt = [resized_img]
-        prompt = [text_prompt] + image_prompt
-
-        object_detections, llm_response = [], None
-        for _ in range(20):
-            try:
-                response = utils.call_gemini(model, prompt)
-                llm_response = self.verify_json_response(response)
-                if self.json_detection_key:
-                    object_detections = self.format_objects_bbox(
-                        llm_response[self.json_detection_key], img_size
-                    )
-                break
-            except Exception as e:
-                print("VLM Error:", e)
-                traceback.print_exc()
-                time.sleep(1)
-                continue
-        if llm_response is None:
-            raise Exception("Model could not generate bounding boxes")
-        return (
-            object_detections,
-            llm_response,
-        )  # .removeprefix('Answer: ').strip()
-
-    def verify_json_response(self, response):
-        assert "```json" in response
-        response = response.replace("```json", "")
-        response = response.replace("```", "")
-        response = response.strip()
-        response = json.loads(response)
-        for key in self.json_other_keys:
-            assert key in response
-        if self.json_detection_key:
-            assert self.json_detection_key in response
-            for obj in response[self.json_detection_key]:
-                assert "label" in obj
-                assert "visual caption" in obj
-                # assert "spatial caption" in obj
-                assert "bbox" in obj
-                # assert "confidence" in obj
-                assert len(obj["bbox"]) == 4
-                assert not ("/" in obj["label"])
-                if self.with_edges:
-                    assert "relationships" in obj
-                    for rel in obj["relationships"]:
-                        assert "related_object_label" in rel
-                        assert "relationship_type" in rel
-                        assert rel["relationship_type"].lower() in self.edge_types
-        return response
-
-    def save_results(self, object_list, result_dir, frame, llm_response=None):
-        frame_dir = Path(result_dir) / str(frame)
-        os.makedirs(frame_dir, exist_ok=True)
-        annotated_img_path = frame_dir / "annotated_llm_detections.png"
-        img_path = frame_dir / "input_image.png"
-        if llm_response:
-            llm_response_path = frame_dir / "llm_response.json"
-            with open(llm_response_path, "w") as f:
-                json.dump(llm_response, f, indent=2)
-
-        img = np.copy(self.img)
-        plt.imsave(img_path, np.uint8(img))
-
-        if len(object_list) > 0:
-            annotated_img = utils.annotate_img_boxes(
-                img,
-                object_list.get_field("bbox"),
-                object_list.get_field("label"),
-            )
-            plt.imsave(annotated_img_path, np.uint8(annotated_img))
-
-        object_list.save(result_dir / str(frame), self.img)
-
-
-class GenericMapper(Perceptor):
-
-    def perceive(self, img, pose=None):
-        self.img = np.uint8(img)
-        response = {}
-
-        if not (pose is None):
-            if self.past_pose is None:
-                relative_pose = np.zeros(pose.shape)
-            else:
-                relative_pose = pose - self.past_pose
-            self.past_pose = pose
-            relative_motion = self.categorize_pose(relative_pose)
-            response["Relative Motion"] = relative_motion
-
-        text_prompt = self.text_prompt_template
-        if not (self.past_response is None):
-            if relative_motion:
-                text_prompt += "Your current frame is {relative_motion}  relative to the previous frame. "
-            past_detections = []
-            for det in self.past_response[self.json_detection_key]:
-                past_detections.append(
-                    {"label": det["label"], "visual caption": det["visual caption"]}
-                )
-            text_prompt += (
-                "Track objects if they were present in the previous frame. Here were your detections on the previous frame: \n"
-                + json.dumps(past_detections, indent=2)
-            )
-
-        detections, llm_response = self.ask_question_gemini(
-            self.img,
-            text_prompt,
-            self.img.shape,
-        )
-        response.update(llm_response)
-
-        self.past_response = llm_response
-
-        self.num_detections = len(detections)
-
-        self.mask_predictor.set_image(np.uint8(img))
-        detection_list = DetectionList()
-        for i in range(self.num_detections):
-            box = detections[i]["bbox"]
-            sam_masks, iou_preds, _ = self.mask_predictor.predict(
-                box=np.array(box), multimask_output=False
-            )
-            crop = utils.get_crop(self.img, box)
-            if iou_preds < 0.7 or crop.shape[0] <= 1 or crop.shape[1] <= 1:
-                continue
-
-            edges = []
-            if self.with_edges:
-                for rel in detections[i]["relationships"]:
-                    edges.append(
-                        Edge(
-                            rel["relationship_type"].lower(),
-                            detections[i]["label"].lower(),
-                            rel["related_object_label"].lower(),
-                            (
-                                rel["related_object_spatial_caption"]
-                                if "related_object_spatial_caption" in rel
-                                else None
-                            ),
-                        )
-                    )
-
-            detection_list.add_object(
-                Detection(
-                    mask=sam_masks[0],
-                    crop=crop,
-                    label=detections[i]["label"].lower(),
-                    visual_caption=detections[i]["visual caption"],
-                    # spatial_caption=detections[i]["spatial caption"],
-                    bbox=box,
-                    # confidence=detections[i]["confidence"],
-                    edges=edges,
-                )
-            )
-
-        detection_names = detection_list.get_field("label")
-        detection_list.filter_edges(self.edge_types, detection_names)
-
-        return detection_list, response
-
-
-class GenericMapperYOLO(Perceptor):
+class VLMObjectDetectorYOLO(VLMObjectDetector):
+    """
+    This object detector uses TOLO bounding boxes as part of its prompt to the VLM. The YOLO bounding boxes serve as reference bounding boxes, sometimes helping to improve the VLMs object detections.
+    """
 
     def perceive(self, img, pose=None):
         self.img = np.uint8(img)
@@ -418,7 +409,7 @@ class GenericMapperYOLO(Perceptor):
         #         + json.dumps(past_detections, indent=2)
         #     )
 
-        detections, llm_response = self.ask_question_gemini(
+        detections, llm_response = self.ask_gemini(
             self.img,
             text_prompt,
             self.img.shape,
@@ -475,26 +466,14 @@ class GenericMapperYOLO(Perceptor):
         return detection_list, response
 
 
-def call_gemini(model, prompt):
-    response = None
-    try:
-        response = model.generate_content(prompt)
-    except:
-        traceback.print_exc()
-        time.sleep(30)
-        response = model.generate_content(prompt)
-    try:
-        response = response.text
-    except:
-        response = "No response"
-    return response
-
-
-class EdgeConsolidator(Perceptor):
+class EdgeConsolidator(VLMPrompter):
+    """
+    Prompts a VLM to detect edges
+    """
 
     def perceive(
         self,
-        tracks,
+        scene_graph,
         detections_buffer,
         frame_buffer,
         edges_buffer=None,
@@ -514,15 +493,15 @@ class EdgeConsolidator(Perceptor):
 
             detections_prompt = []
             for obj in detections_buffer[i]:
-                id = get_trackid_by_name(tracks, obj.matched_track_name)
+                id = get_nodeid_by_name(scene_graph, obj.matched_node_name)
                 detections_prompt.append(
                     {
-                        "label": obj.matched_track_name,
+                        "label": obj.matched_node_name,
                         "visual caption": obj.visual_caption,
                         # "spatial caption": obj.spatial_caption,
                         "bbox": obj.bbox,
                         "edges": [str(edge) for edge in obj.edges],
-                        "your notes": tracks[id].notes,
+                        "your notes": scene_graph[id].notes,
                     }
                 )
             prompt.append("Object Detections:\n" + json.dumps(detections_prompt))
@@ -545,15 +524,15 @@ class EdgeConsolidator(Perceptor):
         for i in range(4):
             try:
                 model = genai.GenerativeModel(model_name=self.gemini_model)
-                response = call_gemini(model, prompt).strip()
+                response = utils.call_gemini(model, prompt).strip()
                 response = json.loads(
                     response.replace("```json", "").replace("```", "")
                 )
                 edge_tuples = set()
                 for data in response:
-                    if get_trackid_by_name(tracks, data["subject_object"]) is None:
+                    if get_nodeid_by_name(scene_graph, data["subject_object"]) is None:
                         continue
-                    if get_trackid_by_name(tracks, data["target_object"]) is None:
+                    if get_nodeid_by_name(scene_graph, data["target_object"]) is None:
                         continue
                     if not data["relationship_type"] in self.edge_types:
                         continue
@@ -583,35 +562,40 @@ class EdgeConsolidator(Perceptor):
         raise Exception("Failed to consolidate edges")
 
 
-class CaptionConsolidator(Perceptor):
+class CaptionConsolidator(VLMPrompter):
+    """
+    Prompts a VLM to combine multiple captions into one.
+    """
 
     def perceive(
         self,
-        tracks,
+        scene_graph,
         img,
     ):
         track_message = []
-        for id in tracks:
-            if len(tracks[id].captions) <= 1:
+        for id in scene_graph.get_node_ids():
+            if len(scene_graph[id].captions) <= 1:
                 continue
             track_message.append(
                 {
-                    "name": tracks[id].name,
-                    "captions": tracks[id].captions,
+                    "name": scene_graph[id].name,
+                    "captions": scene_graph[id].captions,
                 }
             )
 
         text_prompt = self.text_prompt_template.format(tracks=track_message)
 
-        _, llm_response = self.ask_question_gemini(
+        _, llm_response = self.ask_gemini(
             img,
             text_prompt,
             img.shape,
         )
 
         for r in llm_response:
-            tracks[get_trackid_by_name(tracks, r["label"])].captions = [r["caption"]]
-        return tracks
+            scene_graph[get_nodeid_by_name(scene_graph, r["label"])].captions = [
+                r["caption"]
+            ]
+        return scene_graph
 
     def verify_json_response(self, response):
         # This code is very hacked. This is because of find_objects prompt returns a list, which I process into a JSON where 'keys' =  detections.
@@ -621,23 +605,27 @@ class CaptionConsolidator(Perceptor):
         response = response.strip()
         response = json.loads(response)
         for obj in response:
-            if self.json_detection_key:
+            if self.response_detection_key:
                 assert "label" in obj
                 assert "caption" in obj
         return response
 
 
-class PerceptorWithTextPrompt(Perceptor):
+class VLMPrompterAPI(VLMPrompter):
+    """
+    This class is used by APIs to prompt the VLM.
+    """
+
     def perceive(self, img, text_prompt):
         self.img = np.uint8(img)
 
-        detections, llm_response = self.ask_question_gemini(
+        detections, llm_response = self.ask_gemini(
             self.img,
             text_prompt,
             self.img.shape,
         )
 
-        if not self.json_detection_key:
+        if not self.response_detection_key:
             detection_list = DetectionList()
             return detection_list, llm_response
 
@@ -684,7 +672,7 @@ class PerceptorWithTextPrompt(Perceptor):
                     edges=edges,
                 )
             )
-            response.append(llm_response[self.json_detection_key][i])
+            response.append(llm_response[self.response_detection_key][i])
 
         detection_names = detection_list.get_field("label")
         detection_list.filter_edges(self.edge_types, detection_names)
@@ -699,7 +687,7 @@ class PerceptorWithTextPrompt(Perceptor):
         response = response.strip()
         response = json.loads(response)
         for obj in response:
-            if self.json_detection_key:
+            if self.response_detection_key:
                 assert "label" in obj
                 assert "visual caption" in obj
                 # assert "spatial caption" in obj
@@ -714,10 +702,10 @@ class PerceptorWithTextPrompt(Perceptor):
                         assert "related_object_label" in rel
                         assert "relationship_type" in rel
             else:
-                for key in self.json_other_keys:
+                for key in self.response_other_keys:
                     assert key in obj
-        if self.json_detection_key:
-            return {self.json_detection_key: response}
+        if self.response_detection_key:
+            return {self.response_detection_key: response}
         else:
             return response
 
@@ -745,7 +733,7 @@ if __name__ == "__main__":
 
     # Testing loading function
 
-    perceptor = GenericMapper()
+    perceptor = VLMObjectDetector()
     perceptor.load_results(
         "/pub3/qasim/hm3d/data/ham-sg/000-hm3d-BFRyYbPCCPE/detections", 1
     )

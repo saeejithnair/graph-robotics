@@ -24,7 +24,7 @@ class Features:
         self.bbox_3d = bbox_3d
 
 
-class FeatureComputer:
+class DetectionFeatureExtractor:
     def __init__(self, device="cuda") -> None:
         os.environ["HF_HOME"] = os.path.join(os.getcwd(), "checkpoints")
         self.device = device

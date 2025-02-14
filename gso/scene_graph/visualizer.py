@@ -25,11 +25,11 @@ class Visualizer3D:
             ),
         )
 
-    def add_geometry_map(self, points, colors=None):
+    def add_full_scene_pcd(self, points, colors=None):
         if not colors:
             colors = [getrgb("white") for _ in range(len(points))]
         rr.log(
-            "geometry_map",
+            "full_scene_pcd",
             rr.Points3D(np.asarray(points), colors=np.asarray(colors), radii=0.01),
         )
 
@@ -46,7 +46,7 @@ class Visualizer3D:
         level,
         geometry_color=getrgb("gray"),
     ):
-        entity_path = "semantic_tree"
+        entity_path = "embodied_memory"
         semantic_color = self.level2color[level % len(self.level2color)]
         name = str(id) + "_" + label.replace(" ", "_")
         rr.log(
@@ -309,7 +309,7 @@ if __name__ == "__main__":
         return np.asarray(pcd.points)[idxs]
 
     visualizer.init()
-    visualizer.add_geometry_map(pcd.points, pcd.colors)
+    visualizer.add_full_scene_pcd(pcd.points, pcd.colors)
     visualize_node(visualizer, pcd, nodes, 0)
     visualize_node(visualizer, pcd, nodes, 1)
     visualize_node(visualizer, pcd, nodes, 2)

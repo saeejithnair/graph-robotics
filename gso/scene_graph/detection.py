@@ -11,8 +11,8 @@ import PIL
 from transformers import AutoModel, AutoProcessor, AutoTokenizer
 
 from . import utils
+from .detection_feature_extractor import Features
 from .edges import Edge, load_edge
-from .features import Features
 from .pointcloud import denoise_pcd, dynamic_downsample, find_nearest_points
 from .utils import get_crop
 
@@ -28,7 +28,7 @@ class Detection:
         bbox=None,
         confidence=None,
         local_pcd=None,
-        matched_track_name=None,
+        matched_node_name=None,
         features: Features = None,
         notes="",
         edges: List[Edge] = [],
@@ -42,7 +42,7 @@ class Detection:
         self.confidence = confidence
         self.local_pcd = local_pcd
         self.features = features
-        self.matched_track_name = matched_track_name
+        self.matched_node_name = matched_node_name
         self.edges = edges
         self.notes = notes
 
@@ -85,7 +85,7 @@ class Detection:
         self.local_pcd = local_pcd
 
     def compute_local_pcd(self):
-        return self.local_pcd 
+        return self.local_pcd
 
 
 class DetectionList:
@@ -167,16 +167,18 @@ class DetectionList:
                 dir / ("bbox_crop-" + str(i) + "-" + obj.label + ".png"),
                 np.uint8(crop),
             )
-            
-            o3d.io.write_point_cloud(str(dir / Path('pcd-'+str(i)+'.pcd')), obj.local_pcd)
-            
+
+            o3d.io.write_point_cloud(
+                str(dir / Path("pcd-" + str(i) + ".pcd")), obj.local_pcd
+            )
+
             data = {
                 "label": obj.label,
                 "visual caption": obj.visual_caption,
                 "spatial caption": obj.spatial_caption,
                 "bbox": obj.bbox,
                 "confidence": obj.confidence,
-                "track name": obj.matched_track_name,
+                "track name": obj.matched_node_name,
                 "edges": [edge.json() for edge in obj.edges],
             }
             # if obj.local_pcd_idxs:
@@ -198,10 +200,11 @@ class DetectionList:
         return len(self.objects)
 
 
-def load_objects(result_dir, frame, temp_refine="temp-refine"):
-    dir = Path(result_dir) / temp_refine / str(frame)
-    if not os.path.exists(dir):
-        dir = Path(result_dir) / "detections" / str(frame)
+def load_objects(result_dir, frame, temp_dir=None):
+    if not temp_dir is None and os.path.exists(temp_dir / str(frame)):
+        dir = temp_dir / str(frame)
+    else:
+        dir = Path(result_dir) / str(frame)
     json_path = dir / "detections.json"
     masks_path = dir / "masks.npz"
     img_path = dir / "input_image.png"
@@ -229,8 +232,8 @@ def load_objects(result_dir, frame, temp_refine="temp-refine"):
         edges_i = []
         for edge in json_data[i]["edges"]:
             edges_i.append(load_edge(edge))
-            
-        local_pcd = o3d.io.read_point_cloud(str(dir / Path('pcd-'+str(i)+'.pcd')))
+
+        local_pcd = o3d.io.read_point_cloud(str(dir / Path("pcd-" + str(i) + ".pcd")))
         object_list.add_object(
             Detection(
                 mask=masks[i],
@@ -240,7 +243,7 @@ def load_objects(result_dir, frame, temp_refine="temp-refine"):
                 spatial_caption=json_data[i]["visual caption"],
                 bbox=json_data[i]["bbox"],
                 confidence=json_data[i]["confidence"],
-                matched_track_name=json_data[i]["track name"],
+                matched_node_name=json_data[i]["track name"],
                 local_pcd=local_pcd,
                 edges=edges_i,
             )

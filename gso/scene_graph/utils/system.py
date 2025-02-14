@@ -223,3 +223,4 @@ def load_oriented_bounding_boxes(file_path):
         bbox_list.append(bbox)
 
     return bbox_list
+
