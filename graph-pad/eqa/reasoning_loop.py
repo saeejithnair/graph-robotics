@@ -50,11 +50,11 @@ def answer_question(
     )
 
     # re-compute node levels because of a prior bug. This is not needed with the new scripts, and can be removed.
-    hierarchy_extractor = HierarchyExtractor(downsample_voxel_size=0.02)
-    hierarchy_matrix, hierarchy_type_matrix = hierarchy_extractor.infer_hierarchy(
-        embodied_memory.scene_graph
-    )
-    embodied_memory.compute_node_levels(hierarchy_matrix, hierarchy_type_matrix)
+    # hierarchy_extractor = HierarchyExtractor(downsample_voxel_size=0.02)
+    # hierarchy_matrix, hierarchy_type_matrix = hierarchy_extractor.infer_hierarchy(
+    #     embodied_memory.scene_graph
+    # )
+    # embodied_memory.compute_node_levels(hierarchy_matrix, hierarchy_type_matrix)
 
     # start the vertex ai chat
     vertexai.init(project="total-byte-432318-q3")

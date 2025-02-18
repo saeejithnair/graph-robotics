@@ -48,8 +48,11 @@ def extract_qa_prompts(
             navigation_log.append(log)
         # navigation_log.append(log)
 
+    visual_memory = embodied_memory.navigation_log.get_evenly_spaced_idxs(
+        embodied_memory.visual_memory_size
+    )
     if prompt_img_interleaved or prompt_img_seperate:
-        for frame_id in embodied_memory.visual_memory:
+        for frame_id in visual_memory:
             with Image.open(dataset.color_paths[frame_id]) as image:
                 resized_image = image.resize((1000, 1000))
                 buffered = io.BytesIO()
@@ -202,7 +205,7 @@ def extract_qa_prompts(
         scratchpad,
         navigation_log,
         images_prompt,
-        embodied_memory.visual_memory,
+        visual_memory,
     )
 
 

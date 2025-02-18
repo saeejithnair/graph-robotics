@@ -401,6 +401,9 @@ class NavigationLog:
     def __getitem__(self, item):
         return self.log[item]
 
+    def __len__(self):
+        return len(self.log)
+
     def extend(self, frame_idx):
         frames = [b["Frame Index"] for b in self.log]
         if frame_idx in frames:
@@ -449,6 +452,21 @@ class NavigationLog:
                 + detections.get_field("matched_node_name")
             )
         )
+
+    def get_evenly_spaced_idxs(self, visual_memory_size):
+        # Extracts visual_memory_size evenly spaced frames
+        visual_memory = []
+        for i in range(len(self.log)):
+            if self.log[i].get("General Frame Info") != None:
+                visual_memory.append(i)
+        k_indices = np.linspace(
+            0, len(visual_memory) - 1, num=visual_memory_size, dtype=np.int32
+        )
+        k_indices = np.unique(k_indices)
+        visual_memory = [
+            visual_memory[i] for i in k_indices
+        ]  # only keep k frames in the memory
+        return visual_memory
 
 
 class FullScenePCD:
