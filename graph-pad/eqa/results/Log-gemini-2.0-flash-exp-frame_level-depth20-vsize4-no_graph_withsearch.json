@@ -1,0 +1,19 @@
+[
+  {
+    "question": "What is the white object on the wall above the TV?",
+    "answer": "Air conditioning unit",
+    "pred_answer": "Air conditioner.",
+    "question_id": [
+      "f2e82760-5c3c-41b1-88b6-85921b9e7b32"
+    ],
+    "category": "object recognition",
+    "episode_history": "hm3d-v0/000-hm3d-BFRyYbPCCPE",
+    "api_logs": [],
+    "token_count": [
+      {
+        "prompt_token_count": 3216,
+        "candidates_token_count": 47
+      }
+    ]
+  }
+]

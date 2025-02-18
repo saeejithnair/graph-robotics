@@ -1,0 +1,1217 @@
+[
+  {
+    "question": "What red object is the below the windows?",
+    "answer": "Fire extinguisher",
+    "pred_answer": "Red cereal box on counter.",
+    "question_id": [
+      "e845f82a-d55c-42f8-88e3-8e9fcaf5bd02"
+    ],
+    "category": "object recognition",
+    "episode_history": "scannet-v0/002-scannet-scene0709_00",
+    "api_logs": [
+      {
+        "call_type": "analyze_frame",
+        "query": "What is below the window?",
+        "keyframe_path": "/pub3/qasim/scannet/data/extracted-frames/scannet-v0/002-scannet-scene0709_00/000180-rgb.png",
+        "response": [
+          {
+            "label": "window sill",
+            "visual caption": "A white window sill below the window.",
+            "bbox": [
+              597,
+              413,
+              1904,
+              538
+            ],
+            "your notes": "The window sill is directly below the window and is a flat horizontal surface."
+          },
+          {
+            "label": "wall heater",
+            "visual caption": "A white wall heater with a black grill.",
+            "bbox": [
+              1282,
+              680,
+              1904,
+              1071
+            ],
+            "your notes": "The heater is mounted on the wall below the window and has a visible black grill."
+          }
+        ]
+      }
+    ],
+    "token_count": [
+      {
+        "prompt_token_count": 11022,
+        "candidates_token_count": 58
+      },
+      {
+        "prompt_token_count": 20333,
+        "candidates_token_count": 234
+      }
+    ]
+  },
+  {
+    "question": "What food is on the counter?",
+    "answer": "Cheerios",
+    "pred_answer": "Bag of food, Honey Nut Cheerios.",
+    "question_id": [
+      "b0b40220-5e47-40ea-9298-167b140c242c"
+    ],
+    "category": "object recognition",
+    "episode_history": "scannet-v0/002-scannet-scene0709_00",
+    "api_logs": [
+      {
+        "call_type": "analyze_frame",
+        "query": "What food is on the counter?",
+        "keyframe_path": "/pub3/qasim/scannet/data/extracted-frames/scannet-v0/002-scannet-scene0709_00/000000-rgb.png",
+        "response": [
+          {
+            "label": "cereal box",
+            "visual caption": "A partly visible box of cereal that has a beige and brown color scheme",
+            "bbox": [
+              760,
+              232,
+              873,
+              395
+            ],
+            "your notes": "The box looks to be a large box of cereal. The brand name is not clear"
+          },
+          {
+            "label": "black frying pan",
+            "visual caption": "A black frying pan on top of the stove.",
+            "bbox": [
+              1102,
+              277,
+              1251,
+              333
+            ],
+            "your notes": "The pan is a dark black color and looks to be sitting directly on top of one of the burners."
+          }
+        ]
+      },
+      {
+        "call_type": "analyze_frame",
+        "query": "What food is on the counter?",
+        "keyframe_path": "/pub3/qasim/scannet/data/extracted-frames/scannet-v0/002-scannet-scene0709_00/000580-rgb.png",
+        "response": [
+          {
+            "label": "cereal box",
+            "visual caption": "A box of Cheerios cereal with a red and yellow design.",
+            "bbox": [
+              1215,
+              352,
+              1422,
+              590
+            ],
+            "your notes": "The box is labeled 'Honey Nut Cheerios' and is a family size."
+          },
+          {
+            "label": "soap bottle",
+            "visual caption": "A plastic bottle of yellow liquid soap with a green label.",
+            "bbox": [
+              1422,
+              409,
+              1532,
+              576
+            ],
+            "your notes": "The bottle is located on the counter near the sink. "
+          }
+        ]
+      }
+    ],
+    "token_count": [
+      {
+        "prompt_token_count": 11020,
+        "candidates_token_count": 32
+      },
+      {
+        "prompt_token_count": 20450,
+        "candidates_token_count": 32
+      },
+      {
+        "prompt_token_count": 30044,
+        "candidates_token_count": 258
+      }
+    ]
+  },
+  {
+    "question": "What color are the blinds?",
+    "answer": "White",
+    "pred_answer": "The blinds are white.",
+    "question_id": [
+      "f829e253-ca9a-4456-b2d3-70e1a7a2eecd"
+    ],
+    "category": "attribute recognition",
+    "episode_history": "scannet-v0/002-scannet-scene0709_00",
+    "api_logs": [
+      {
+        "call_type": "analyze_frame",
+        "query": "What is the color of the blinds?",
+        "keyframe_path": "/pub3/qasim/scannet/data/extracted-frames/scannet-v0/002-scannet-scene0709_00/000180-rgb.png",
+        "response": [
+          {
+            "label": "window blinds",
+            "visual caption": "Horizontal white blinds covering a window",
+            "bbox": [
+              38,
+              5,
+              1898,
+              110
+            ],
+            "your notes": "The blinds appear to be white in color."
+          }
+        ]
+      }
+    ],
+    "token_count": [
+      {
+        "prompt_token_count": 11019,
+        "candidates_token_count": 32
+      },
+      {
+        "prompt_token_count": 20279,
+        "candidates_token_count": 109
+      }
+    ]
+  },
+  {
+    "question": "Where is the trashcan?",
+    "answer": "In the corner",
+    "pred_answer": "Right side of kitchen, near counter.",
+    "question_id": [
+      "14774f3f-d14b-4e18-b5de-6e827a4d9e94"
+    ],
+    "category": "spatial understanding",
+    "episode_history": "scannet-v0/002-scannet-scene0709_00",
+    "api_logs": [
+      {
+        "call_type": "analyze_frame",
+        "query": "where is the trash can?",
+        "keyframe_path": "/pub3/qasim/scannet/data/extracted-frames/scannet-v0/002-scannet-scene0709_00/000460-rgb.png",
+        "response": [
+          {
+            "label": "trash can",
+            "visual caption": "A gray, tall, cylindrical trash can with a lid.",
+            "bbox": [
+              1551,
+              294,
+              1756,
+              638
+            ],
+            "your notes": "The trash can is located on the right side of the image, near the counter. It is a tall, gray, lidded trash can."
+          },
+          {
+            "label": "kitchen sink",
+            "visual caption": "A stainless steel kitchen sink.",
+            "bbox": [
+              792,
+              447,
+              1136,
+              519
+            ],
+            "your notes": "The kitchen sink is visible on the left side of the counter."
+          }
+        ]
+      }
+    ],
+    "token_count": [
+      {
+        "prompt_token_count": 11019,
+        "candidates_token_count": 36
+      },
+      {
+        "prompt_token_count": 20448,
+        "candidates_token_count": 120
+      }
+    ]
+  },
+  {
+    "question": "Where are the paper towels?",
+    "answer": "Above the trashcan",
+    "pred_answer": "On the counter, left of the microwave.",
+    "question_id": [
+      "a403b6f1-5e99-4644-aad6-772a0c9d8f90"
+    ],
+    "category": "spatial understanding",
+    "episode_history": "scannet-v0/002-scannet-scene0709_00",
+    "api_logs": [
+      {
+        "call_type": "analyze_frame",
+        "query": "where are the paper towels",
+        "keyframe_path": "/pub3/qasim/scannet/data/extracted-frames/scannet-v0/002-scannet-scene0709_00/000000-rgb.png",
+        "response": [
+          {
+            "label": "microwave",
+            "visual caption": "A white microwave with a black front.",
+            "bbox": [
+              295,
+              225,
+              718,
+              421
+            ],
+            "your notes": "A microwave is visible on the counter, it is white with a black front."
+          },
+          {
+            "label": "counter",
+            "visual caption": "A counter with a green top.",
+            "bbox": [
+              263,
+              297,
+              1167,
+              506
+            ],
+            "your notes": "The counter has a green top."
+          },
+          {
+            "label": "kitchen cabinets",
+            "visual caption": "Two wooden kitchen cabinets under the counter.",
+            "bbox": [
+              282,
+              435,
+              1178,
+              938
+            ],
+            "your notes": "There are two wooden kitchen cabinets with silver handles."
+          },
+          {
+            "label": "stove",
+            "visual caption": "A white electric stove with a black pan.",
+            "bbox": [
+              1011,
+              162,
+              1762,
+              861
+            ],
+            "your notes": "A white stove is next to the counter and cabinets."
+          }
+        ]
+      },
+      {
+        "call_type": "analyze_frame",
+        "query": "where are the paper towels",
+        "keyframe_path": "/pub3/qasim/scannet/data/extracted-frames/scannet-v0/002-scannet-scene0709_00/000040-rgb.png",
+        "response": [
+          {
+            "label": "paper towel roll",
+            "visual caption": "A white paper towel roll standing upright",
+            "bbox": [
+              504,
+              542,
+              583,
+              627
+            ],
+            "your notes": "This is a paper towel roll, positioned on the counter to the left of the microwave."
+          }
+        ]
+      }
+    ],
+    "token_count": [
+      {
+        "prompt_token_count": 11019,
+        "candidates_token_count": 40
+      },
+      {
+        "prompt_token_count": 20446,
+        "candidates_token_count": 29
+      },
+      {
+        "prompt_token_count": 30016,
+        "candidates_token_count": 99
+      }
+    ]
+  },
+  {
+    "question": "Is the countertop clean?",
+    "answer": "No",
+    "pred_answer": "Mostly clean, but cluttered.",
+    "question_id": [
+      "016fb5d2-3c6f-4aa3-8493-7768aa3762a9"
+    ],
+    "category": "object state recognition",
+    "episode_history": "scannet-v0/002-scannet-scene0709_00",
+    "api_logs": [
+      {
+        "call_type": "analyze_frame",
+        "query": "Is the counter clean?",
+        "keyframe_path": "/pub3/qasim/scannet/data/extracted-frames/scannet-v0/002-scannet-scene0709_00/000000-rgb.png",
+        "response": [
+          {
+            "label": "kitchen counter",
+            "visual caption": "A green countertop with some objects on it.",
+            "bbox": [
+              266,
+              300,
+              1776,
+              408
+            ],
+            "your notes": "The counter is light green. It is somewhat cluttered with various items such as a microwave, a box of cereal and a toaster. No major mess or spills are visible, though the counter has some items on it. The cleanliness can't be determined precisely due to the items present."
+          },
+          {
+            "label": "microwave",
+            "visual caption": "A white microwave oven.",
+            "bbox": [
+              288,
+              220,
+              718,
+              424
+            ],
+            "your notes": "A white microwave oven is situated on the left side of the kitchen counter."
+          },
+          {
+            "label": "cereal box",
+            "visual caption": "A partially visible box of cereal.",
+            "bbox": [
+              762,
+              248,
+              871,
+              395
+            ],
+            "your notes": "A box of cereal sits on the countertop, partially obscuring a toaster. The box has a light background and appears to contain multiple types of cereal."
+          },
+          {
+            "label": "toaster",
+            "visual caption": "A black toaster.",
+            "bbox": [
+              865,
+              261,
+              950,
+              374
+            ],
+            "your notes": "A small black toaster is on the counter behind the cereal box."
+          },
+          {
+            "label": "kitchen stove",
+            "visual caption": "A white kitchen stove.",
+            "bbox": [
+              1011,
+              157,
+              1764,
+              882
+            ],
+            "your notes": "The stove is mostly white and it has a black pan on top. The burners appear clean."
+          },
+          {
+            "label": "kitchen cabinet",
+            "visual caption": "Brown kitchen cabinets.",
+            "bbox": [
+              282,
+              449,
+              1148,
+              925
+            ],
+            "your notes": "Brown kitchen cabinets are under the counter."
+          }
+        ]
+      },
+      {
+        "call_type": "analyze_frame",
+        "query": "Is the counter clean?",
+        "keyframe_path": "/pub3/qasim/scannet/data/extracted-frames/scannet-v0/002-scannet-scene0709_00/000580-rgb.png",
+        "response": [
+          {
+            "label": "kitchen counter",
+            "visual caption": "A kitchen counter with a light gray countertop",
+            "bbox": [
+              119,
+              450,
+              1904,
+              1071
+            ],
+            "your notes": "The counter has a gray countertop. Various items are on the counter, making it appear cluttered. The counter has some objects on it that might be dirty or clean, such as a cutting board, a bottle of dish soap, and a box of cereal."
+          },
+          {
+            "label": "dish soap bottle",
+            "visual caption": "A yellow bottle of dish soap",
+            "bbox": [
+              1418,
+              387,
+              1537,
+              579
+            ],
+            "your notes": "The bottle of dish soap is yellow. It sits on the counter near the sink."
+          },
+          {
+            "label": "cereal box",
+            "visual caption": "A large box of Honey Nut Cheerios cereal",
+            "bbox": [
+              1217,
+              340,
+              1424,
+              594
+            ],
+            "your notes": "A box of Cheerios sits on the counter."
+          },
+          {
+            "label": "cutting board",
+            "visual caption": "A white cutting board",
+            "bbox": [
+              1330,
+              592,
+              1812,
+              707
+            ],
+            "your notes": "A white cutting board lies on the counter, to the right of the sink."
+          },
+          {
+            "label": "dish rack",
+            "visual caption": "A white dish rack holding multiple items",
+            "bbox": [
+              222,
+              697,
+              910,
+              949
+            ],
+            "your notes": "A white dish rack holds multiple items near the sink. Some of these may or may not be clean."
+          },
+          {
+            "label": "sink",
+            "visual caption": "A stainless steel kitchen sink",
+            "bbox": [
+              896,
+              614,
+              1557,
+              842
+            ],
+            "your notes": "A stainless steel sink is in the middle of the counter."
+          }
+        ]
+      }
+    ],
+    "token_count": [
+      {
+        "prompt_token_count": 11018,
+        "candidates_token_count": 28
+      },
+      {
+        "prompt_token_count": 20670,
+        "candidates_token_count": 31
+      },
+      {
+        "prompt_token_count": 30594,
+        "candidates_token_count": 408
+      }
+    ]
+  },
+  {
+    "question": "Are all cabinet drawers closed?",
+    "answer": "No",
+    "pred_answer": "No, they are not.",
+    "question_id": [
+      "e6499416-f118-4c1b-aa99-a0b980b89e47"
+    ],
+    "category": "object state recognition",
+    "episode_history": "scannet-v0/002-scannet-scene0709_00",
+    "api_logs": [
+      {
+        "call_type": "analyze_frame",
+        "query": "are the cabinet drawers open or closed?",
+        "keyframe_path": "/pub3/qasim/scannet/data/extracted-frames/scannet-v0/002-scannet-scene0709_00/000000-rgb.png",
+        "response": [
+          {
+            "label": "left cabinet drawer",
+            "visual caption": "A brown cabinet drawer with a silver handle.",
+            "bbox": [
+              291,
+              461,
+              748,
+              588
+            ],
+            "your notes": "The drawer appears to be flush with the cabinet frame, indicating it is closed."
+          },
+          {
+            "label": "right cabinet drawer",
+            "visual caption": "A brown cabinet drawer with a silver handle.",
+            "bbox": [
+              752,
+              442,
+              1161,
+              569
+            ],
+            "your notes": "The drawer appears to be flush with the cabinet frame, indicating it is closed."
+          },
+          {
+            "label": "left cabinet door",
+            "visual caption": "A brown cabinet door with two silver handles.",
+            "bbox": [
+              309,
+              590,
+              764,
+              934
+            ],
+            "your notes": "The doors appear to be flush with the cabinet frame, indicating they are closed."
+          },
+          {
+            "label": "right cabinet door",
+            "visual caption": "A brown cabinet door with two silver handles.",
+            "bbox": [
+              764,
+              559,
+              1153,
+              886
+            ],
+            "your notes": "The doors appear to be flush with the cabinet frame, indicating they are closed."
+          },
+          {
+            "label": "stove bottom drawer",
+            "visual caption": "A white drawer on the bottom of the stove.",
+            "bbox": [
+              1138,
+              717,
+              1739,
+              882
+            ],
+            "your notes": "The drawer appears to be flush with the stove frame, indicating it is closed."
+          }
+        ]
+      },
+      {
+        "call_type": "analyze_frame",
+        "query": "are the cabinet drawers open or closed?",
+        "keyframe_path": "/pub3/qasim/scannet/data/extracted-frames/scannet-v0/002-scannet-scene0709_00/000520-rgb.png",
+        "response": [
+          {
+            "label": "cabinet drawer",
+            "visual caption": "A wooden cabinet drawer with a silver handle, partially open.",
+            "bbox": [
+              583,
+              696,
+              1015,
+              976
+            ],
+            "your notes": "This drawer is open, because its front is not flush with the cabinet."
+          },
+          {
+            "label": "cabinet drawers",
+            "visual caption": "A set of four wooden cabinet drawers with silver handles.",
+            "bbox": [
+              1368,
+              317,
+              1839,
+              839
+            ],
+            "your notes": "These four drawers are closed, as the front of each drawer is flush with the cabinet."
+          }
+        ]
+      }
+    ],
+    "token_count": [
+      {
+        "prompt_token_count": 11019,
+        "candidates_token_count": 64
+      },
+      {
+        "prompt_token_count": 20492,
+        "candidates_token_count": 178
+      },
+      {
+        "prompt_token_count": 30088,
+        "candidates_token_count": 310
+      }
+    ]
+  },
+  {
+    "question": "How do I crack open the windows?",
+    "answer": "Turn the window knob",
+    "pred_answer": "Open the closed window.",
+    "question_id": [
+      "48128095-6cec-4cf2-a282-bf380146ce0c"
+    ],
+    "category": "functional reasoning",
+    "episode_history": "scannet-v0/002-scannet-scene0709_00",
+    "api_logs": [
+      {
+        "call_type": "analyze_frame",
+        "query": "Is the window open or closed?",
+        "keyframe_path": "/pub3/qasim/scannet/data/extracted-frames/scannet-v0/002-scannet-scene0709_00/000180-rgb.png",
+        "response": [
+          {
+            "label": "window frame",
+            "visual caption": "A white window frame with a single pane.",
+            "bbox": [
+              587,
+              7,
+              1831,
+              463
+            ],
+            "your notes": "The window frame appears to be a single pane. The bottom frame is visible along with the top frame. There is a window locking mechanism visible on the window."
+          },
+          {
+            "label": "window glass",
+            "visual caption": "A rectangular pane of clear glass in a window frame.",
+            "bbox": [
+              739,
+              78,
+              1699,
+              357
+            ],
+            "your notes": "The glass is clear and appears to be closed. Based on how much the window view is obscured by reflection and is clearly viewable without visible obstruction of the glass, it's safe to assume the window is closed."
+          }
+        ]
+      }
+    ],
+    "token_count": [
+      {
+        "prompt_token_count": 11021,
+        "candidates_token_count": 93
+      },
+      {
+        "prompt_token_count": 20379,
+        "candidates_token_count": 114
+      }
+    ]
+  },
+  {
+    "question": "What can I eat?",
+    "answer": "Cereal",
+    "pred_answer": "Cereal, bag of food.",
+    "question_id": [
+      "d5ee5c7d-f02b-4a62-884d-92f83db9a541"
+    ],
+    "category": "functional reasoning",
+    "episode_history": "scannet-v0/002-scannet-scene0709_00",
+    "api_logs": [
+      {
+        "call_type": "analyze_frame",
+        "query": "What food items are visible?",
+        "keyframe_path": "/pub3/qasim/scannet/data/extracted-frames/scannet-v0/002-scannet-scene0709_00/000000-rgb.png",
+        "response": [
+          {
+            "label": "cereal box",
+            "visual caption": "A semi-transparent bag with a tan label",
+            "bbox": [
+              760,
+              241,
+              871,
+              394
+            ],
+            "your notes": "The bag appears to contain dry cereal or a similar food item."
+          },
+          {
+            "label": "cooking pan",
+            "visual caption": "A black round cooking pan resting on the stove.",
+            "bbox": [
+              1100,
+              268,
+              1253,
+              333
+            ],
+            "your notes": "The cooking pan is sitting on one of the burners of the stove."
+          },
+          {
+            "label": "glass bottle",
+            "visual caption": "A transparent bottle with a reddish-brown liquid visible inside",
+            "bbox": [
+              1549,
+              236,
+              1622,
+              304
+            ],
+            "your notes": "The bottle appears to contain a liquid, possibly a cooking oil or vinegar."
+          }
+        ]
+      },
+      {
+        "call_type": "analyze_frame",
+        "query": "What food items are visible?",
+        "keyframe_path": "/pub3/qasim/scannet/data/extracted-frames/scannet-v0/002-scannet-scene0709_00/000580-rgb.png",
+        "response": [
+          {
+            "label": "cereal box",
+            "visual caption": "A yellow and orange box of cereal",
+            "bbox": [
+              1223,
+              346,
+              1443,
+              592
+            ],
+            "your notes": "The box is labeled 'Cheerios' and has a picture of cereal on it."
+          },
+          {
+            "label": "soap bottle",
+            "visual caption": "A clear bottle with a yellow label",
+            "bbox": [
+              1424,
+              446,
+              1536,
+              569
+            ],
+            "your notes": "The bottle is positioned next to the cereal box. It is likely hand soap or dish soap."
+          }
+        ]
+      }
+    ],
+    "token_count": [
+      {
+        "prompt_token_count": 11018,
+        "candidates_token_count": 94
+      },
+      {
+        "prompt_token_count": 20767,
+        "candidates_token_count": 120
+      },
+      {
+        "prompt_token_count": 30567,
+        "candidates_token_count": 551
+      }
+    ]
+  },
+  {
+    "question": "Is the kitchen in a home or public space?",
+    "answer": "Public space",
+    "pred_answer": "Private home.",
+    "question_id": [
+      "933a8957-9f4a-4836-bfb6-001fb82afdf8"
+    ],
+    "category": "world knowledge",
+    "episode_history": "scannet-v0/002-scannet-scene0709_00",
+    "api_logs": [
+      {
+        "call_type": "analyze_frame",
+        "query": "Are there any elements that suggest whether this is a public or private kitchen?",
+        "keyframe_path": "/pub3/qasim/scannet/data/extracted-frames/scannet-v0/002-scannet-scene0709_00/000000-rgb.png",
+        "response": [
+          {
+            "label": "microwave oven",
+            "visual caption": "A white microwave with a black glass door and digital display.",
+            "bbox": [
+              293,
+              221,
+              720,
+              423
+            ],
+            "your notes": "The microwave is a common appliance in both public and private kitchens."
+          },
+          {
+            "label": "cereal box",
+            "visual caption": "A partially visible box of cereal with a yellow label and a clear plastic window.",
+            "bbox": [
+              760,
+              253,
+              873,
+              396
+            ],
+            "your notes": "Food items like cereal boxes are found in both public and private kitchens."
+          },
+          {
+            "label": "electric stove",
+            "visual caption": "A white electric stove with four black burners, a black pan, and a white oven door below it.",
+            "bbox": [
+              1027,
+              156,
+              1762,
+              881
+            ],
+            "your notes": "Stoves are standard in all types of kitchens."
+          },
+          {
+            "label": "kitchen cabinet",
+            "visual caption": "Wooden cabinets with silver drawer pulls and handles.",
+            "bbox": [
+              284,
+              439,
+              1163,
+              929
+            ],
+            "your notes": "Simple cabinetry like this is found in both private and public kitchens"
+          }
+        ]
+      },
+      {
+        "call_type": "analyze_frame",
+        "query": "Are there any elements that suggest whether this is a public or private kitchen?",
+        "keyframe_path": "/pub3/qasim/scannet/data/extracted-frames/scannet-v0/002-scannet-scene0709_00/000180-rgb.png",
+        "response": [
+          {
+            "label": "window",
+            "visual caption": "A white window with horizontal blinds.",
+            "bbox": [
+              94,
+              0,
+              1914,
+              237
+            ],
+            "your notes": "The window looks out onto a parking lot or other public area. This could be an element of a public or private kitchen."
+          },
+          {
+            "label": "electric stove",
+            "visual caption": "A white electric stove with a black circular heating element.",
+            "bbox": [
+              11,
+              800,
+              566,
+              1073
+            ],
+            "your notes": "A small electric stove that looks like a typical appliance found in a home kitchen."
+          },
+          {
+            "label": "wall heater",
+            "visual caption": "A white rectangular wall heater with a black grill.",
+            "bbox": [
+              1288,
+              666,
+              1898,
+              1068
+            ],
+            "your notes": "The wall heater indicates this may be in a space where individual unit heating is present."
+          },
+          {
+            "label": "kitchen counter",
+            "visual caption": "A dark colored kitchen counter.",
+            "bbox": [
+              13,
+              560,
+              537,
+              964
+            ],
+            "your notes": "A kitchen counter."
+          }
+        ]
+      },
+      {
+        "call_type": "analyze_frame",
+        "query": "Are there any elements that suggest whether this is a public or private kitchen?",
+        "keyframe_path": "/pub3/qasim/scannet/data/extracted-frames/scannet-v0/002-scannet-scene0709_00/000380-rgb.png",
+        "response": [
+          {
+            "label": "white refrigerator",
+            "visual caption": "A white refrigerator with two doors and silver handles.",
+            "bbox": [
+              744,
+              0,
+              1918,
+              1078
+            ],
+            "your notes": "The presence of a refrigerator is common in both private and public kitchens."
+          },
+          {
+            "label": "paper on fridge",
+            "visual caption": "A rectangular paper attached to the upper part of the refrigerator.",
+            "bbox": [
+              1186,
+              1,
+              1587,
+              93
+            ],
+            "your notes": "A paper with possible text on it, could be a sign of a public setting."
+          },
+          {
+            "label": "white counter top",
+            "visual caption": "A partial view of a white counter top.",
+            "bbox": [
+              0,
+              842,
+              330,
+              1074
+            ],
+            "your notes": "A counter top, typical of both public and private spaces."
+          }
+        ]
+      },
+      {
+        "call_type": "analyze_frame",
+        "query": "Are there any elements that suggest whether this is a public or private kitchen?",
+        "keyframe_path": "/pub3/qasim/scannet/data/extracted-frames/scannet-v0/002-scannet-scene0709_00/000580-rgb.png",
+        "response": [
+          {
+            "label": "wall-mounted soap dispenser",
+            "visual caption": "A white, wall-mounted soap dispenser with a brown lever.",
+            "bbox": [
+              675,
+              336,
+              894,
+              574
+            ],
+            "your notes": "This type of dispenser is frequently found in public restrooms and kitchens."
+          },
+          {
+            "label": "large cereal box",
+            "visual caption": "A large, orange box of Cheerios.",
+            "bbox": [
+              1217,
+              346,
+              1432,
+              596
+            ],
+            "your notes": "The size of the box suggests this is for a group and not just a single person."
+          },
+          {
+            "label": "kitchen sink",
+            "visual caption": "A stainless steel kitchen sink.",
+            "bbox": [
+              881,
+              619,
+              1530,
+              849
+            ],
+            "your notes": "The sink is simple and utilitarian, which is common in both public and private kitchens."
+          },
+          {
+            "label": "dish rack",
+            "visual caption": "A white plastic dish rack containing kitchen items.",
+            "bbox": [
+              209,
+              693,
+              915,
+              945
+            ],
+            "your notes": "Dish racks are used in both public and private kitchens."
+          },
+          {
+            "label": "electric outlet",
+            "visual caption": "A white standard electric outlet on the wall",
+            "bbox": [
+              155,
+              572,
+              289,
+              690
+            ],
+            "your notes": "Electric outlets are used in both public and private kitchens."
+          }
+        ]
+      }
+    ],
+    "token_count": [
+      {
+        "prompt_token_count": 11023,
+        "candidates_token_count": 603
+      },
+      {
+        "prompt_token_count": 50007,
+        "candidates_token_count": 547
+      }
+    ]
+  },
+  {
+    "question": "What brand makes the cereal?",
+    "answer": "General Mills",
+    "pred_answer": "Cheerios",
+    "question_id": [
+      "84104329-7c12-44d0-9582-f7767712af0a"
+    ],
+    "category": "world knowledge",
+    "episode_history": "scannet-v0/002-scannet-scene0709_00",
+    "api_logs": [
+      {
+        "call_type": "analyze_frame",
+        "query": "What is the brand of the cereal box?",
+        "keyframe_path": "/pub3/qasim/scannet/data/extracted-frames/scannet-v0/002-scannet-scene0709_00/000580-rgb.png",
+        "response": [
+          {
+            "label": "cereal box",
+            "visual caption": "A red and orange box of cereal.",
+            "bbox": [
+              1219,
+              348,
+              1428,
+              589
+            ],
+            "your notes": "The cereal box is labeled \"Cheerios\"."
+          }
+        ]
+      }
+    ],
+    "token_count": [
+      {
+        "prompt_token_count": 11019,
+        "candidates_token_count": 49
+      },
+      {
+        "prompt_token_count": 20297,
+        "candidates_token_count": 76
+      }
+    ]
+  },
+  {
+    "question": "Where is the fire extinguisher?",
+    "answer": "Under the windows",
+    "pred_answer": "In a white, glass-front cabinet.",
+    "question_id": [
+      "df48ef29-6497-4d5c-b673-0ccdeef26622"
+    ],
+    "category": "object localization",
+    "episode_history": "scannet-v0/002-scannet-scene0709_00",
+    "api_logs": [
+      {
+        "call_type": "analyze_frame",
+        "query": "What is inside the white rectangular cabinet with a glass front?",
+        "keyframe_path": "/pub3/qasim/scannet/data/extracted-frames/scannet-v0/002-scannet-scene0709_00/000220-rgb.png",
+        "response": [
+          {
+            "label": "white cabinet",
+            "visual caption": "A white rectangular cabinet with a glass front mounted on the wall.",
+            "bbox": [
+              1134,
+              203,
+              1309,
+              552
+            ],
+            "your notes": "The cabinet is white and has a glass front, suggesting that it might be intended to display the items within."
+          },
+          {
+            "label": "fire extinguisher",
+            "visual caption": "A red fire extinguisher with black parts inside of a cabinet.",
+            "bbox": [
+              1196,
+              284,
+              1267,
+              502
+            ],
+            "your notes": "There is a fire extinguisher inside the cabinet."
+          }
+        ]
+      }
+    ],
+    "token_count": [
+      {
+        "prompt_token_count": 11019,
+        "candidates_token_count": 71
+      },
+      {
+        "prompt_token_count": 20613,
+        "candidates_token_count": 185
+      }
+    ]
+  },
+  {
+    "question": "Where is the cereal?",
+    "answer": "Behind the soap",
+    "pred_answer": "On the kitchen counter near the sink.",
+    "question_id": [
+      "7df7d40a-5a41-46f5-b738-767a5cfa14f2"
+    ],
+    "category": "object localization",
+    "episode_history": "scannet-v0/002-scannet-scene0709_00",
+    "api_logs": [],
+    "token_count": [
+      {
+        "prompt_token_count": 11018,
+        "candidates_token_count": 213
+      }
+    ]
+  },
+  {
+    "question": "What is the blue object behind the tissue box and next to the phone on the table?",
+    "answer": "Lysol cleaning wipes",
+    "pred_answer": "Blue roll of paper towels.",
+    "question_id": [
+      "30d7a3fe-abd8-4db0-91a1-28195f49c321"
+    ],
+    "category": "object recognition",
+    "episode_history": "scannet-v0/003-scannet-scene0762_00",
+    "api_logs": [],
+    "token_count": [
+      {
+        "prompt_token_count": 15090,
+        "candidates_token_count": 2034
+      }
+    ]
+  },
+  {
+    "question": "What color is the wire for the headphones?",
+    "answer": "blue",
+    "pred_answer": "Light blue.",
+    "question_id": [
+      "1392c3bc-4899-4728-85b1-e4458282ed22"
+    ],
+    "category": "attribute recognition",
+    "episode_history": "scannet-v0/003-scannet-scene0762_00",
+    "api_logs": [
+      {
+        "call_type": "analyze_frame",
+        "query": "What is the color of the wire connected to the headphones?",
+        "keyframe_path": "/pub3/qasim/scannet/data/extracted-frames/scannet-v0/003-scannet-scene0762_00/000380-rgb.png",
+        "response": [
+          {
+            "label": "headphone wire",
+            "visual caption": "A blue wire extending from a pair of headphones.",
+            "bbox": [
+              1311,
+              719,
+              1599,
+              956
+            ],
+            "your notes": "The wire of the headphones appears to be a light blue color."
+          },
+          {
+            "label": "headphones",
+            "visual caption": "A pair of tan headphones on a desk.",
+            "bbox": [
+              1463,
+              810,
+              1776,
+              993
+            ],
+            "your notes": "These headphones are connected to a light blue wire."
+          }
+        ]
+      }
+    ],
+    "token_count": [
+      {
+        "prompt_token_count": 15081,
+        "candidates_token_count": 45
+      },
+      {
+        "prompt_token_count": 28689,
+        "candidates_token_count": 178
+      }
+    ]
+  },
+  {
+    "question": "What color is the soda can?",
+    "answer": "purple or red",
+    "pred_answer": "Red with white text.",
+    "question_id": [
+      "ce2f5613-88a1-4401-86dc-cbb968f56179"
+    ],
+    "category": "attribute recognition",
+    "episode_history": "scannet-v0/003-scannet-scene0762_00",
+    "api_logs": [
+      {
+        "call_type": "analyze_frame",
+        "query": "What is the color of the soda can?",
+        "keyframe_path": "/pub3/qasim/scannet/data/extracted-frames/scannet-v0/003-scannet-scene0762_00/000400-rgb.png",
+        "response": [
+          {
+            "label": "soda can",
+            "visual caption": "A red and silver soda can.",
+            "bbox": [
+              574,
+              479,
+              652,
+              592
+            ],
+            "your notes": "The can is primarily red with a silver top and appears to be aluminum."
+          }
+        ]
+      }
+    ],
+    "token_count": [
+      {
+        "prompt_token_count": 15079,
+        "candidates_token_count": 43
+      },
+      {
+        "prompt_token_count": 28420,
+        "candidates_token_count": 102
+      }
+    ]
+  },
+  {
+    "question": "Is there space under the table by the window?",
+    "answer": "no, there are shoes, a machine and a trash bin",
+    "pred_answer": "Yes, there is.",
+    "question_id": [
+      "c9f3033f-3fc5-4859-a210-1ee90b212a14"
+    ],
+    "category": "spatial understanding",
+    "episode_history": "scannet-v0/003-scannet-scene0762_00",
+    "api_logs": [],
+    "token_count": [
+      {
+        "prompt_token_count": 9623,
+        "candidates_token_count": 43
+      }
+    ]
+  }
+]

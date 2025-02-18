@@ -1,0 +1,139 @@
+[
+  {
+    "question": "What is the white object on the wall above the TV?",
+    "gt_answer": "Air conditioning unit",
+    "pred_answer": "Air conditioner.",
+    "question_id": "f2e82760-5c3c-41b1-88b6-85921b9e7b32",
+    "category": "object recognition",
+    "episode_history": "hm3d-v0/000-hm3d-BFRyYbPCCPE",
+    "api_logs": [
+      {
+        "call_type": "find_objects_in_frame",
+        "query": "white object above TV",
+        "keyframe_path": "/pub3/qasim/hm3d/data/frames/000-hm3d-BFRyYbPCCPE/00055-rgb.png",
+        "response": [
+          {
+            "label": "wall mounted unit",
+            "visual caption": "A white, rectangular wall mounted unit",
+            "spatial caption": "A white, rectangular wall mounted unit above the TV",
+            "bbox": [
+              1148,
+              292,
+              1282,
+              345
+            ],
+            "confidence": 0.81,
+            "your notes": "This appears to be an air conditioning unit but is mounted high above the TV.",
+            "relationships": [
+              {
+                "relationship_type": "on",
+                "related_object_label": "16 tv area"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "token_count": [
+      {
+        "prompt_token_count": 9164,
+        "candidates_token_count": 133
+      },
+      {
+        "prompt_token_count": 16472,
+        "candidates_token_count": 220
+      }
+    ]
+  },
+  {
+    "question": "What material is the ceiling in the living room?",
+    "gt_answer": "Wood panel",
+    "pred_answer": "The ceiling is made of wood.",
+    "question_id": "7447d782-d1a7-4c87-86dc-b5eafc5a0f76",
+    "category": "attribute recognition",
+    "episode_history": "hm3d-v0/000-hm3d-BFRyYbPCCPE",
+    "api_logs": [
+      {
+        "call_type": "find_objects_in_frame",
+        "query": "ceiling",
+        "keyframe_path": "/pub3/qasim/hm3d/data/frames/000-hm3d-BFRyYbPCCPE/00060-rgb.png",
+        "response": [
+          {
+            "label": "ceiling area",
+            "visual caption": "A white ceiling.",
+            "spatial caption": "The white ceiling area.",
+            "bbox": [
+              0,
+              0,
+              3686,
+              320
+            ],
+            "confidence": 0.964,
+            "your notes": "This is the ceiling.",
+            "relationships": []
+          }
+        ]
+      },
+      {
+        "call_type": "find_objects_in_frame",
+        "query": "ceiling",
+        "keyframe_path": "/pub3/qasim/hm3d/data/frames/000-hm3d-BFRyYbPCCPE/00095-rgb.png",
+        "response": [
+          {
+            "label": "wooden ceiling",
+            "visual caption": "A wooden ceiling with a peaked roof.",
+            "spatial caption": "The ceiling at the top of the room.",
+            "bbox": [
+              958,
+              0,
+              1232,
+              113
+            ],
+            "confidence": 0.93,
+            "your notes": "Wooden ceiling with a peaked roof.",
+            "relationships": []
+          }
+        ]
+      },
+      {
+        "call_type": "find_objects_in_frame",
+        "query": "Is this ceiling in the living room?",
+        "keyframe_path": "/pub3/qasim/hm3d/data/frames/000-hm3d-BFRyYbPCCPE/00095-rgb.png",
+        "response": [
+          {
+            "label": "living room ceiling",
+            "visual caption": "A wooden ceiling with a peaked roof, partially obscured by the wall.",
+            "spatial caption": "A wooden ceiling with a peaked roof, visible in the top center of the room.",
+            "bbox": [
+              696,
+              0,
+              1042,
+              132
+            ],
+            "confidence": 0.9,
+            "your notes": "Ceiling is visible in the living room area.",
+            "relationships": []
+          }
+        ]
+      }
+    ],
+    "token_count": [
+      {
+        "prompt_token_count": 9162,
+        "candidates_token_count": 100
+      },
+      {
+        "prompt_token_count": 16422,
+        "candidates_token_count": 94
+      },
+      {
+        "prompt_token_count": 23807,
+        "candidates_token_count": 90
+      },
+      {
+        "prompt_token_count": 31190,
+        "candidates_token_count": 143
+      }
+    ]
+  }
+]

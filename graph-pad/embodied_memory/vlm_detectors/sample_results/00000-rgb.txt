@@ -1,0 +1,156 @@
+[
+   {
+      "label": "wooden shelf",
+      "caption": "Long, brown wooden shelf with a flat surface",
+      "bbox": [
+         0,
+         41,
+         816,
+         124
+      ],
+      "confidence": 0.91
+   },
+   {
+      "label": "hanging toy",
+      "caption": "Small, yellow plastic toy hanging from the ceiling",
+      "bbox": [
+         389,
+         104,
+         512,
+         178
+      ],
+      "confidence": 0.82
+   },
+   {
+      "label": "window blinds",
+      "caption": "White window blinds with horizontal slats",
+      "bbox": [
+         57,
+         308,
+         437,
+         608
+      ],
+      "confidence": 0.95
+   },
+   {
+      "label": "window blinds",
+      "caption": "White window blinds with horizontal slats",
+      "bbox": [
+         422,
+         308,
+         817,
+         664
+      ],
+      "confidence": 0.96
+   },
+   {
+      "label": "picture frame",
+      "caption": "Small, rectangular picture frame with a colorful abstract painting",
+      "bbox": [
+         24,
+         361,
+         119,
+         438
+      ],
+      "confidence": 0.85
+   },
+   {
+      "label": "picture frame",
+      "caption": "Small, rectangular picture frame with an orange abstract painting",
+      "bbox": [
+         395,
+         355,
+         472,
+         446
+      ],
+      "confidence": 0.84
+   },
+   {
+      "label": "poster",
+      "caption": "Large rectangular poster with a colorful image of a futuristic cityscape",
+      "bbox": [
+         792,
+         189,
+         921,
+         592
+      ],
+      "confidence": 0.92
+   },
+   {
+      "label": "orange curtain",
+      "caption": "Long, orange fabric curtain with a smooth surface",
+      "bbox": [
+         910,
+         12,
+         1004,
+         926
+      ],
+      "confidence": 0.93
+   },
+   {
+      "label": "black chair",
+      "caption": "Black office chair with wheels and a padded seat",
+      "bbox": [
+         625,
+         603,
+         829,
+         939
+      ],
+      "confidence": 0.9
+   },
+   {
+      "label": "action figure",
+      "caption": "White and red plastic action figure with a helmet and a gun",
+      "bbox": [
+         1025,
+         478,
+         1238,
+         1033
+      ],
+      "confidence": 0.88
+   },
+   {
+      "label": "green plants",
+      "caption": "Artificial green plants in a pot with brown plastic leaves",
+      "bbox": [
+         1182,
+         493,
+         1282,
+         680
+      ],
+      "confidence": 0.84
+   },
+   {
+      "label": "white door",
+      "caption": "White wooden door with a metal handle and a keyhole",
+      "bbox": [
+         1221,
+         0,
+         1576,
+         1074
+      ],
+      "confidence": 0.97
+   },
+   {
+      "label": "hanging clothes",
+      "caption": "White and brown fabric clothes hanging on a hook",
+      "bbox": [
+         1280,
+         279,
+         1430,
+         614
+      ],
+      "confidence": 0.86
+   },
+   {
+      "label": "coffee table",
+      "caption": "Brown wooden coffee table with a rectangular shape",
+      "bbox": [
+         23,
+         734,
+         278,
+         929
+      ],
+      "confidence": 0.87
+   }
+]

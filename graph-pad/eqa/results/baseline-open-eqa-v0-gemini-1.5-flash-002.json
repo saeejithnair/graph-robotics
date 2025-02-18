@@ -1,0 +1,217 @@
+[
+  {
+    "question_id": "f2e82760-5c3c-41b1-88b6-85921b9e7b32",
+    "gt_answer": "Air conditioning unit",
+    "answer": "That's an air conditioning unit."
+  },
+  {
+    "question_id": "7447d782-d1a7-4c87-86dc-b5eafc5a0f76",
+    "gt_answer": "Wood panel",
+    "answer": "The living room ceiling appears to be wood, painted blue."
+  },
+  {
+    "question_id": "e2ccf6f4-22a9-47d1-ab8d-a05a13435b82",
+    "gt_answer": "Brown",
+    "answer": "The staircase railing is dark brown or black."
+  },
+  {
+    "question_id": "c841bb52-1cec-46d7-bb83-8c99b5c66fa8",
+    "gt_answer": "The TV",
+    "answer": "There is a small, dark-colored shelf between the two picture frames on the wall in the living room.  It appears to have some items on it, but they are not clearly visible in the provided images."
+  },
+  {
+    "question_id": "79344680-6b45-4531-8789-ad0f5ef85b3b",
+    "gt_answer": "Yes",
+    "answer": "Yes, there is a round dining table with a blue tablecloth.  There appears to be some space available on the table."
+  },
+  {
+    "question_id": "500e6924-0ea3-45c8-89ce-db3d37e142bf",
+    "gt_answer": "Yes.",
+    "answer": "Yes, there is a blue table mat on the dining table."
+  },
+  {
+    "question_id": "ecad68d2-a16f-4a3e-b8a1-a70ec1c5cf00",
+    "gt_answer": "No",
+    "answer": "No, the front door is not open.  In several images, the door is visible and closed."
+  },
+  {
+    "question_id": "5c1d30b9-5827-49fc-b74f-5ee9909a75b8",
+    "gt_answer": "Turn on the AC unit",
+    "answer": "Based on the images, there is a window air conditioner in the living room.  You could turn it on to cool down the space."
+  },
+  {
+    "question_id": "8d7f1dd7-9764-4603-918b-58eefcb0b10e",
+    "gt_answer": "Turn the dial on the switch panel next to the front door",
+    "answer": "This question cannot be answered from the given images.  There is no visible ceiling fan in any of the provided images."
+  },
+  {
+    "question_id": "c8808989-9b62-4764-814e-520fd40c22cd",
+    "gt_answer": "A vaulted ceiling",
+    "answer": "The living room has a vaulted ceiling with blue wood paneling."
+  },
+  {
+    "question_id": "0c6b5dce-8baf-4d95-b7ca-26fe915c4bd7",
+    "gt_answer": "A clock",
+    "answer": "That's a clock.  It's visible in one of the hallway images."
+  },
+  {
+    "question_id": "e816a1f9-af6c-4901-8d54-4ddaa2a60dc3",
+    "gt_answer": "Round or spherical",
+    "answer": "The door knobs appear to be round."
+  },
+  {
+    "question_id": "19baf626-2db5-4fb0-a7ad-02896fa77b18",
+    "gt_answer": "Wood panels",
+    "answer": "The house features blue wood flooring."
+  },
+  {
+    "question_id": "b6dcf043-30a6-4b4e-9787-9b29bd1b1703",
+    "gt_answer": "A plant in a tall vase",
+    "answer": "A dark brown dresser with several drawers."
+  },
+  {
+    "question_id": "5460114d-e885-4eae-8bdc-a273deb3df0a",
+    "gt_answer": "A storage closet",
+    "answer": "To the left of the staircase is a dark brown dresser with several drawers.  There is also a vase of tall, dried grasses or reeds on the dresser."
+  },
+  {
+    "question_id": "d16b6600-beb5-4bf4-8045-d018b75eefb1",
+    "gt_answer": "Yes.",
+    "answer": "Yes, the cabinets below the mirror appear to be closed."
+  },
+  {
+    "question_id": "21f8ed6a-4ca4-465f-986d-c4390984d8a9",
+    "gt_answer": "Yes",
+    "answer": "No, the bedroom door is closed."
+  },
+  {
+    "question_id": "501c3264-ca08-487d-a038-0e83968359f6",
+    "gt_answer": "Next to the staircase above the dark brown cabinet",
+    "answer": "The mirror is located on the wall near the stairs, next to a dark brown dresser."
+  },
+  {
+    "question_id": "564d876c-44f1-4915-8d4b-ab5a7728494f",
+    "gt_answer": "A hose",
+    "answer": "That's a small, partially visible green plastic container.  It appears to be on a shelf near other items.  It's difficult to identify precisely what it is."
+  },
+  {
+    "question_id": "77c6644e-6018-4ef3-a683-276d3d2af67f",
+    "gt_answer": "A recycling bin",
+    "answer": "There is a yellow lidded bin on a shelf towards the back right of the garage.  It's partially obscured by other items."
+  },
+  {
+    "question_id": "a86ef102-5500-4fbf-8fae-cdbeb20a3b7b",
+    "gt_answer": "Blue",
+    "answer": "The car is dark brown."
+  },
+  {
+    "question_id": "438e8c6f-f27d-4d3d-b13d-6f41c2981c2a",
+    "gt_answer": "concrete",
+    "answer": "The floor appears to be made of concrete."
+  },
+  {
+    "question_id": "9b4a7fbb-680d-4e39-8d60-7b1e521f3108",
+    "gt_answer": "An ice cooler",
+    "answer": "There are various items on the top shelf to the right of the garage.  There appear to be some containers or boxes, and other miscellaneous items, but they are too blurry and indistinct to identify specifically."
+  },
+  {
+    "question_id": "35bfcf60-4227-4bbb-9213-e1bf643b2325",
+    "gt_answer": "Yes.",
+    "answer": "Yes, one of the garbage bins is open.  There are also several large trash bags on top of the bins."
+  },
+  {
+    "question_id": "3a803472-47cd-4903-8380-d0b00efbbf08",
+    "gt_answer": "Open",
+    "answer": "The house doorway is open.  There is a partially visible room beyond the doorway inside the garage."
+  },
+  {
+    "question_id": "87019892-7a7f-4ce0-b1e6-4c0d6e87b90a",
+    "gt_answer": "The green hose",
+    "answer": "Based on the images, there are several items that could potentially be used to water plants, although none are specifically designed for that purpose.  There are several blue containers and buckets that could hold water.  There's also a hose visible in one image, that could be used,  but it's difficult to tell if it is functional."
+  },
+  {
+    "question_id": "6fddec60-f221-4944-88c3-a132dfbfd1ed",
+    "gt_answer": "The blue cooler",
+    "answer": "There is a blue cooler in the garage that could be used to keep drinks cold at a picnic."
+  },
+  {
+    "question_id": "7f15d867-8ba6-47fa-9bca-9d9ae64046b7",
+    "gt_answer": "A sedan",
+    "answer": "The car in the garage appears to be a dark brown sedan.  The make and model are not clearly visible in the provided images."
+  },
+  {
+    "question_id": "025257b6-8b7e-4f6f-aacc-1788069cbfad",
+    "gt_answer": "The bin with the yellow lid.",
+    "answer": "There are two bins visible in the image.  Both are dark blue and appear to be for trash and recycling.  There is no indication which is for paper specifically.  More information is needed to determine the correct bin for paper."
+  },
+  {
+    "question_id": "28ea4932-55bf-44b3-9a48-73fde896b8ce",
+    "gt_answer": "To the left of the house doorway",
+    "answer": "The garage door opener is in the upper left corner of the garage, attached to the ceiling."
+  },
+  {
+    "question_id": "30d3104b-cc05-4860-83e8-255fe8311662",
+    "gt_answer": "Below the garage door opener",
+    "answer": "The broom is in the lower right corner of the garage, leaning against the wall next to other cleaning supplies."
+  },
+  {
+    "question_id": "23fb241e-989a-4299-a3fb-8d41f7156397",
+    "gt_answer": "A radiator",
+    "answer": "That's a built-in white wardrobe with several drawers and cupboards."
+  },
+  {
+    "question_id": "96d7f5ef-14b2-432a-8b85-21a0621e41a4",
+    "gt_answer": "A mirror ",
+    "answer": "A round mirror is above the sink."
+  },
+  {
+    "question_id": "915cb310-31be-4114-846c-242fc59b581d",
+    "gt_answer": "An oval",
+    "answer": "The mirror is oval."
+  },
+  {
+    "question_id": "d7019200-5300-459e-a2c1-b54d5ec0a80b",
+    "gt_answer": "Brown",
+    "answer": "The bed comforter is gray."
+  },
+  {
+    "question_id": "6be2fe87-f20c-48a2-a8fb-161362d86e2a",
+    "gt_answer": "No",
+    "answer": "No, the bedroom is sparsely furnished.  It contains a bed, a radiator, and built-in wardrobes.  There are no other pieces of furniture visible in the images."
+  },
+  {
+    "question_id": "79dfe5ce-8a8c-47f3-a606-ab5ab4591c56",
+    "gt_answer": "Yes",
+    "answer": "No, there is no visible space under the bed for storage.  The bed is a low-profile design and sits directly on the floor."
+  },
+  {
+    "question_id": "bbb83d84-289c-4f1d-a470-772e5c823a90",
+    "gt_answer": "No.",
+    "answer": "No, the patio door is closed."
+  },
+  {
+    "question_id": "41ad08e1-cb46-4599-8beb-def3b0f91e34",
+    "gt_answer": "Yes.",
+    "answer": "No, the lights are not turned on in the bedroom.  The images show the room in daylight conditions."
+  },
+  {
+    "question_id": "9ca30022-6b6c-4950-b91d-e90ee80f49d8",
+    "gt_answer": "On the bed in the bedroom",
+    "answer": "Based on the images provided, you could take a nap in the bedroom.  There is a double bed with grey bedding."
+  },
+  {
+    "question_id": "1015cab7-827a-437c-ab86-6e4c2a9dd083",
+    "gt_answer": "Abstract",
+    "answer": "There are two framed pictures on the wall in the bedroom. One is a landscape-style image with blue and green tones, and the other appears to be an abstract piece."
+  },
+  {
+    "question_id": "9fc2d987-fc9c-4771-a0d4-07d24e2b7910",
+    "gt_answer": "Its drawn on the pink photo frame",
+    "answer": "There is no cartoon cat in the provided images."
+  },
+  {
+    "question_id": "f776a834-1e21-4442-8834-18b6f9d6cfad",
+    "gt_answer": "Above the bed",
+    "answer": "There is no orange painting in the provided images.  There are several framed pieces of art, but none are orange."
+  }
+]

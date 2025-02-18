@@ -1,0 +1,112 @@
+[
+   {
+      "label": "refrigerator",
+      "caption": "White refrigerator with a double door",
+      "bbox": [
+         192,
+         226,
+         595,
+         928
+      ],
+      "confidence": 0.97
+   },
+   {
+      "label": "trash can",
+      "caption": "Black plastic trash can with a lid",
+      "bbox": [
+         57,
+         788,
+         288,
+         972
+      ],
+      "confidence": 0.95
+   },
+   {
+      "label": "kitchen counter",
+      "caption": "White countertop with a wooden cutting board",
+      "bbox": [
+         998,
+         626,
+         1900,
+         777
+      ],
+      "confidence": 0.92
+   },
+   {
+      "label": "kitchen cabinets",
+      "caption": "White kitchen cabinets with wooden doors",
+      "bbox": [
+         1036,
+         108,
+         1593,
+         453
+      ],
+      "confidence": 0.91
+   },
+   {
+      "label": "kitchen cabinets",
+      "caption": "White kitchen cabinets with metal handles",
+      "bbox": [
+         1017,
+         680,
+         1900,
+         950
+      ],
+      "confidence": 0.9
+   },
+   {
+      "label": "trash can",
+      "caption": "Gray metal trash can with a lid",
+      "bbox": [
+         940,
+         766,
+         1094,
+         961
+      ],
+      "confidence": 0.89
+   },
+   {
+      "label": "wooden spoon",
+      "caption": "Long wooden spoon with a handle",
+      "bbox": [
+         921,
+         302,
+         979,
+         399
+      ],
+      "confidence": 0.88
+   },
+   {
+      "label": "rug",
+      "caption": "Red and black patterned rug with a geometric design",
+      "bbox": [
+         672,
+         799,
+         864,
+         907
+      ],
+      "confidence": 0.87
+   },
+   {
+      "label": "framed picture",
+      "caption": "Small wooden framed picture with a white mat",
+      "bbox": [
+         902,
+         194,
+         979,
+         270
+      ],
+      "confidence": 0.85
+   },
+   {
+      "label": "kitchen utensils",
+      "caption": "Various kitchen utensils in a metal container",
+      "bbox": [
+         1075,
+         453,
+         1267,
+         604
+      ],
+      "confidence": 0.84
+   }
+]

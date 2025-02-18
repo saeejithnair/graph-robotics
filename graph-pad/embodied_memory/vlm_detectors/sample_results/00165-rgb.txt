@@ -1,0 +1,101 @@
+[
+   {
+      "label": "bed",
+      "caption": "White bedspread with white and gray pillows",
+      "bbox": [
+         654,
+         613,
+         1916,
+         1077
+      ],
+      "confidence": 0.98
+   },
+   {
+      "label": "wooden bed frame",
+      "caption": "Brown wooden bed frame with slats",
+      "bbox": [
+         875,
+         638,
+         1914,
+         790
+      ],
+      "confidence": 0.92
+   },
+   {
+      "label": "nightstand",
+      "caption": "Dark wood nightstand with a lamp",
+      "bbox": [
+         956,
+         691,
+         1196,
+         801
+      ],
+      "confidence": 0.89
+   },
+   {
+      "label": "mirrored closet",
+      "caption": "Tall mirrored closet with wooden frame",
+      "bbox": [
+         399,
+         162,
+         984,
+         866
+      ],
+      "confidence": 0.95
+   },
+   {
+      "label": "wooden chair",
+      "caption": "Brown wooden chair with a black throw blanket",
+      "bbox": [
+         443,
+         732,
+         577,
+         929
+      ],
+      "confidence": 0.87
+   },
+   {
+      "label": "picture frame",
+      "caption": "Rectangular wooden frame with a beach scene image",
+      "bbox": [
+         1307,
+         249,
+         1572,
+         379
+      ],
+      "confidence": 0.83
+   },
+   {
+      "label": "picture frame",
+      "caption": "Square wooden frame with a landscape image",
+      "bbox": [
+         1720,
+         379,
+         1916,
+         484
+      ],
+      "confidence": 0.79
+   },
+   {
+      "label": "black garment",
+      "caption": "Black garment hanging on a clothes rack",
+      "bbox": [
+         848,
+         559,
+         961,
+         757
+      ],
+      "confidence": 0.76
+   },
+   {
+      "label": "tripod",
+      "caption": "Black metal tripod with a camera attached",
+      "bbox": [
+         629,
+         509,
+         725,
+         799
+      ],
+      "confidence": 0.73
+   }
+]

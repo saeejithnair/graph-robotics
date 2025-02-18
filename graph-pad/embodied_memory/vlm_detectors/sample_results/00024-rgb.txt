@@ -1,0 +1,101 @@
+[
+   {
+      "label": "woven basket",
+      "caption": "Brown wicker basket with a woven lid",
+      "bbox": [
+         633,
+         842,
+         768,
+         1015
+      ],
+      "confidence": 0.92
+   },
+   {
+      "label": "woven bin",
+      "caption": "Brown wicker bin with a woven lid",
+      "bbox": [
+         1420,
+         734,
+         1574,
+         993
+      ],
+      "confidence": 0.88
+   },
+   {
+      "label": "wooden table",
+      "caption": "Dark brown wooden table with a rectangular top",
+      "bbox": [
+         1075,
+         626,
+         1459,
+         885
+      ],
+      "confidence": 0.85
+   },
+   {
+      "label": "framed picture",
+      "caption": "Black framed picture with a light blue background",
+      "bbox": [
+         1305,
+         313,
+         1478,
+         442
+      ],
+      "confidence": 0.82
+   },
+   {
+      "label": "toilet",
+      "caption": "White ceramic toilet with a closed lid",
+      "bbox": [
+         1555,
+         777,
+         1766,
+         982
+      ],
+      "confidence": 0.79
+   },
+   {
+      "label": "doorway",
+      "caption": "Open doorway with a white door frame",
+      "bbox": [
+         1497,
+         21,
+         1824,
+         993
+      ],
+      "confidence": 0.76
+   },
+   {
+      "label": "hanging rack",
+      "caption": "Black metal rack with hooks hanging on the wall",
+      "bbox": [
+         1056,
+         486,
+         1113,
+         583
+      ],
+      "confidence": 0.74
+   },
+   {
+      "label": "curtains",
+      "caption": "White sheer curtains hanging in a window",
+      "bbox": [
+         1632,
+         43,
+         1766,
+         507
+      ],
+      "confidence": 0.72
+   },
+   {
+      "label": "mirror",
+      "caption": "Rectangular mirror with a wooden frame",
+      "bbox": [
+         1017,
+         205,
+         1190,
+         388
+      ],
+      "confidence": 0.7
+   }
+]
