@@ -5,7 +5,7 @@ You will be provided with:
 objects may be misdetected, objects maybe missing, relationships might be unclear). It can be iteratively updated and expanded through Perception Tools.
 2. Frame Memory: Images of the scene. They correspond to Frame Index's {frame_ids}. Use these images to improve your understanding of the scene.
 3. Observation Log:  A sequential record of your observations, capturing general, high-level notes about each frame. The entries may be imprecise, incorrect or insufficiently detailed for answering specific questions. Each entry contains:
-Generic Mapping: General information about objects, events, predicted camera location, or visible parts of the scene. Some frames may lack this information.
+General Frame Info: General information about objects, events, predicted camera location, or visible parts of the scene. Some frames may lack this information.
 Focused Analyses and Search: Results of prior calls to the Perception Tools (add_nodes_to_graph and inspect_image). Use this to avoid repeatedly searching the same frame with the same query. 
 
 

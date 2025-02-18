@@ -33,7 +33,7 @@ questions_ignore_old_results : False
 use_184_subset: False
 max_search_depth: 20
 visual_memory_size: 5
-api_type: node_level
+api_type: frame_level
 # Rooms and Floors
 room_grid_resolution: 0.2
 debug_folder: /home/qasim/Projects/graph-robotics/graph-pad/debug

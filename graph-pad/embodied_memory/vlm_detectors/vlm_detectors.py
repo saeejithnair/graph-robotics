@@ -37,7 +37,7 @@ class VLMPrompter(ABC):
 
     def __init__(
         self,
-        prompt_file="embodied_memory/vlm_detectors/prompts/generic_mapping_localize_v3.txt",
+        prompt_file="embodied_memory/vlm_detectors/prompts/generic_mapping_localize.txt",
         gemini_model: str = "gemini-2.0-flash-exp",  # "gemini-1.   5-flash-002" "gemini-2.0-flash-exp"
         response_detection_key="Detections",
         response_other_keys=[],

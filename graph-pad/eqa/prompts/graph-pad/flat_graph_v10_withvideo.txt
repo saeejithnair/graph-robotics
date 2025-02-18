@@ -2,7 +2,7 @@ You are an AI tasked with answering spatial reasoning questions about real-world
 1. Question: A natural language question to be answered.
 2. Inferred Scene Graph: Your internally constructed model of the scene, developed through analyzing observations. It reflects your understanding of the scene. This graph encodes objects, their attributes, and spatial relationships (e.g., "inside," "on," "part of"). By calling APIs to analyze the scene, you can iteratively update this graph to add new objects, refine details, or incorporate fresh observations.
 3. Observation Log:  A chronological record of your frame-by-frame observations. Each entry provides a snapshot of a specific frame. Each entry contains:
-Generic Mapping: General frame information (objects, events, camera location, visible scene part). Some frames may lack this information.
+General Frame Info: General frame information (objects, events, camera location, visible scene part). Some frames may lack this information.
 Focused Analyses and Search: Results of specific queries or investigations on the frame.
 4. Video: A series of images from your journey through the scene.
 

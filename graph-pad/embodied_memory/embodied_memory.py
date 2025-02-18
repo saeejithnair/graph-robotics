@@ -22,8 +22,7 @@ from .visualizer import Visualizer2D, Visualizer3D
 class EmbodiedMemory:
     def __init__(self, visual_memory_size, room_types, device="cuda"):
         self.scene_graph = SceneGraph()
-        self.navigation_log = []
-        self.visual_memory = []
+        self.navigation_log = NavigationLog()
         self.visual_memory_size = visual_memory_size
         self.hierarchy_matrix = None
         self.hierarchy_type_matrix = None
@@ -56,12 +55,10 @@ class EmbodiedMemory:
             self.hierarchy_type_matrix = hierarchy_type_matrix
         os.makedirs(save_dir, exist_ok=True)
         # Save Navigation Log
-        navigation_log_path = os.path.join(save_dir, "navigation_log.json")
-        with open(navigation_log_path, "w") as f:
-            json.dump(self.navigation_log, f, indent=2)
+        self.navigation_log.save(os.path.join(save_dir, "navigation_log.json"))
 
         self.scene_graph.save(save_dir / "scene_graph")
-        # Save Semantic Tree
+        # Save Hierarchy
         with open(save_dir / "hierarchy_matrix.json", "w") as f:
             json.dump(self.hierarchy_matrix, f)
         with open(save_dir / "hierarchy_type_matrix.json", "w") as f:
@@ -82,10 +79,7 @@ class EmbodiedMemory:
 
     def load(self, folder, load_floors=True, load_rooms=True):
         folder = Path(folder)
-        navigation_log_path = os.path.join(folder, "navigation_log.json")
-        with open(navigation_log_path) as f:
-            self.navigation_log = json.load(f)
-        self.extract_visual_memory(self.visual_memory_size)
+        self.navigation_log.load(os.path.join(folder, "navigation_log.json"))
 
         with open(folder / "hierarchy_matrix.json") as f:
             json_data = json.load(f)
@@ -137,68 +131,6 @@ class EmbodiedMemory:
                         break
                 floor.rooms.append(room)
                 self.rooms[room.room_id] = room
-
-    def extract_visual_memory(self, visual_memory_size):
-        self.visual_memory = []
-        for i, log in enumerate(self.navigation_log):
-            if log.get("Generic Mapping") != None:
-                self.visual_memory.append(i)
-        k_indices = np.linspace(
-            0, len(self.visual_memory) - 1, num=visual_memory_size, dtype=np.int32
-        )
-        k_indices = np.unique(k_indices)
-        self.visual_memory = [
-            self.visual_memory[i] for i in k_indices
-        ]  # only keep k frames in the memory
-
-    def extend_navigation_log(self, frame_idx):
-        frames = [b["Frame Index"] for b in self.navigation_log]
-        if frame_idx in frames:
-            return
-        for i in range(len(self.navigation_log), frame_idx + 1, 1):
-            log = {
-                "Frame Index": i,
-                "Generic Mapping": None,
-                "Focused Analyses and Search": [],
-            }
-            self.navigation_log.append(log)
-
-    def get_navigation_log_idx(self, frame_idx):
-        self.extend_navigation_log(frame_idx)
-        for i in range(len(self.navigation_log)):
-            if frame_idx != self.navigation_log[i]["Frame Index"]:
-                continue
-            else:
-                return i
-
-    def integrate_generic_log(self, llm_response, detections, frame_idx):
-        i = self.get_navigation_log_idx(frame_idx)
-
-        # edges_in_frame = []
-        # for det in detections:
-        #     edges_in_frame += [edge for edge in det.edges]
-
-        self.navigation_log[i]["Generic Mapping"] = {
-            "Relative Motion": llm_response["Relative Motion"],
-            "Estimated Current Location": llm_response["Current Location"],
-            "View": llm_response["View"],
-            "Summary": llm_response["Summary"],
-            "Detections": [d.matched_node_name for d in detections],
-            # "Edges": [edge.json() for edge in edges_in_frame],
-        }
-
-    def integrate_refinement_log(
-        self, request, llm_response, keyframe_id, detections: DetectionList = None
-    ):
-        refinement_log = llm_response
-        i = self.get_navigation_log_idx(keyframe_id)
-        self.navigation_log[i]["Focused Analyses and Search"].append(refinement_log)
-        self.navigation_log[i]["Generic Mapping"]["Detections"] = list(
-            set(
-                self.navigation_log[i]["Generic Mapping"]["Detections"]
-                + detections.get_field("matched_node_name")
-            )
-        )
 
     def update_scene_graph(
         self,
@@ -329,13 +261,13 @@ class EmbodiedMemory:
                 continue
             log = self.navigation_log[frame_id]
             assert int(log["Frame Index"]) == frame_id
-            if log["Generic Mapping"] is None:
+            if log["General Frame Info"] is None:
                 # No mapping for this frame
                 continue
             if frame_id_to_rooms.get(frame_id):
-                log["Generic Mapping"]["Present Room"] = frame_id_to_rooms[frame_id]
+                log["General Frame Info"]["Present Room"] = frame_id_to_rooms[frame_id]
             else:
-                log["Generic Mapping"]["Present Room"] = None
+                log["General Frame Info"]["Present Room"] = None
 
         # Assign each track to a room
         self.scene_graph = assign_nodes_to_rooms(
@@ -437,6 +369,86 @@ class EmbodiedMemory:
                 points_xyz=self.scene_graph[id].compute_local_pcd().points,
                 points_colors=self.scene_graph[id].compute_local_pcd().colors,
             )
+
+
+class NavigationLog:
+    def __init__(self, resume_log=None):
+        if resume_log != None:
+            self.log = resume_log
+        else:
+            self.log = []
+
+    def save(self, path):
+        with open(path, "w") as f:
+            json.dump(self.log, f, indent=2)
+
+    def load(self, path):
+        with open(path) as f:
+            self.log = json.load(f)
+
+    def __iter__(self):
+        self.c = 0
+        return self
+
+    def __next__(self):
+        if self.c < len(self.log):
+            x = self.log[self.c]
+            self.c += 1
+            return x
+        else:
+            raise StopIteration
+
+    def __getitem__(self, item):
+        return self.log[item]
+
+    def extend(self, frame_idx):
+        frames = [b["Frame Index"] for b in self.log]
+        if frame_idx in frames:
+            return
+        for i in range(len(self.log), frame_idx + 1, 1):
+            log = {
+                "Frame Index": i,
+                "General Frame Info": None,
+                "Focused Analyses and Search": [],
+            }
+            self.log.append(log)
+
+    def get_idx(self, frame_idx):
+        self.extend(frame_idx)
+        for i in range(len(self.log)):
+            if frame_idx != self.log[i]["Frame Index"]:
+                continue
+            else:
+                return i
+
+    def add_general_log(self, llm_response, detections, frame_idx):
+        i = self.get_idx(frame_idx)
+
+        # edges_in_frame = []
+        # for det in detections:
+        #     edges_in_frame += [edge for edge in det.edges]
+
+        self.log[i]["General Frame Info"] = {
+            "Relative Motion": llm_response["Relative Motion"],
+            "Estimated Current Location": llm_response["Current Location"],
+            "View": llm_response["View"],
+            "Summary": llm_response["Summary"],
+            "Detections": [d.matched_node_name for d in detections],
+            # "Edges": [edge.json() for edge in edges_in_frame],
+        }
+
+    def add_api_log(
+        self, request, llm_response, keyframe_id, detections: DetectionList = None
+    ):
+        refinement_log = llm_response
+        i = self.get_idx(keyframe_id)
+        self.log[i]["Focused Analyses and Search"].append(refinement_log)
+        self.log[i]["General Frame Info"]["Detections"] = list(
+            set(
+                self.log[i]["General Frame Info"]["Detections"]
+                + detections.get_field("matched_node_name")
+            )
+        )
 
 
 class FullScenePCD:

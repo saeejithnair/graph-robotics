@@ -2,7 +2,7 @@ You are a human tasked with answering the following question: {question}
 
 You will be provided with:
 1. Observation Log:  A sequential record of your observations, capturing general, high-level notes about each frame. The entries may be imprecise or insufficiently detailed for answering specific questions. Each entry contains:
-Generic Mapping: General frame information (objects, events, camera location, visible scene part). Some frames may lack this information.
+General Frame Info: General frame information (objects, events, camera location, visible scene part). Some frames may lack this information.
 Focused Analyses and Search: Results of specific queries or investigations on the frame. Use this to avoid repeatedly searching the same frame with the same query.
 2. Visual Memory: Five images of the scene. They correspond to frames frames {frame_ids} from the observation log.
 
