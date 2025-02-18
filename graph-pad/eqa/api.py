@@ -66,7 +66,7 @@ class NodeLevelAPI(API):
         self.find_objects_perceptor = VLMPrompterAPI(
             response_detection_key="Detections",
             response_other_keys=["your notes"],
-            prompt_file="eqa/prompts/graph-pad/refine_find_objects_v2.txt",
+            prompt_file="eqa/prompts/graph-pad/api_find_objects.txt",
             device=self.device,
             gemini_model=gemini_model,
             with_edges=False,
@@ -74,7 +74,7 @@ class NodeLevelAPI(API):
         self.analyze_objects_perceptor = VLMPrompterAPI(
             response_detection_key=None,
             response_other_keys=["name", "your notes"],
-            prompt_file="eqa/prompts/graph-pad/refine_analyze_objects.txt",
+            prompt_file="eqa/prompts/graph-pad/api_analyze_objects.txt",
             gemini_model=gemini_model,
             device=self.device,
         )
@@ -136,7 +136,7 @@ class NodeLevelAPI(API):
 
     def get_system_prompt(self):
         with open(
-            "eqa/prompts/graph-pad/system_prompt_multi-api_visualevidence_scratchpad_v2.txt",
+            "eqa/prompts/graph-pad/system_prompt_nodelevel.txt",
             "r",
         ) as f:
             system_prompt = f.read().strip()
@@ -165,7 +165,7 @@ class NodeLevelAPI(API):
                     if (
                         not name
                         in embodied_memory.navigation_log[keyframe_id][
-                            "Generic Mapping"
+                            "General Frame Info"
                         ]["Detections"]
                     ):
                         valid_analyze_call = False
@@ -300,9 +300,8 @@ class NodeLevelAPI(API):
         else:
             raise Exception("Unknown request type: " + request["type"])
 
-        navigation_log_refinement = dict(request=request)
-        navigation_log_refinement["response"] = response
-        embodied_memory.integrate_refinement_log(
+        navigation_log_refinement = dict(request=request, response=response)
+        embodied_memory.navigation_log.add_api_log(
             query, navigation_log_refinement, keyframe_id, detections=detections
         )
 
@@ -332,7 +331,7 @@ class FrameLevelAPI(API):
         self.analyze_frame_perceptor = VLMPrompterAPI(
             response_detection_key="Detections",
             response_other_keys=["your notes"],
-            prompt_file="eqa/prompts/graph-pad/analyze_frame.txt",
+            prompt_file="eqa/prompts/graph-pad/api_analyze_frame.txt",
             device=self.device,
             gemini_model=gemini_model,
             with_edges=False,
@@ -368,7 +367,7 @@ class FrameLevelAPI(API):
 
     def get_system_prompt(self):
         with open(
-            "eqa/prompts/graph-pad/system_prompt_single-api_visualevidence_scratchpad_v2.txt",
+            "eqa/prompts/graph-pad/system_prompt_framelevel.txt",
             "r",
         ) as f:
             system_prompt = f.read().strip()
@@ -488,9 +487,8 @@ class FrameLevelAPI(API):
                 }
             )
 
-        navigation_log_refinement = dict(request=request)
-        navigation_log_refinement["response"] = response
-        embodied_memory.integrate_refinement_log(
+        navigation_log_refinement = dict(request=request, response=response)
+        embodied_memory.navigation_log.add_api_log(
             query, navigation_log_refinement, keyframe_id, detections=detections
         )
 

@@ -1,7 +1,0 @@
-Your question is: {question}
-
-Your current Scene Graph: {graph}
-
-Your current Observation Log: {navigation_log}
-
-Your current ScratchPad: {scratchpad}

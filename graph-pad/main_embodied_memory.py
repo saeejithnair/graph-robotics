@@ -178,7 +178,9 @@ def main(cfg: DictConfig):
                 embodied_memory.scene_graph, color_np
             )
 
-        embodied_memory.integrate_generic_log(llm_response, detections, frame_idx)
+        embodied_memory.navigation_log.add_general_log(
+            llm_response, detections, frame_idx
+        )
 
         perceptor.save_detection_results(
             detections, result_dir_detections, frame_idx, llm_response=llm_response

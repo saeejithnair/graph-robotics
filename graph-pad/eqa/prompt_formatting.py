@@ -24,32 +24,35 @@ def extract_qa_prompts(
     for i in range(len(embodied_memory.navigation_log)):
         log = copy.deepcopy(embodied_memory.navigation_log[i])
 
-        if log["Generic Mapping"] is not None:
-            log["Generic Mapping"]["Visible Scene Graph Nodes"] = log[
-                "Generic Mapping"
+        if log["General Frame Info"] is not None:
+            log["General Frame Info"]["Visible Scene Graph Nodes"] = log[
+                "General Frame Info"
             ]["Detections"]
-            del log["Generic Mapping"]["Detections"]
+            del log["General Frame Info"]["Detections"]
 
-            # del log["Generic Mapping"]["Estimated Current Location"]
+            # del log["General Frame Info"]["Estimated Current Location"]
 
             # Replace the Estimated Current Location with the Present Room
-            log["Generic Mapping"]["Current Room"] = "unknown"
-            if log["Generic Mapping"]["Present Room"] != "unknown":
-                log["Generic Mapping"]["Current Room"] = get_room_name(
-                    log["Generic Mapping"]["Present Room"]
+            log["General Frame Info"]["Current Room"] = "unknown"
+            if log["General Frame Info"]["Present Room"] != "unknown":
+                log["General Frame Info"]["Current Room"] = get_room_name(
+                    log["General Frame Info"]["Present Room"]
                 )
-            del log["Generic Mapping"]["Present Room"]
+            del log["General Frame Info"]["Present Room"]
 
-            for k in log["Generic Mapping"]:
-                log[k] = log["Generic Mapping"][k]
-            del log["Generic Mapping"]
+            for k in log["General Frame Info"]:
+                log[k] = log["General Frame Info"][k]
+            del log["General Frame Info"]
             del log["Focused Analyses and Search"]
 
             navigation_log.append(log)
         # navigation_log.append(log)
 
+    visual_memory = embodied_memory.navigation_log.get_evenly_spaced_idxs(
+        embodied_memory.visual_memory_size
+    )
     if prompt_img_interleaved or prompt_img_seperate:
-        for frame_id in embodied_memory.visual_memory:
+        for frame_id in visual_memory:
             with Image.open(dataset.color_paths[frame_id]) as image:
                 resized_image = image.resize((1000, 1000))
                 buffered = io.BytesIO()
@@ -202,7 +205,7 @@ def extract_qa_prompts(
         scratchpad,
         navigation_log,
         images_prompt,
-        embodied_memory.visual_memory,
+        visual_memory,
     )
 
 
