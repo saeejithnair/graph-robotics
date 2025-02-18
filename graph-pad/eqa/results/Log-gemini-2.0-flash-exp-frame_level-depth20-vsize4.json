@@ -1,0 +1,95 @@
+[
+  {
+    "question": "What material is the ceiling in the living room?",
+    "gt_answer": "Wood panel",
+    "pred_answer": "Drywall.",
+    "question_id": "7447d782-d1a7-4c87-86dc-b5eafc5a0f76",
+    "category": "attribute recognition",
+    "episode_history": "hm3d-v0/000-hm3d-BFRyYbPCCPE",
+    "api_logs": [
+      {
+        "call_type": "analyze_frame",
+        "query": "What is the material of the ceiling?",
+        "keyframe_path": "/pub3/qasim/hm3d/data/frames/000-hm3d-BFRyYbPCCPE/00060-rgb.png",
+        "response": [
+          {
+            "label": "ceiling surface",
+            "visual caption": "A white painted ceiling.",
+            "bbox": [
+              487,
+              0,
+              1900,
+              273
+            ],
+            "your notes": "The ceiling appears to be painted white. It could be drywall, plaster, or another common ceiling material."
+          }
+        ]
+      },
+      {
+        "call_type": "analyze_frame",
+        "query": "Is the ceiling drywall or plaster?",
+        "keyframe_path": "/pub3/qasim/hm3d/data/frames/000-hm3d-BFRyYbPCCPE/00060-rgb.png",
+        "response": [
+          {
+            "label": "smooth ceiling surface",
+            "visual caption": "A smooth, white ceiling",
+            "bbox": [
+              952,
+              211,
+              1109,
+              277
+            ],
+            "your notes": "The ceiling appears to be smooth and continuous, which is more indicative of drywall than plaster, which often has more texture or imperfections. However, more information might be needed for a conclusive decision."
+          }
+        ]
+      },
+      {
+        "call_type": "analyze_frame",
+        "query": "Is the ceiling drywall or plaster?",
+        "keyframe_path": "/pub3/qasim/hm3d/data/frames/000-hm3d-BFRyYbPCCPE/00085-rgb.png",
+        "response": [
+          {
+            "label": "ceiling surface",
+            "visual caption": "A flat, slightly textured white ceiling.",
+            "bbox": [
+              0,
+              0,
+              1687,
+              155
+            ],
+            "your notes": "The ceiling appears smooth and relatively flat, which is more common with drywall. Plaster ceilings often have more texture or imperfections. The presence of a straight line suggests a joint, more common in drywall."
+          },
+          {
+            "label": "ceiling mounted AC",
+            "visual caption": "A ceiling mounted AC unit.",
+            "bbox": [
+              885,
+              45,
+              1142,
+              170
+            ],
+            "your notes": "Installation of an AC unit on the ceiling may require cutting and patching of either drywall or plaster. Examining the area around the unit may provide more information."
+          }
+        ]
+      }
+    ],
+    "token_count": [
+      {
+        "prompt_token_count": 8957,
+        "candidates_token_count": 142
+      },
+      {
+        "prompt_token_count": 16397,
+        "candidates_token_count": 139
+      },
+      {
+        "prompt_token_count": 23996,
+        "candidates_token_count": 136
+      },
+      {
+        "prompt_token_count": 31637,
+        "candidates_token_count": 323
+      }
+    ]
+  }
+]

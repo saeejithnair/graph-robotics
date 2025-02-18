@@ -1,0 +1,1092 @@
+[
+  {
+    "question_id": "f2e82760-5c3c-41b1-88b6-85921b9e7b32",
+    "gt_answer": "Air conditioning unit",
+    "answer": "It appears to be an air conditioning unit."
+  },
+  {
+    "question_id": "7447d782-d1a7-4c87-86dc-b5eafc5a0f76",
+    "gt_answer": "Wood panel",
+    "answer": "It's difficult to tell from the images, but it appears to be some kind of wooden planks, possibly painted."
+  },
+  {
+    "question_id": "e2ccf6f4-22a9-47d1-ab8d-a05a13435b82",
+    "gt_answer": "Brown",
+    "answer": "The staircase railing appears to be dark brown or black."
+  },
+  {
+    "question_id": "c841bb52-1cec-46d7-bb83-8c99b5c66fa8",
+    "gt_answer": "The TV",
+    "answer": "A flat screen television is mounted on the wall between the two blue picture frames. It sits on top of a dark media cabinet."
+  },
+  {
+    "question_id": "79344680-6b45-4531-8789-ad0f5ef85b3b",
+    "gt_answer": "Yes",
+    "answer": "Yes, there appears to be room on the dining table to eat.  There is a blue placemat or tablecloth on the table, suggesting it is set up for dining."
+  },
+  {
+    "question_id": "500e6924-0ea3-45c8-89ce-db3d37e142bf",
+    "gt_answer": "Yes.",
+    "answer": "Yes, there is a blue placemat on the dining table."
+  },
+  {
+    "question_id": "ecad68d2-a16f-4a3e-b8a1-a70ec1c5cf00",
+    "gt_answer": "No",
+    "answer": "The front door is slightly ajar."
+  },
+  {
+    "question_id": "5c1d30b9-5827-49fc-b74f-5ee9909a75b8",
+    "gt_answer": "Turn on the AC unit",
+    "answer": "You could turn on the air conditioner unit, which is mounted on the wall of the living room."
+  },
+  {
+    "question_id": "8d7f1dd7-9764-4603-918b-58eefcb0b10e",
+    "gt_answer": "Turn the dial on the switch panel next to the front door",
+    "answer": "This question cannot be answered from the given images.  I can't see any ceiling fans."
+  },
+  {
+    "question_id": "c8808989-9b62-4764-814e-520fd40c22cd",
+    "gt_answer": "A vaulted ceiling",
+    "answer": "The living room has a vaulted ceiling with exposed beams."
+  },
+  {
+    "question_id": "564d876c-44f1-4915-8d4b-ab5a7728494f",
+    "gt_answer": "A hose",
+    "answer": "That's a dark-colored sedan."
+  },
+  {
+    "question_id": "77c6644e-6018-4ef3-a683-276d3d2af67f",
+    "gt_answer": "A recycling bin",
+    "answer": "It appears to be a toolbox or storage container."
+  },
+  {
+    "question_id": "a86ef102-5500-4fbf-8fae-cdbeb20a3b7b",
+    "gt_answer": "Blue",
+    "answer": "Brown."
+  },
+  {
+    "question_id": "438e8c6f-f27d-4d3d-b13d-6f41c2981c2a",
+    "gt_answer": "concrete",
+    "answer": "Concrete."
+  },
+  {
+    "question_id": "9b4a7fbb-680d-4e39-8d60-7b1e521f3108",
+    "gt_answer": "An ice cooler",
+    "answer": "Several items are visible on the top shelf on the right side of the garage, including a yellow container, a white container with a blue lid, and a spray bottle."
+  },
+  {
+    "question_id": "35bfcf60-4227-4bbb-9213-e1bf643b2325",
+    "gt_answer": "Yes.",
+    "answer": "Yes, the garbage bin on the left is open."
+  },
+  {
+    "question_id": "3a803472-47cd-4903-8380-d0b00efbbf08",
+    "gt_answer": "Open",
+    "answer": "The doorway to the house is open."
+  },
+  {
+    "question_id": "87019892-7a7f-4ce0-b1e6-4c0d6e87b90a",
+    "gt_answer": "The green hose",
+    "answer": "A blue watering can is visible near the open doorway to the other room."
+  },
+  {
+    "question_id": "6fddec60-f221-4944-88c3-a132dfbfd1ed",
+    "gt_answer": "The blue cooler",
+    "answer": "This appears to be a garage, not somewhere you would find picnic supplies.  I don't see a cooler or anything specifically designed to keep drinks cold."
+  },
+  {
+    "question_id": "7f15d867-8ba6-47fa-9bca-9d9ae64046b7",
+    "gt_answer": "A sedan",
+    "answer": "It appears to be a brown sedan.  It's difficult to determine the exact make and model from these images."
+  },
+  {
+    "question_id": "025257b6-8b7e-4f6f-aacc-1788069cbfad",
+    "gt_answer": "The bin with the yellow lid.",
+    "answer": "The image shows two bins, but it is difficult to make out what they are for. One is labeled 011940371 and the other is labeled 0119411575, but there are no labels indicating which is for paper."
+  },
+  {
+    "question_id": "28ea4932-55bf-44b3-9a48-73fde896b8ce",
+    "gt_answer": "To the left of the house doorway",
+    "answer": "It appears to be mounted on the ceiling above the car."
+  },
+  {
+    "question_id": "30d3104b-cc05-4860-83e8-255fe8311662",
+    "gt_answer": "Below the garage door opener",
+    "answer": "By the doorway on the right."
+  },
+  {
+    "question_id": "23fb241e-989a-4299-a3fb-8d41f7156397",
+    "gt_answer": "A radiator",
+    "answer": "A large white wardrobe with several drawers and cupboards."
+  },
+  {
+    "question_id": "96d7f5ef-14b2-432a-8b85-21a0621e41a4",
+    "gt_answer": "A mirror ",
+    "answer": "A mirror."
+  },
+  {
+    "question_id": "915cb310-31be-4114-846c-242fc59b581d",
+    "gt_answer": "An oval",
+    "answer": "Oval."
+  },
+  {
+    "question_id": "d7019200-5300-459e-a2c1-b54d5ec0a80b",
+    "gt_answer": "Brown",
+    "answer": "Gray."
+  },
+  {
+    "question_id": "6be2fe87-f20c-48a2-a8fb-161362d86e2a",
+    "gt_answer": "No",
+    "answer": "The bedroom has a bed, a large built-in wardrobe, and a radiator.  It doesn't appear to have a lot of other furniture."
+  },
+  {
+    "question_id": "79dfe5ce-8a8c-47f3-a606-ab5ab4591c56",
+    "gt_answer": "Yes",
+    "answer": "Yes, the bed has space underneath for storage."
+  },
+  {
+    "question_id": "bbb83d84-289c-4f1d-a470-772e5c823a90",
+    "gt_answer": "No.",
+    "answer": "The patio doors appear to be closed, but the glass panes are translucent rather than transparent, making it difficult to be certain."
+  },
+  {
+    "question_id": "41ad08e1-cb46-4599-8beb-def3b0f91e34",
+    "gt_answer": "Yes.",
+    "answer": "It's difficult to tell from the images provided whether the lights are turned on. While there are no visible ceiling lights, the space is well-lit, which could be due to natural light from the large window/door or other light sources not directly visible in the pictures."
+  },
+  {
+    "question_id": "9ca30022-6b6c-4950-b91d-e90ee80f49d8",
+    "gt_answer": "On the bed in the bedroom",
+    "answer": "In one of the bedrooms, there is a bed with gray bedding where you could take a nap."
+  },
+  {
+    "question_id": "1015cab7-827a-437c-ab86-6e4c2a9dd083",
+    "gt_answer": "Abstract",
+    "answer": "Abstract."
+  },
+  {
+    "question_id": "9fc2d987-fc9c-4771-a0d4-07d24e2b7910",
+    "gt_answer": "Its drawn on the pink photo frame",
+    "answer": "This house does not contain any cartoon cats."
+  },
+  {
+    "question_id": "f776a834-1e21-4442-8834-18b6f9d6cfad",
+    "gt_answer": "Above the bed",
+    "answer": "The images do not show an orange painting. There are several framed pictures on the walls, but none of them are predominantly orange.  Several are abstract, and one seems to have shades of blue, but no orange."
+  },
+  {
+    "question_id": "06745779-f1b8-458b-8daa-ccc18d8958c8",
+    "gt_answer": "A large fruit bowl",
+    "answer": "A patterned tablecloth."
+  },
+  {
+    "question_id": "9a0fe947-4c0b-47b8-a1dc-414f2d555c67",
+    "gt_answer": "Paintings",
+    "answer": "A staircase."
+  },
+  {
+    "question_id": "e8a806b3-bf39-4854-84bd-72c25493d8cd",
+    "gt_answer": "Square",
+    "answer": "Square."
+  },
+  {
+    "question_id": "884e2405-85f6-446f-a0ab-a03e537e5184",
+    "gt_answer": "A red couch",
+    "answer": "A blue sofa."
+  },
+  {
+    "question_id": "cec83622-f735-435a-b054-1e201a48652c",
+    "gt_answer": "Yes.",
+    "answer": "No, the kitchen countertop appears to be dirty."
+  },
+  {
+    "question_id": "9104773d-a2f0-4be3-a370-f7bf6e242ff7",
+    "gt_answer": "Open",
+    "answer": "The front door appears to be open."
+  },
+  {
+    "question_id": "65fbee94-eb23-40b3-84c3-32129c95b52d",
+    "gt_answer": "In the sink in the kitchen",
+    "answer": "There appears to be a sink in the kitchen area, next to the cabinets."
+  },
+  {
+    "question_id": "e59e9409-776f-4c14-945e-11772fd5ff50",
+    "gt_answer": "In the fridge",
+    "answer": "In the refrigerator."
+  },
+  {
+    "question_id": "8ddd3d37-86fb-41cf-9948-d0b639706a93",
+    "gt_answer": "No.",
+    "answer": "It's difficult to tell from the images provided. While some images show a door leading to what looks like a small alley or courtyard, it's not clear enough to determine whether the location is suburban. I can't see enough of the surrounding area to make that assessment."
+  },
+  {
+    "question_id": "81739eb9-ef32-42e3-b1cf-fa8e826813ef",
+    "gt_answer": "To the left of the kitchen",
+    "answer": "The breakfast table is in the combined kitchen and dining area, to the left of the stairs. It has a blue and white patterned tablecloth."
+  },
+  {
+    "question_id": "d9737f88-11c2-454d-aa40-a2e1f3111505",
+    "gt_answer": "To the right of the front door",
+    "answer": "There are light switches on the wall by the door and beside the refrigerator.  There are also electrical outlets visible beneath some of the windows."
+  },
+  {
+    "question_id": "cbb81160-b858-49d6-a234-a94edb4d0b1d",
+    "gt_answer": "A fireplace",
+    "answer": "It appears to be a fireplace."
+  },
+  {
+    "question_id": "554929c8-cd5a-4b19-ab0c-1dba2b5126cb",
+    "gt_answer": "Pink",
+    "answer": "Purple, or lavender."
+  },
+  {
+    "question_id": "660372d6-b02b-406e-9383-28e27a4da9ab",
+    "gt_answer": "No",
+    "answer": "No, the bedroom floor appears clean and free of clutter."
+  },
+  {
+    "question_id": "38ce32f5-3c19-46c3-94e6-79efa00a6fbe",
+    "gt_answer": "No",
+    "answer": "Yes, the front door is open."
+  },
+  {
+    "question_id": "7c8e453b-67ac-424a-a73e-7f9a0d6d8cc5",
+    "gt_answer": "Yes",
+    "answer": "Yes, the window appears to be slightly ajar."
+  },
+  {
+    "question_id": "ecf1c2a2-f480-45f2-866c-8b73dff5347f",
+    "gt_answer": "On the desk in the bedroom",
+    "answer": "There is a small table and chair visible in the bedroom. That would be a good spot to take notes."
+  },
+  {
+    "question_id": "0e49111c-608d-4d02-aacb-3705bdd0ca5e",
+    "gt_answer": "In the bathroom sink",
+    "answer": "The bathroom is down the hall past the blue doors. You can brush your teeth there."
+  },
+  {
+    "question_id": "87e01245-6f75-4ac3-9844-7f331d7df193",
+    "gt_answer": "Cross hatch glass door",
+    "answer": "The home features blue doors with a diamond-shaped lattice design in the glass panes.  These are especially noticeable on the double doors leading from the living room into what looks like an entryway."
+  },
+  {
+    "question_id": "41f53d99-4277-4dec-892e-8e52a2cc7402",
+    "gt_answer": "By the fireplace",
+    "answer": "Near the fireplace would be a good spot to warm up."
+  },
+  {
+    "question_id": "143ade55-0216-455d-8e2f-6aa249596986",
+    "gt_answer": "On top of the light brown wooden cabinet",
+    "answer": "There appears to be a small figurine or decorative object on the blue dresser or console table in the entryway. It's difficult to definitively say it's a doll, but it's a small object sitting among a collection of similar items."
+  },
+  {
+    "question_id": "baa59d32-91d7-48e1-aa38-4c34bdb7296b",
+    "gt_answer": "In the mirror which is above the white drawer in the bedroom",
+    "answer": "There appears to be a mirror on the wall in one of the bedrooms.  That would be a good place to check your appearance."
+  },
+  {
+    "question_id": "f144699a-0af1-4830-9b28-a2b82777a92e",
+    "gt_answer": "A radiator",
+    "answer": "A radiator."
+  },
+  {
+    "question_id": "10d6d14b-ef30-42b6-89d7-b79eb4ce9b5d",
+    "gt_answer": "Light switch",
+    "answer": "A white door."
+  },
+  {
+    "question_id": "9585c0be-c248-48cf-93e9-194f6764286f",
+    "gt_answer": "White",
+    "answer": "The staircase railing is white."
+  },
+  {
+    "question_id": "611bbc61-de24-4877-8c4e-1f771ac72d01",
+    "gt_answer": "A mirror",
+    "answer": "A doorway leading to another room and a large mirror."
+  },
+  {
+    "question_id": "59128ef6-1338-49a8-ab06-191971bb1815",
+    "gt_answer": "A smoke detector",
+    "answer": "A light fixture."
+  },
+  {
+    "question_id": "fa4fdac0-a749-4744-a739-3eff882a2862",
+    "gt_answer": "Yes",
+    "answer": "This question cannot be answered from the given images. The images show the downstairs hallway and staircase, but not the upstairs hallway and bedrooms."
+  },
+  {
+    "question_id": "d6142b7c-27e3-4aef-bca7-2cfddca328f4",
+    "gt_answer": "Yes",
+    "answer": "Yes, the ceiling lights in the living room are turned on."
+  },
+  {
+    "question_id": "24228768-d745-4796-990f-2b5d8aeb4827",
+    "gt_answer": "In the storage closet ",
+    "answer": "This appears to be the entryway of the house, so the best place to put jackets and shoes would likely be near the door. There isn't a dedicated closet or coat rack visible in these images."
+  },
+  {
+    "question_id": "22c31dab-ea65-4752-b541-edcdb3c67108",
+    "gt_answer": "Three",
+    "answer": "This appears to be at least a two-story house. There is a staircase leading to a second floor. I can't determine from the images if there are any additional stories."
+  },
+  {
+    "question_id": "17d99f84-d536-4623-b428-d298f8669f09",
+    "gt_answer": "Yes, its fenced.",
+    "answer": "This question cannot be answered from the given images.  The images show the interior of a home, including a hallway, staircase, and a glimpse into a living area with a door to what appears to be a patio or balcony. The images do not provide a view of the backyard."
+  },
+  {
+    "question_id": "c0359449-cb8c-4fe2-8371-fb260735070a",
+    "gt_answer": "Through the patio doors in the living room on the first floor",
+    "answer": "Go through the French doors at the end of the hallway. They open onto the backyard."
+  },
+  {
+    "question_id": "8548aacb-669f-4341-a21e-0426e5dc3b42",
+    "gt_answer": "In the upstairs bedroom ",
+    "answer": "Through the doorway at the top of the stairs."
+  },
+  {
+    "question_id": "98a31a80-3f7b-416a-ba1a-fc1858523860",
+    "gt_answer": "An owl",
+    "answer": "Owls."
+  },
+  {
+    "question_id": "6e4d210c-e7b0-4e71-96e9-d4f58f17b3ea",
+    "gt_answer": "White",
+    "answer": "The table downstairs has brown chairs and a centerpiece with white flowers."
+  },
+  {
+    "question_id": "611595d5-e211-4eb1-b5ab-9eb4be657c1d",
+    "gt_answer": "White and grey",
+    "answer": "The sheets appear to be a cream or off-white color with a colorful, patterned blanket or comforter on top."
+  },
+  {
+    "question_id": "0748efce-1cd1-4b0f-89c3-1248e49bc8fc",
+    "gt_answer": "An air vent",
+    "answer": "A ceiling fan is present."
+  },
+  {
+    "question_id": "29e05972-8b27-4a2d-b868-3cc072511ff6",
+    "gt_answer": "Yes.",
+    "answer": "One door downstairs appears open and one appears closed."
+  },
+  {
+    "question_id": "fa2fea22-4715-474d-8999-eb68b73df661",
+    "gt_answer": "The small yellow table upstairs",
+    "answer": "There is a reading nook with two shelves of children's books and a small light blue table with play-doh."
+  },
+  {
+    "question_id": "8c26c6d7-4d26-4069-9829-53f01c6d0cae",
+    "gt_answer": "A child",
+    "answer": "This looks like a children's reading nook or play area."
+  },
+  {
+    "question_id": "871988c6-00a6-4a5b-a252-7cc2a02bb290",
+    "gt_answer": "On the shelves hanging on the wall",
+    "answer": "The books are on two shelves on a wall painted in horizontal stripes of brown, teal, and blue.  There is a child's table below the shelves."
+  },
+  {
+    "question_id": "352d1df4-83c8-430c-8d6e-f8b477d7e1c1",
+    "gt_answer": "Blue, Green, and Red",
+    "answer": "The stripes on the wall are brown, teal/green, and blue."
+  },
+  {
+    "question_id": "4a0b1006-0209-4e6a-a0fa-dab6835b6605",
+    "gt_answer": "A leopard skin color pattern",
+    "answer": "The pillow on the black couch appears to have an animal print pattern, possibly cheetah or leopard print, in shades of brown and tan."
+  },
+  {
+    "question_id": "8857cab2-2407-4e9f-a8fe-f4eb182a2b39",
+    "gt_answer": "An umbrella",
+    "answer": "It appears to be a long gun, possibly a rifle or shotgun."
+  },
+  {
+    "question_id": "e81b4b48-2a76-455d-9c29-188c9bc38b66",
+    "gt_answer": "A striped blue blanket",
+    "answer": "A striped throw blanket with fringe is draped over the back of the black couch.  There's also a small leopard print pillow on the seat cushion."
+  },
+  {
+    "question_id": "8985bd89-1b04-4328-869e-75c416eab90b",
+    "gt_answer": "Yes",
+    "answer": "Yes, the vertical blinds appear to be open."
+  },
+  {
+    "question_id": "e2970c04-f26d-48a0-bd68-3f9eb5c2a086",
+    "gt_answer": "No",
+    "answer": "It's difficult to tell for sure from the image, but the lamp doesn't appear to be illuminated."
+  },
+  {
+    "question_id": "3a4ad822-79dd-460d-ac73-1c3acbf8dd11",
+    "gt_answer": "On the hat rack",
+    "answer": "There appears to be a hat stand in the hallway."
+  },
+  {
+    "question_id": "c1609580-2208-4c0d-837e-1f6fb628ad52",
+    "gt_answer": "On the black couch",
+    "answer": "There's a brown leather couch in the living room that looks comfy enough for a nap."
+  },
+  {
+    "question_id": "0b48b97e-4a15-4181-bff3-8852f09f2f3e",
+    "gt_answer": "No.",
+    "answer": "It's difficult to tell from these images if this home is located within city limits. The photos provided focus on the interior of what appears to be a basement, and don't provide any visual clues about the surrounding external environment.  I'd need to see images from the outside of the property to get a better idea of its location."
+  },
+  {
+    "question_id": "07c4017d-db5a-447a-8086-17d9472e7100",
+    "gt_answer": "On top of the brown shelf",
+    "answer": "On top of the blue hutch/entertainment center."
+  },
+  {
+    "question_id": "708d0223-b80a-4727-baa7-756d61b2a551",
+    "gt_answer": "On the first shelf of the wooden cabinet",
+    "answer": "The black and grey speaker is on a shelf inside of a blue hutch/entertainment center along the wall in the main basement room."
+  },
+  {
+    "question_id": "1726fe6f-0db9-4b6b-b310-2591b907622d",
+    "gt_answer": "Lights",
+    "answer": "A towel rack and a hand towel."
+  },
+  {
+    "question_id": "e45cb43e-25a2-46cd-818a-5267984ceafa",
+    "gt_answer": "A smoke detector",
+    "answer": "A framed picture is hanging on the wall near the bottom of the stairs."
+  },
+  {
+    "question_id": "d36c5ac4-65b9-4979-881c-56c7d0870a50",
+    "gt_answer": "A bird",
+    "answer": "An owl."
+  },
+  {
+    "question_id": "e177ec9a-7855-471d-9f81-3b42d5a91911",
+    "gt_answer": "A hand towel",
+    "answer": "A towel rack."
+  },
+  {
+    "question_id": "16345ba0-9217-4f07-a79d-bbb965bc69a4",
+    "gt_answer": "Yes",
+    "answer": "Yes, it appears there is space available on the dining room table to work on your laptop."
+  },
+  {
+    "question_id": "15ef0e88-83c5-41dd-9a1f-cf9feb3dafbb",
+    "gt_answer": "Open",
+    "answer": "Closed."
+  },
+  {
+    "question_id": "3a9753fd-8be6-46e8-a908-40b91ec73868",
+    "gt_answer": "Use the hand towel",
+    "answer": "A white towel is hanging on the wall next to the sink."
+  },
+  {
+    "question_id": "37f74dbf-05d9-44c0-a5d0-6d996d16ccc5",
+    "gt_answer": "Use the pull cords",
+    "answer": "The images show a floor lamp.  There should be a switch on the cord near the base of the lamp to turn it off."
+  },
+  {
+    "question_id": "2c5c6a8d-7836-4060-96ea-1db469211c57",
+    "gt_answer": "No.",
+    "answer": "This is a tricky question. While the images show a bedroom, hallway, bathroom, and living/dining area, there are no images of a kitchen. Therefore, it's not possible to determine if the kitchen is on the same floor as the bedroom."
+  },
+  {
+    "question_id": "4fb6360d-36fe-4289-a90d-79af74380c69",
+    "gt_answer": "Yes.",
+    "answer": "Yes, the bathroom has a toilet, sink, and bathtub with a shower curtain. It also appears to have a vanity with cabinets."
+  },
+  {
+    "question_id": "b4de266c-5361-46b7-a098-167d6ee4d5c1",
+    "gt_answer": "In the bedroom closet",
+    "answer": "This question cannot be answered from the given images. I can tell you there are clothes hanging in a closet, but I cannot identify the color of each item."
+  },
+  {
+    "question_id": "225a293a-2a24-43da-a783-7012d968d731",
+    "gt_answer": "In the bedroom across the first one.",
+    "answer": "Down the hall past the bathroom."
+  },
+  {
+    "question_id": "08e8e5fd-31a3-466b-afd6-fa171f1d9de4",
+    "gt_answer": "A dome light",
+    "answer": "A light fixture."
+  },
+  {
+    "question_id": "6b8f1b52-25fa-47bc-a3a6-a2a43e834605",
+    "gt_answer": "A nightlamp",
+    "answer": "It appears to be a gold colored tray or decorative accent."
+  },
+  {
+    "question_id": "0d7f83ac-e0ae-405c-bdea-4eb5a9d1f0a0",
+    "gt_answer": "Glass",
+    "answer": "It appears to be glass."
+  },
+  {
+    "question_id": "eabae5f2-1193-4ac2-8862-8821156cb347",
+    "gt_answer": "Yellow or off-white",
+    "answer": "White"
+  },
+  {
+    "question_id": "8543767d-7d30-4307-96c2-20ef8ef48160",
+    "gt_answer": "No.",
+    "answer": "Yes, there is space under the kitchen bar."
+  },
+  {
+    "question_id": "cd5a15ff-d222-4745-8238-eee9afb27b79",
+    "gt_answer": "The microwave",
+    "answer": "A stainless steel refrigerator."
+  },
+  {
+    "question_id": "2cee5bf8-1297-4cee-8e8b-d808503cdfb1",
+    "gt_answer": "No.",
+    "answer": "Yes, the bedroom window appears to be open."
+  },
+  {
+    "question_id": "9acfbdd3-bc51-4010-ae1e-a28a949731d5",
+    "gt_answer": "No.",
+    "answer": "The images provided do not show an open coat closet in the living room. They do show some storage closets, but they are closed."
+  },
+  {
+    "question_id": "bf4960d4-469f-49bc-8594-9b994049fa77",
+    "gt_answer": "Use the kitchen bar counter",
+    "answer": "You could sit on the edge of the bed in the bedroom."
+  },
+  {
+    "question_id": "6a13d4a2-4866-40e7-8f10-d1ec12573dc2",
+    "gt_answer": "The thermostat",
+    "answer": "This apartment does not appear to have air conditioning units visible in the living room."
+  },
+  {
+    "question_id": "41693f7e-4192-495e-9b4e-b238432c6424",
+    "gt_answer": "No",
+    "answer": "This question cannot be answered from the given images."
+  },
+  {
+    "question_id": "f7b4bb17-549b-4e62-9586-ce3844198554",
+    "gt_answer": "Pull lever",
+    "answer": "This house appears to have lever-style door handles."
+  },
+  {
+    "question_id": "678d0eea-2f1e-41c4-bd6d-324e4819c63a",
+    "gt_answer": "The bedroom",
+    "answer": "Go to the bedroom. You can see a partial view of a car through the window."
+  },
+  {
+    "question_id": "31561566-4e70-40c7-9c5b-583ddc2d39cf",
+    "gt_answer": "A clock",
+    "answer": "It appears to be a hanging light fixture or a decorative sculpture.  It's difficult to tell for certain from the image."
+  },
+  {
+    "question_id": "4decde3d-5ab8-43db-893c-c3f3f80bcc76",
+    "gt_answer": "A painting depicting a man",
+    "answer": "It appears to be a clock."
+  },
+  {
+    "question_id": "6bff2ba3-5b68-4d77-a302-1640cc06dd15",
+    "gt_answer": "Grey",
+    "answer": "Gray, or light gray."
+  },
+  {
+    "question_id": "36ad6cce-7cd1-429e-b75a-581dc6849603",
+    "gt_answer": "Gold",
+    "answer": "It is difficult to tell from the images, as there is no mirror clearly visible. There is a clock with a gold trim."
+  },
+  {
+    "question_id": "99afbf6e-0b35-4228-8676-dca7c7709a23",
+    "gt_answer": "Two",
+    "answer": "One."
+  },
+  {
+    "question_id": "6a6a7283-bccc-4923-a843-e0225ad21e3c",
+    "gt_answer": "Yes",
+    "answer": "Yes, there's plenty of open floor space around the kitchen island and dining table."
+  },
+  {
+    "question_id": "2449be8f-1320-4061-beb0-2797f5766c73",
+    "gt_answer": "Yes.",
+    "answer": "Some are tucked in, some are not."
+  },
+  {
+    "question_id": "b1146a3a-444b-4c57-9975-d4367b7ae0d6",
+    "gt_answer": "Yes",
+    "answer": "It's difficult to tell conclusively from the images provided. Parts of a backyard deck are visible, but there is not a clear view of a fence."
+  },
+  {
+    "question_id": "2c49d6d3-3b48-4680-a32e-2bb32a5af687",
+    "gt_answer": "Use the basket on the kitchen counter",
+    "answer": "In the kitchen, there appears to be a refrigerator where you could store your apples."
+  },
+  {
+    "question_id": "8471794d-32cd-4989-8cec-91118eb43b67",
+    "gt_answer": "The mirror above the wooden table near the kitchen.",
+    "answer": "There's a framed picture on the wall that might be reflective enough to use as a mirror."
+  },
+  {
+    "question_id": "3ba5ff66-1622-4f4e-bc76-8371b1e0e17d",
+    "gt_answer": "Roman numerals",
+    "answer": "Roman numerals."
+  },
+  {
+    "question_id": "d5b18be3-2d0c-4653-9706-7c33159de7a9",
+    "gt_answer": "A man and a child, looking at something, standing in between trees",
+    "answer": "The picture seen from the kitchen depicts a person walking in a snowy, wooded area. It has a light blue frame."
+  },
+  {
+    "question_id": "0f56a54b-eac3-4b98-b118-ddcbac7735e7",
+    "gt_answer": "Above the oven",
+    "answer": "The microwave is above the double oven to the left of the kitchen island."
+  },
+  {
+    "question_id": "bfe3dd93-acd5-42ab-a492-f5914c1a3b26",
+    "gt_answer": "Underneath the wooden dining table",
+    "answer": "The checked rug is situated on the floor in the dining area, in front of the wooden dining table and chairs."
+  },
+  {
+    "question_id": "987aac58-d2a4-417e-84fc-4b1ede9934a9",
+    "gt_answer": "A smoke detector",
+    "answer": "It appears to be a clock."
+  },
+  {
+    "question_id": "447e4e2d-7010-4672-b8e0-eb5246430499",
+    "gt_answer": "A blanket",
+    "answer": "I believe you are referring to the globe on the table in the entryway. It appears to be gold, or perhaps a brassy yellow, not quite bright yellow.  It sits on a stand on top of a console table near the front door."
+  },
+  {
+    "question_id": "bd0bfb4a-1f48-4227-bd0a-9e20ba4b232a",
+    "gt_answer": "Grey",
+    "answer": "The trim of the mirror appears to be a weathered gray or a grayish brown."
+  },
+  {
+    "question_id": "872e8692-1e2a-4f7e-8ceb-7a85378be97d",
+    "gt_answer": "Dark brown",
+    "answer": "Dark blue/black."
+  },
+  {
+    "question_id": "2105be27-3075-4024-aa9d-bbe2c8d171e5",
+    "gt_answer": "Photos of people",
+    "answer": "A mirror and a couple of framed pictures are hanging on the walls along the staircase."
+  },
+  {
+    "question_id": "f9dd1702-e468-47c7-8e39-c562b1515c26",
+    "gt_answer": "A vase with flowers",
+    "answer": "A floral centerpiece."
+  },
+  {
+    "question_id": "57281954-fac7-43af-a6e4-cb0be91fdcbb",
+    "gt_answer": "Yes.",
+    "answer": "Yes, there is a light fixture above the dining room table that appears to be turned on."
+  },
+  {
+    "question_id": "4d127d5e-1a90-468c-93a0-0473c2d1623f",
+    "gt_answer": "Yes",
+    "answer": "Yes, the bedroom door is open."
+  },
+  {
+    "question_id": "3c5d9367-f664-4635-80a1-a58f915f483d",
+    "gt_answer": "On the grey rug behind the front door",
+    "answer": "I apologize, but I cannot answer your question about where to dry your shoes, as there is no information in these images pertaining to that.  There isn't a specific shoe drying area or mat visible."
+  },
+  {
+    "question_id": "513d947f-2553-4f19-abdd-a052561b922d",
+    "gt_answer": "Curtains",
+    "answer": "Curtains or drapes can be used to provide privacy in the dining room. They appear to cover the windows."
+  },
+  {
+    "question_id": "c8597353-0075-4ba7-a1e7-8ab29ea0f8a3",
+    "gt_answer": "The china cabinet",
+    "answer": "A china cabinet or hutch."
+  },
+  {
+    "question_id": "8345f4b2-0850-495b-a957-16cb9cd66f4e",
+    "gt_answer": "To the left of the dining table",
+    "answer": "The china cabinet is in the dining room."
+  },
+  {
+    "question_id": "79a66a14-c79c-48fa-b6e6-6c442765ba22",
+    "gt_answer": "A chandelier",
+    "answer": "A leafy, green plant in a large brown pot is situated behind the coffee table. There also appears to be a light fixture hanging from the ceiling above it."
+  },
+  {
+    "question_id": "f454e7a5-b49b-43be-83d9-7b204ce6314a",
+    "gt_answer": "A piano",
+    "answer": "A large potted plant sits on a table behind the couches.  There's also a piano against the wall behind it."
+  },
+  {
+    "question_id": "26bd014e-529f-4deb-bcfd-261f35ac7ff2",
+    "gt_answer": "Gold",
+    "answer": "They appear to be a similar color to the window frames, a dark brown wood."
+  },
+  {
+    "question_id": "8bb765de-228d-47c2-89e3-e57dbd07261c",
+    "gt_answer": "A coffee table",
+    "answer": "A coffee table."
+  },
+  {
+    "question_id": "e2a55cb0-a883-4dd6-9b2f-239d92ebd8bc",
+    "gt_answer": "A painting",
+    "answer": "There's a large potted plant above the piano."
+  },
+  {
+    "question_id": "3e900181-4cf3-41f9-bdb8-0e3e6f1b53e3",
+    "gt_answer": "No.",
+    "answer": "Yes, there are windows in the dining room and living room that appear to let in natural light."
+  },
+  {
+    "question_id": "fd4dad2f-19fc-4a3f-87ac-d210657d1add",
+    "gt_answer": "Open",
+    "answer": "The piano keyboard cover appears to be closed."
+  },
+  {
+    "question_id": "566776fa-aab8-4084-b40b-57f69167c97c",
+    "gt_answer": "The piano",
+    "answer": "There appears to be a piano visible in the living room, tucked away against the wall.  That could provide musical entertainment."
+  },
+  {
+    "question_id": "f48a99c3-ec77-450b-97d9-5b48bc662cb6",
+    "gt_answer": "The couch",
+    "answer": "There's a white tufted sofa in the living room that looks like a comfortable place to lie down and read. There's also a chaise lounge with pillows next to the couch."
+  },
+  {
+    "question_id": "8b7d2afd-2a77-4f2b-afe1-b1751d890db4",
+    "gt_answer": "Yes.",
+    "answer": "Yes, there is a long dining table with seating for at least eight people."
+  },
+  {
+    "question_id": "2f73aba9-c2c7-4f97-b3e4-2435960763b9",
+    "gt_answer": "Yes.",
+    "answer": "Based on the presence of full bookshelves in the living room, it is likely that the person who lives here is an avid reader."
+  },
+  {
+    "question_id": "83356063-ea59-4894-a077-5c2a6fb1042e",
+    "gt_answer": "On the couch",
+    "answer": "On the left side of the sofa."
+  },
+  {
+    "question_id": "a605c40f-96e7-4bec-a1cb-6d48e88e39cd",
+    "gt_answer": "A blue, white, and orange painting",
+    "answer": "A painting of a blurry, yellow and blue sky/water scene."
+  },
+  {
+    "question_id": "3a5be057-47d2-4f78-98a9-729ef19b3d8b",
+    "gt_answer": "Blue",
+    "answer": "This home does not appear to have any pillows in the kitchen. The pillows are located on the couch in the living room. They are gray, yellow, and white."
+  },
+  {
+    "question_id": "30dc765d-80c3-4901-9c69-65e6b48e254a",
+    "gt_answer": "Brown",
+    "answer": "Blue"
+  },
+  {
+    "question_id": "f5a17a09-ce4b-4123-bf40-d2239cf38cb8",
+    "gt_answer": "A storage closet",
+    "answer": "A dark wooden console table with some decorative items on it."
+  },
+  {
+    "question_id": "00c2be2a-1377-4fae-a889-30936b7890c3",
+    "gt_answer": "A towel",
+    "answer": "It looks like a yellow and green towel is hanging from the oven handle."
+  },
+  {
+    "question_id": "4dbd213e-56cd-481a-8ff5-ed9a8d636dbc",
+    "gt_answer": "Yes",
+    "answer": "It's difficult to tell from the images provided.  The area over the sink seems to be slightly brighter, but it is unclear if a dedicated light is on or if this is just reflection."
+  },
+  {
+    "question_id": "6d132959-fd48-4fef-a736-4e5853849547",
+    "gt_answer": "Next to the fireplace",
+    "answer": "There's no fireplace visible in these images, so you won't be able to warm up by a fire."
+  },
+  {
+    "question_id": "ae19adeb-498a-4814-b955-e0af05623f9b",
+    "gt_answer": "The open cookbook on the kitchen counter top",
+    "answer": "This appears to be a residential space, not a place where you'd find recipes. You can find recipes online (many websites offer them), in cookbooks, or by asking friends and family."
+  },
+  {
+    "question_id": "cbffc0cd-04aa-4686-97bf-887c0dc840bd",
+    "gt_answer": "Horses",
+    "answer": "The painting above the couch appears to depict two horses, possibly white or gray, with flowing manes.  It's done in shades of gray and white, giving it a slightly ethereal look."
+  },
+  {
+    "question_id": "4cc4212e-0db2-421f-8bb5-93817e58f9b4",
+    "gt_answer": "From water dispenser in the fridge",
+    "answer": "The refrigerator has a water dispenser on it."
+  },
+  {
+    "question_id": "7ebac357-a338-4ce0-975a-62141e90a3c3",
+    "gt_answer": "Above the stovetop",
+    "answer": "The microwave is above the stove, built into the cabinets."
+  },
+  {
+    "question_id": "3825d20a-c58a-458a-971c-f1714dfccd9d",
+    "gt_answer": "Books",
+    "answer": "Books and what looks like two blue boxes or containers."
+  },
+  {
+    "question_id": "8067bfd8-c034-45a6-8fe1-44a829fec95e",
+    "gt_answer": "Black",
+    "answer": "Blue."
+  },
+  {
+    "question_id": "92fc2743-e2d7-4504-bb94-4b95c4f9596d",
+    "gt_answer": "A light switch",
+    "answer": "A painting of three blue flowers."
+  },
+  {
+    "question_id": "7e363878-ad19-4493-8a6f-0350bff27557",
+    "gt_answer": "A pond",
+    "answer": "A patio with some plants and what looks like a body of water beyond that."
+  },
+  {
+    "question_id": "633ca326-2027-4316-8c20-ef4debde39d2",
+    "gt_answer": "Closed",
+    "answer": "One of the sliding doors is open and the other one is closed."
+  },
+  {
+    "question_id": "a441274f-6be5-4ed0-ab6a-fea064b5c008",
+    "gt_answer": "Yes.",
+    "answer": "I cannot tell whether the chandelier is turned on.  The lights visible in the images appear to be standard ceiling-mounted light fixtures, not chandeliers.  I don't see any chandeliers in these images."
+  },
+  {
+    "question_id": "684217f2-75c1-4c1c-ae06-9aa090e5d0c2",
+    "gt_answer": "The woven baskets underneath",
+    "answer": "There don't appear to be any other bookshelves or obvious storage spaces in the provided images. You may need to find storage elsewhere if the existing shelf gets full."
+  },
+  {
+    "question_id": "7131770c-d338-4dfa-b778-0dd5a00a4ef1",
+    "gt_answer": "No",
+    "answer": "Yes, the walls appear to be painted a light gray or off-white color."
+  },
+  {
+    "question_id": "e22162c7-9c4d-46f0-8dd5-560a9c4f0dad",
+    "gt_answer": "No.",
+    "answer": "Some bedrooms appear to be furnished with beds, but others seem to be under renovation or not fully furnished. Therefore, not all bedrooms are ready to live in."
+  },
+  {
+    "question_id": "4868b6d7-d999-4264-9c19-8fd7a4db93cd",
+    "gt_answer": "Next to the stairway",
+    "answer": "It's on the wall near the stairs.  It appears to have purple flowers, not red."
+  },
+  {
+    "question_id": "34ddc942-4b8b-419c-be6b-8c53b1c83dc3",
+    "gt_answer": "Below the books in the black cubby shelf",
+    "answer": "I can see a bookshelf with a few books and a small plant on it, but there aren't any woven baskets visible in these images."
+  },
+  {
+    "question_id": "5d538466-397e-4b3b-8d40-d32bc80d5c0b",
+    "gt_answer": "A circuit breaker box",
+    "answer": "A small metal electrical panel."
+  },
+  {
+    "question_id": "0cbe9fd8-0b2c-40ce-9e9e-bd883fb7bff5",
+    "gt_answer": "A laundry machine",
+    "answer": "A white crib."
+  },
+  {
+    "question_id": "55f022a0-2bd2-410b-9323-e077908a55d2",
+    "gt_answer": "Brown",
+    "answer": "Brown."
+  },
+  {
+    "question_id": "e87b90d9-77d5-4f99-b44a-ad1d11480334",
+    "gt_answer": "White",
+    "answer": "White."
+  },
+  {
+    "question_id": "b60453d8-d274-4159-b368-96e8ad66575f",
+    "gt_answer": "A fridge",
+    "answer": "Cabinets with drawers and cupboards."
+  },
+  {
+    "question_id": "4af07938-5cb6-4784-922d-893dc57ca225",
+    "gt_answer": "A toaster oven",
+    "answer": "A stainless steel refrigerator."
+  },
+  {
+    "question_id": "bb1f77da-2f24-45e4-af20-10d82c300c06",
+    "gt_answer": "Open",
+    "answer": "Closed."
+  },
+  {
+    "question_id": "0785d52a-eb84-4159-9aff-54b20f79fa5f",
+    "gt_answer": "Neither, some are open some are closed",
+    "answer": "Some blinds are open and some are closed."
+  },
+  {
+    "question_id": "da1d2adf-7888-4c94-80d7-b84f09a25682",
+    "gt_answer": "The switches to the right of the sink",
+    "answer": "This home does not appear to have a garbage disposal. There is a trash can visible in the kitchen area."
+  },
+  {
+    "question_id": "e5c3d2bd-ef67-46a5-badc-f6c9f1421be2",
+    "gt_answer": "The circuit breaker box to the left of the laundry room",
+    "answer": "Look for the electrical panel/circuit breaker. It appears there's one on the wall in the hallway near the laundry room."
+  },
+  {
+    "question_id": "9d9d4db5-7028-48a6-a62b-e62ec13d0393",
+    "gt_answer": "A spiral staircase",
+    "answer": "This home has a spiral staircase with dark wooden steps and white railings."
+  },
+  {
+    "question_id": "13d097e7-12c7-48e0-92c4-9667fc7f9c60",
+    "gt_answer": "From the water dispenser in the fridge",
+    "answer": "This home appears to have a kitchen area with a refrigerator and possibly a sink.  That's the most likely place to find drinking water."
+  },
+  {
+    "question_id": "b38045c3-cf3d-43e3-8fee-a085b89a4d3a",
+    "gt_answer": "Above the dishwasher",
+    "answer": "This question cannot be answered from the given images."
+  },
+  {
+    "question_id": "5a8b3936-43e0-4474-ac15-efaf488265a1",
+    "gt_answer": "On the balcony outside",
+    "answer": "Outside, on the patio. It's visible through the windows of the living room and dining areas."
+  },
+  {
+    "question_id": "62de2952-711d-479d-a336-caa84ea27ac4",
+    "gt_answer": "A lamp.",
+    "answer": "It appears to be a lamp with a gold colored base and a white shade."
+  },
+  {
+    "question_id": "5b8104b6-6919-4e4a-803a-71850d8bb1d7",
+    "gt_answer": "A mirror.",
+    "answer": "A framed piece of artwork depicting flowers in a vase."
+  },
+  {
+    "question_id": "54f8db17-583d-4c82-aad5-72b0aa3e58e4",
+    "gt_answer": "Black",
+    "answer": "Dark brown/black."
+  },
+  {
+    "question_id": "cb38e809-d5b7-471d-b412-5bc13bd20413",
+    "gt_answer": "Velvet",
+    "answer": "The blue pillows appear to have velvet pillowcases."
+  },
+  {
+    "question_id": "f682883e-b749-4c06-8859-c001c533d3b4",
+    "gt_answer": "A fireplace",
+    "answer": "A fireplace."
+  },
+  {
+    "question_id": "73bcd8d2-cd39-46e1-a63a-54acfae8d060",
+    "gt_answer": "The right",
+    "answer": "Your right."
+  },
+  {
+    "question_id": "adabb0fc-a2ff-4f42-8c51-8af85c2ac2fc",
+    "gt_answer": "No",
+    "answer": "Yes, the fireplace appears to be lit."
+  },
+  {
+    "question_id": "d270704a-a706-41cc-a510-7d99d62e1215",
+    "gt_answer": "No",
+    "answer": "Yes, the television appears to be on, although the screen is mostly black, likely reflecting the camera."
+  },
+  {
+    "question_id": "50d2cdeb-86e2-46d7-9c32-ef91e66176f0",
+    "gt_answer": "The bathroom sink",
+    "answer": "There doesn't appear to be a second story to this house, but there is a sink in the bathroom."
+  },
+  {
+    "question_id": "0c81b6f8-2d46-4e07-a9d3-a019729d5570",
+    "gt_answer": "There is toilet paper next to the tub.",
+    "answer": "There are some white towels on a shelf in the living room you could grab."
+  },
+  {
+    "question_id": "b488175a-6ce9-41ae-96c7-e81a667fdcb9",
+    "gt_answer": "The staircase.",
+    "answer": "A staircase."
+  },
+  {
+    "question_id": "bc1af4f3-5241-4606-8315-ca46d88d7d84",
+    "gt_answer": "The bathroom.",
+    "answer": "The orchid is in the living room. It's on a small table between two gray sofas."
+  },
+  {
+    "question_id": "406684f7-f87a-4360-8c90-42725b8fcfd2",
+    "gt_answer": "Green",
+    "answer": "The curtain over the sink is a light green and white floral print."
+  },
+  {
+    "question_id": "06c9b25c-b117-4b8f-a052-6fd71b2bb043",
+    "gt_answer": "Jeans",
+    "answer": "Brown pants."
+  },
+  {
+    "question_id": "08c5d44c-4500-4c11-a2ca-d2cf924c0b46",
+    "gt_answer": "Full",
+    "answer": "It appears to be empty."
+  },
+  {
+    "question_id": "7ad70423-200c-42a8-8e6a-c471f171782e",
+    "gt_answer": "Lower the shades over the porch door.",
+    "answer": "Close the sheer curtains or blinds over the large windows."
+  },
+  {
+    "question_id": "5fc88f40-890b-4a30-8b97-d404e8f5c330",
+    "gt_answer": "An elephant",
+    "answer": "An elephant statue."
+  },
+  {
+    "question_id": "19fd09b1-acf4-461d-9cf4-e375a062bee7",
+    "gt_answer": "In the first bedroom",
+    "answer": "The octagonal mirror is in the master bedroom, above a white dresser."
+  },
+  {
+    "question_id": "65ec009e-d173-4e49-9168-f48fd20308f1",
+    "gt_answer": "On top of the refrigerator",
+    "answer": "The microwave is located in the kitchen area. It's on the counter, next to the refrigerator."
+  },
+  {
+    "question_id": "46a04f3a-56a5-4547-9cd9-c683919c0eb1",
+    "gt_answer": "On the bed in the second bedroom.",
+    "answer": "On the bed in the bedroom, which is down the hall past the kitchen."
+  },
+  {
+    "question_id": "e6fb0c2e-5f92-4835-ba38-6af958b7a1d3",
+    "gt_answer": "A dog bed",
+    "answer": "A long, light colored cabinet with drawers and cabinets. It has a dark top and a large TV mounted on the wall above it."
+  },
+  {
+    "question_id": "a36ab369-6f78-4311-a943-b6862cd28b55",
+    "gt_answer": "A clock",
+    "answer": "A large, flat-screen television is mounted on the wall above a white sideboard."
+  },
+  {
+    "question_id": "0df60236-15ad-4166-a31a-a98d14214fdb",
+    "gt_answer": "Roman numerals",
+    "answer": "Roman numerals."
+  },
+  {
+    "question_id": "01fcc568-f51e-4e12-b976-5dc8d554135a",
+    "gt_answer": "In the dog bed in the living room.",
+    "answer": "By the chair, near the front door."
+  },
+  {
+    "question_id": "6852b358-4820-471d-9263-d32ef0cecd0b",
+    "gt_answer": "Hanging on the front door.",
+    "answer": "The wreath is on the front door."
+  },
+  {
+    "question_id": "cf5eb398-f811-4345-9f0f-77c72bdcfbf9",
+    "gt_answer": "On the glass wall of the shower.",
+    "answer": "There's a towel rack inside the shower, as well as one immediately outside the shower on the wall."
+  },
+  {
+    "question_id": "2d0b6748-bc9d-405a-ad38-6d6711162211",
+    "gt_answer": "The hand towel",
+    "answer": "While I can see towels hanging in the bathroom, I cannot tell what cleaning products are available on the counter."
+  },
+  {
+    "question_id": "9d8ffc3b-4f98-4bc2-8fd3-ce696223c7c9",
+    "gt_answer": "Donald Duck",
+    "answer": "Scrooge McDuck."
+  },
+  {
+    "question_id": "ab1701f5-085c-48e4-aaba-06c23409d3e2",
+    "gt_answer": "Dollar bills",
+    "answer": "It appears to be made of paper money."
+  },
+  {
+    "question_id": "72529064-198f-4cbc-800d-2e5a2476d5c3",
+    "gt_answer": "In the crate under the staircase.",
+    "answer": "The dog appears to sleep on a dog bed near the spiral staircase and balcony door."
+  },
+  {
+    "question_id": "d0165de2-29aa-44d1-8689-ff13cd573c79",
+    "gt_answer": "To the left of the television in the first bedroom.",
+    "answer": "The toy car is on the blue media console, under the TV."
+  }
+]

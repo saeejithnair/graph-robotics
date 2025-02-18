@@ -1,0 +1,112 @@
+[
+   {
+      "label": "car",
+      "caption": "Dark blue sedan with a broken rear window",
+      "bbox": [
+         0,
+         311,
+         721,
+         1077
+      ],
+      "confidence": 0.98
+   },
+   {
+      "label": "wooden crates",
+      "caption": "Stacked wooden crates with rough edges and a weathered surface",
+      "bbox": [
+         579,
+         521,
+         779,
+         656
+      ],
+      "confidence": 0.92
+   },
+   {
+      "label": "tool box",
+      "caption": "Black plastic toolbox with a yellow handle",
+      "bbox": [
+         741,
+         684,
+         936,
+         750
+      ],
+      "confidence": 0.89
+   },
+   {
+      "label": "wooden table",
+      "caption": "Dark brown wooden table with a round shape",
+      "bbox": [
+         695,
+         713,
+         981,
+         827
+      ],
+      "confidence": 0.86
+   },
+   {
+      "label": "trash cans",
+      "caption": "Two brown plastic trash cans with yellow lids",
+      "bbox": [
+         860,
+         584,
+         1077,
+         767
+      ],
+      "confidence": 0.85
+   },
+   {
+      "label": "plastic containers",
+      "caption": "Various colorful plastic containers stacked on top of each other",
+      "bbox": [
+         1468,
+         727,
+         1720,
+         881
+      ],
+      "confidence": 0.84
+   },
+   {
+      "label": "tool rack",
+      "caption": "Wooden tool rack with various metal tools hanging from it",
+      "bbox": [
+         1491,
+         149,
+         1741,
+         218
+      ],
+      "confidence": 0.81
+   },
+   {
+      "label": "broom",
+      "caption": "Long wooden broom with straw bristles",
+      "bbox": [
+         1259,
+         725,
+         1380,
+         829
+      ],
+      "confidence": 0.79
+   },
+   {
+      "label": "plastic jug",
+      "caption": "Red plastic jug with a handle and a spout",
+      "bbox": [
+         1777,
+         878,
+         1916,
+         1035
+      ],
+      "confidence": 0.78
+   },
+   {
+      "label": "shovel",
+      "caption": "Long-handled metal shovel with a pointed blade",
+      "bbox": [
+         1224,
+         721,
+         1328,
+         845
+      ],
+      "confidence": 0.77
+   }
+]

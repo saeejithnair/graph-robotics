@@ -1,0 +1,133 @@
+[
+  {
+    "question": "What is the white object on the wall above the TV?",
+    "answer": "Air conditioning unit",
+    "pred_answer": "Wall-mounted air conditioner.",
+    "question_id": [
+      "f2e82760-5c3c-41b1-88b6-85921b9e7b32"
+    ],
+    "category": "object recognition",
+    "episode_history": "hm3d-v0/000-hm3d-BFRyYbPCCPE",
+    "api_logs": [
+      {
+        "call_type": "analyze_frame",
+        "query": "What is the white object on the wall above the TV?",
+        "keyframe_path": "/pub3/qasim/hm3d/data/frames/000-hm3d-BFRyYbPCCPE/00060-rgb.png",
+        "response": [
+          {
+            "label": "wall air conditioner",
+            "visual caption": "A white, rectangular wall air conditioning unit.",
+            "bbox": [
+              633,
+              253,
+              785,
+              328
+            ],
+            "your notes": "This is a wall-mounted air conditioner with a rectangular shape, and it is white in color. It is positioned on the wall above the TV."
+          }
+        ]
+      }
+    ],
+    "token_count": [
+      {
+        "prompt_token_count": 9631,
+        "candidates_token_count": 52
+      },
+      {
+        "prompt_token_count": 19958,
+        "candidates_token_count": 219
+      }
+    ]
+  },
+  {
+    "question": "Is there room on the dining table to eat?",
+    "answer": "Yes",
+    "pred_answer": "Yes, likely some room.",
+    "question_id": [
+      "79344680-6b45-4531-8789-ad0f5ef85b3b"
+    ],
+    "category": "spatial understanding",
+    "episode_history": "hm3d-v0/000-hm3d-BFRyYbPCCPE",
+    "api_logs": [
+      {
+        "call_type": "analyze_frame",
+        "query": "Is there space on the dining table to eat?",
+        "keyframe_path": "/pub3/qasim/hm3d/data/frames/000-hm3d-BFRyYbPCCPE/00030-rgb.png",
+        "response": [
+          {
+            "label": "dining table",
+            "visual caption": "A wooden dining table with a yellow and brown tablecloth.",
+            "bbox": [
+              1297,
+              891,
+              1889,
+              1076
+            ],
+            "your notes": "The dining table is the main surface to determine if there is enough space. The table is partially covered by a yellow tablecloth and there are other items on the table."
+          },
+          {
+            "label": "chair",
+            "visual caption": "A wooden dining chair with a brown seat and back.",
+            "bbox": [
+              1194,
+              621,
+              1599,
+              993
+            ],
+            "your notes": "A dining chair is located directly next to the dining table which gives context about the function of the dining table."
+          }
+        ]
+      }
+    ],
+    "token_count": [
+      {
+        "prompt_token_count": 9629,
+        "candidates_token_count": 77
+      },
+      {
+        "prompt_token_count": 20104,
+        "candidates_token_count": 138
+      }
+    ]
+  },
+  {
+    "question": "Is the front door open?",
+    "answer": "No",
+    "pred_answer": "The front door is closed.",
+    "question_id": [
+      "ecad68d2-a16f-4a3e-b8a1-a70ec1c5cf00"
+    ],
+    "category": "object state recognition",
+    "episode_history": "hm3d-v0/000-hm3d-BFRyYbPCCPE",
+    "api_logs": [
+      {
+        "call_type": "analyze_frame",
+        "query": "Is the front door open?",
+        "keyframe_path": "/pub3/qasim/hm3d/data/frames/000-hm3d-BFRyYbPCCPE/00000-rgb.png",
+        "response": [
+          {
+            "label": "white door",
+            "visual caption": "A white door with a silver handle.",
+            "bbox": [
+              1,
+              0,
+              524,
+              1077
+            ],
+            "your notes": "The door is closed."
+          }
+        ]
+      }
+    ],
+    "token_count": [
+      {
+        "prompt_token_count": 9625,
+        "candidates_token_count": 35
+      },
+      {
+        "prompt_token_count": 19869,
+        "candidates_token_count": 77
+      }
+    ]
+  }
+]

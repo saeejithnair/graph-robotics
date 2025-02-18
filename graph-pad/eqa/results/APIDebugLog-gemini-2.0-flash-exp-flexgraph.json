@@ -1,0 +1,3129 @@
+[
+  {
+    "question": "What is the white object on the wall above the TV?",
+    "answer": "Air conditioning unit",
+    "pred_answer": "Wall air conditioner.",
+    "question_id": [
+      "f2e82760-5c3c-41b1-88b6-85921b9e7b32"
+    ],
+    "category": "object recognition",
+    "episode_history": "hm3d-v0/000-hm3d-BFRyYbPCCPE",
+    "api_logs": [
+      {
+        "call_type": "analyze_frame",
+        "query": "What is above the TV?",
+        "keyframe_path": "/pub3/qasim/hm3d/data/frames/000-hm3d-BFRyYbPCCPE/00060-rgb.png",
+        "response": [
+          {
+            "label": "wall air conditioner",
+            "visual caption": "A rectangular white wall air conditioner with a vent",
+            "bbox": [
+              635,
+              248,
+              787,
+              326
+            ],
+            "your notes": "This is above the television. It appears to be a window-style air conditioner that is mounted in the wall"
+          },
+          {
+            "label": "small framed art",
+            "visual caption": "A small framed art",
+            "bbox": [
+              1077,
+              436,
+              1134,
+              492
+            ],
+            "your notes": "This is located at a higher point on the wall, further from the TV than the air conditioner"
+          },
+          {
+            "label": "framed art",
+            "visual caption": "A rectangular framed piece of art, likely a painting",
+            "bbox": [
+              921,
+              442,
+              975,
+              502
+            ],
+            "your notes": "This is on the same wall, but further to the right and higher than the TV"
+          },
+          {
+            "label": "black window",
+            "visual caption": "A black rectangular shaped window",
+            "bbox": [
+              647,
+              150,
+              768,
+              227
+            ],
+            "your notes": "This is above both the air conditioner and the TV"
+          }
+        ]
+      }
+    ],
+    "token_count": [
+      {
+        "prompt_token_count": 9674,
+        "candidates_token_count": 78
+      },
+      {
+        "prompt_token_count": 20574,
+        "candidates_token_count": 177
+      }
+    ]
+  },
+  {
+    "question": "What material is the ceiling in the living room?",
+    "answer": "Wood panel",
+    "pred_answer": "White, flat, with wooden beams.",
+    "question_id": [
+      "7447d782-d1a7-4c87-86dc-b5eafc5a0f76"
+    ],
+    "category": "attribute recognition",
+    "episode_history": "hm3d-v0/000-hm3d-BFRyYbPCCPE",
+    "api_logs": [
+      {
+        "call_type": "analyze_frame",
+        "query": "What is the material of the ceiling?",
+        "keyframe_path": "/pub3/qasim/hm3d/data/frames/000-hm3d-BFRyYbPCCPE/00060-rgb.png",
+        "response": [
+          {
+            "label": "ceiling",
+            "visual caption": "A flat white ceiling.",
+            "bbox": [
+              0,
+              0,
+              1918,
+              398
+            ],
+            "your notes": "The ceiling is mostly white and appears to be flat. There are some shadows and lighting inconsistencies that make it difficult to assess further details. The ceiling is visible above the main living area. Portions of it have exposed wooden beams."
+          },
+          {
+            "label": "wooden beam",
+            "visual caption": "A brown wooden beam.",
+            "bbox": [
+              961,
+              199,
+              1109,
+              271
+            ],
+            "your notes": "A triangular shaped brown wooden beam structure, that is a part of the ceiling, is exposed."
+          }
+        ]
+      }
+    ],
+    "token_count": [
+      {
+        "prompt_token_count": 9672,
+        "candidates_token_count": 78
+      },
+      {
+        "prompt_token_count": 20560,
+        "candidates_token_count": 223
+      }
+    ]
+  },
+  {
+    "question": "What color is the staircase railing?",
+    "answer": "Brown",
+    "pred_answer": "Dark brown.",
+    "question_id": [
+      "e2ccf6f4-22a9-47d1-ab8d-a05a13435b82"
+    ],
+    "category": "attribute recognition",
+    "episode_history": "hm3d-v0/000-hm3d-BFRyYbPCCPE",
+    "api_logs": [
+      {
+        "call_type": "analyze_frame",
+        "query": "What color is the staircase railing?",
+        "keyframe_path": "/pub3/qasim/hm3d/data/frames/000-hm3d-BFRyYbPCCPE/00090-rgb.png",
+        "response": [
+          {
+            "label": "staircase railing",
+            "visual caption": "A dark colored staircase railing made of wood.",
+            "bbox": [
+              289,
+              2,
+              896,
+              786
+            ],
+            "your notes": "The staircase railing is dark, possibly a dark brown color."
+          }
+        ]
+      }
+    ],
+    "token_count": [
+      {
+        "prompt_token_count": 9669,
+        "candidates_token_count": 119
+      },
+      {
+        "prompt_token_count": 20097,
+        "candidates_token_count": 124
+      }
+    ]
+  },
+  {
+    "question": "What is in between the two picture frames on the blue wall in the living room?",
+    "answer": "The TV",
+    "pred_answer": "A small picture frame.",
+    "question_id": [
+      "c841bb52-1cec-46d7-bb83-8c99b5c66fa8"
+    ],
+    "category": "spatial understanding",
+    "episode_history": "hm3d-v0/000-hm3d-BFRyYbPCCPE",
+    "api_logs": [
+      {
+        "call_type": "analyze_frame",
+        "query": "What is between the two picture frames on the blue wall?",
+        "keyframe_path": "/pub3/qasim/hm3d/data/frames/000-hm3d-BFRyYbPCCPE/00060-rgb.png",
+        "response": [
+          {
+            "label": "small wall picture",
+            "visual caption": "A small picture in a brown frame on a blue wall.",
+            "bbox": [
+              925,
+              444,
+              977,
+              503
+            ],
+            "your notes": "This picture is between the two large picture frames."
+          },
+          {
+            "label": "wall picture",
+            "visual caption": "A picture in a dark brown frame hanging on the wall.",
+            "bbox": [
+              1079,
+              426,
+              1140,
+              494
+            ],
+            "your notes": "This picture is to the right of the small picture."
+          },
+          {
+            "label": "wall picture",
+            "visual caption": "A picture in a dark frame hanging on the wall.",
+            "bbox": [
+              1505,
+              327,
+              1660,
+              503
+            ],
+            "your notes": "This picture is to the right of the other two."
+          }
+        ]
+      }
+    ],
+    "token_count": [
+      {
+        "prompt_token_count": 9679,
+        "candidates_token_count": 98
+      },
+      {
+        "prompt_token_count": 20650,
+        "candidates_token_count": 110
+      }
+    ]
+  },
+  {
+    "question": "Is there room on the dining table to eat?",
+    "answer": "Yes",
+    "pred_answer": "Probably not.",
+    "question_id": [
+      "79344680-6b45-4531-8789-ad0f5ef85b3b"
+    ],
+    "category": "spatial understanding",
+    "episode_history": "hm3d-v0/000-hm3d-BFRyYbPCCPE",
+    "api_logs": [
+      {
+        "call_type": "analyze_frame",
+        "query": "Is there anything on the table?",
+        "keyframe_path": "/pub3/qasim/hm3d/data/frames/000-hm3d-BFRyYbPCCPE/00025-rgb.png",
+        "response": [
+          {
+            "label": "yellow place mat",
+            "visual caption": "A yellow place mat with a dark design on it.",
+            "bbox": [
+              1107,
+              918,
+              1438,
+              1017
+            ],
+            "your notes": "A yellow place mat is placed on the table. It has a dark object on it. "
+          },
+          {
+            "label": "white object",
+            "visual caption": "A rectangular white object",
+            "bbox": [
+              1201,
+              956,
+              1549,
+              1077
+            ],
+            "your notes": "A white rectangular object is sitting on the table."
+          },
+          {
+            "label": "yellow place mat",
+            "visual caption": "A yellow place mat",
+            "bbox": [
+              1848,
+              965,
+              1916,
+              1044
+            ],
+            "your notes": "A portion of another yellow place mat is seen on the table. "
+          }
+        ]
+      }
+    ],
+    "token_count": [
+      {
+        "prompt_token_count": 9672,
+        "candidates_token_count": 44
+      },
+      {
+        "prompt_token_count": 20761,
+        "candidates_token_count": 196
+      }
+    ]
+  },
+  {
+    "question": "Is the dining table set with table mats?",
+    "answer": "Yes.",
+    "pred_answer": "Yes, the table is set with mats.",
+    "question_id": [
+      "500e6924-0ea3-45c8-89ce-db3d37e142bf"
+    ],
+    "category": "object state recognition",
+    "episode_history": "hm3d-v0/000-hm3d-BFRyYbPCCPE",
+    "api_logs": [
+      {
+        "call_type": "analyze_frame",
+        "query": "Is the dining table set with table mats?",
+        "keyframe_path": "/pub3/qasim/hm3d/data/frames/000-hm3d-BFRyYbPCCPE/00025-rgb.png",
+        "response": [
+          {
+            "label": "yellow table mat",
+            "visual caption": "A yellow table mat with a circular shape on top of the table.",
+            "bbox": [
+              1009,
+              798,
+              1656,
+              1009
+            ],
+            "your notes": "A yellow placemat is on the table. It's not a single one, but there is more than one placemat, so table mats are present on the table."
+          },
+          {
+            "label": "yellow table mat",
+            "visual caption": "A yellow table mat with a circular shape on top of the table.",
+            "bbox": [
+              1708,
+              909,
+              1920,
+              1060
+            ],
+            "your notes": "A yellow placemat is on the table. It's not a single one, but there is more than one placemat, so table mats are present on the table."
+          }
+        ]
+      }
+    ],
+    "token_count": [
+      {
+        "prompt_token_count": 9671,
+        "candidates_token_count": 72
+      },
+      {
+        "prompt_token_count": 20434,
+        "candidates_token_count": 221
+      }
+    ]
+  },
+  {
+    "question": "Is the front door open?",
+    "answer": "No",
+    "pred_answer": "Yes, the front door is open.",
+    "question_id": [
+      "ecad68d2-a16f-4a3e-b8a1-a70ec1c5cf00"
+    ],
+    "category": "object state recognition",
+    "episode_history": "hm3d-v0/000-hm3d-BFRyYbPCCPE",
+    "api_logs": [
+      {
+        "call_type": "analyze_frame",
+        "query": "Is the doorway open?",
+        "keyframe_path": "/pub3/qasim/hm3d/data/frames/000-hm3d-BFRyYbPCCPE/00055-rgb.png",
+        "response": [
+          {
+            "label": "doorway",
+            "visual caption": "A doorway with a white door frame",
+            "bbox": [
+              142,
+              73,
+              583,
+              474
+            ],
+            "your notes": "The doorway is at the left of the image. Most of its visible section is open, as there is a black space in the middle. The door itself is not visible in the opening, indicating it is open."
+          },
+          {
+            "label": "door frame",
+            "visual caption": "A white door frame",
+            "bbox": [
+              157,
+              75,
+              576,
+              457
+            ],
+            "your notes": "The frame is mostly white. It looks a bit worn with paint chipped."
+          }
+        ]
+      }
+    ],
+    "token_count": [
+      {
+        "prompt_token_count": 9668,
+        "candidates_token_count": 141
+      },
+      {
+        "prompt_token_count": 20250,
+        "candidates_token_count": 209
+      }
+    ]
+  },
+  {
+    "question": "What should I do to cool down?",
+    "answer": "Turn on the AC unit",
+    "pred_answer": "Turn on the air conditioner.",
+    "question_id": [
+      "5c1d30b9-5827-49fc-b74f-5ee9909a75b8"
+    ],
+    "category": "functional reasoning",
+    "episode_history": "hm3d-v0/000-hm3d-BFRyYbPCCPE",
+    "api_logs": [
+      {
+        "call_type": "analyze_frame",
+        "query": "Is the air conditioner turned on?",
+        "keyframe_path": "/pub3/qasim/hm3d/data/frames/000-hm3d-BFRyYbPCCPE/00070-rgb.png",
+        "response": [
+          {
+            "label": "wall air conditioner",
+            "visual caption": "A white rectangular wall-mounted air conditioning unit",
+            "bbox": [
+              1415,
+              210,
+              1618,
+              293
+            ],
+            "your notes": "This is a wall-mounted air conditioner, and the presence of this appliance is a strong indicator that the house has air conditioning."
+          }
+        ]
+      }
+    ],
+    "token_count": [
+      {
+        "prompt_token_count": 9670,
+        "candidates_token_count": 62
+      },
+      {
+        "prompt_token_count": 20068,
+        "candidates_token_count": 105
+      }
+    ]
+  },
+  {
+    "question": "What can I do to increase the speed of the ceiling fan?",
+    "answer": "Turn the dial on the switch panel next to the front door",
+    "pred_answer": "Unable to determine.",
+    "question_id": [
+      "8d7f1dd7-9764-4603-918b-58eefcb0b10e"
+    ],
+    "category": "functional reasoning",
+    "episode_history": "hm3d-v0/000-hm3d-BFRyYbPCCPE",
+    "api_logs": [
+      {
+        "call_type": "analyze_frame",
+        "query": "Is there a ceiling fan?",
+        "keyframe_path": "/pub3/qasim/hm3d/data/frames/000-hm3d-BFRyYbPCCPE/00055-rgb.png",
+        "response": [
+          {
+            "label": "ceiling",
+            "visual caption": "A white flat ceiling.",
+            "bbox": [
+              7,
+              0,
+              1918,
+              604
+            ],
+            "your notes": "The ceiling appears to be smooth and flat, with no visible ceiling fan."
+          }
+        ]
+      },
+      {
+        "call_type": "analyze_frame",
+        "query": "Is there a ceiling fan?",
+        "keyframe_path": "/pub3/qasim/hm3d/data/frames/000-hm3d-BFRyYbPCCPE/00060-rgb.png",
+        "response": [
+          {
+            "label": "air conditioner",
+            "visual caption": "A rectangular, white air conditioner mounted on a teal wall.",
+            "bbox": [
+              627,
+              248,
+              789,
+              330
+            ],
+            "your notes": "The object is located high on the wall. It is rectangular and appears to be an air conditioning unit."
+          }
+        ]
+      },
+      {
+        "call_type": "analyze_frame",
+        "query": "Is there a ceiling fan?",
+        "keyframe_path": "/pub3/qasim/hm3d/data/frames/000-hm3d-BFRyYbPCCPE/00075-rgb.png",
+        "response": [
+          {
+            "label": "air conditioner",
+            "visual caption": "A rectangular, light-colored air conditioner mounted high on a wall.",
+            "bbox": [
+              583,
+              204,
+              762,
+              295
+            ],
+            "your notes": "The object is an air conditioner, not a ceiling fan. It is a wall-mounted unit located on the upper wall."
+          }
+        ]
+      },
+      {
+        "call_type": "analyze_frame",
+        "query": "Is there a ceiling fan?",
+        "keyframe_path": "/pub3/qasim/hm3d/data/frames/000-hm3d-BFRyYbPCCPE/00085-rgb.png",
+        "response": [
+          {
+            "label": "air conditioner",
+            "visual caption": "A rectangular, white air conditioning unit mounted high on the wall.",
+            "bbox": [
+              887,
+              50,
+              1150,
+              172
+            ],
+            "your notes": "The object is an air conditioning unit. This might indicate that there is no ceiling fan."
+          },
+          {
+            "label": "Ceiling",
+            "visual caption": "A beige ceiling.",
+            "bbox": [
+              0,
+              0,
+              1920,
+              117
+            ],
+            "your notes": "The ceiling appears flat without a visible ceiling fan."
+          }
+        ]
+      },
+      {
+        "call_type": "analyze_frame",
+        "query": "Is there a ceiling fan?",
+        "keyframe_path": "/pub3/qasim/hm3d/data/frames/000-hm3d-BFRyYbPCCPE/00095-rgb.png",
+        "response": [
+          {
+            "label": "ceiling",
+            "visual caption": "A ceiling with a slanted wooden section.",
+            "bbox": [
+              21,
+              0,
+              1910,
+              136
+            ],
+            "your notes": "The ceiling is visible in the image. It is made of wooden planks on one side and a flat plastered ceiling on the other. There is a white rectangular object attached to the wall near the ceiling that appears to be an air conditioning unit. There is no evidence of a ceiling fan."
+          }
+        ]
+      }
+    ],
+    "token_count": [
+      {
+        "prompt_token_count": 9675,
+        "candidates_token_count": 299
+      },
+      {
+        "prompt_token_count": 64760,
+        "candidates_token_count": 140
+      }
+    ]
+  },
+  {
+    "question": "What type of ceiling is in the living room?",
+    "answer": "A vaulted ceiling",
+    "pred_answer": "Flat, white ceiling.",
+    "question_id": [
+      "c8808989-9b62-4764-814e-520fd40c22cd"
+    ],
+    "category": "world knowledge",
+    "episode_history": "hm3d-v0/000-hm3d-BFRyYbPCCPE",
+    "api_logs": [
+      {
+        "call_type": "analyze_frame",
+        "query": "what is the type of ceiling?",
+        "keyframe_path": "/pub3/qasim/hm3d/data/frames/000-hm3d-BFRyYbPCCPE/00055-rgb.png",
+        "response": [
+          {
+            "label": "ceiling",
+            "visual caption": "A white ceiling.",
+            "bbox": [
+              0,
+              0,
+              1918,
+              416
+            ],
+            "your notes": "The ceiling is white and appears to be flat."
+          },
+          {
+            "label": "ceiling light",
+            "visual caption": "A small, white square ceiling light.",
+            "bbox": [
+              862,
+              171,
+              908,
+              194
+            ],
+            "your notes": "The ceiling light is a small, white rectangle or square."
+          }
+        ]
+      }
+    ],
+    "token_count": [
+      {
+        "prompt_token_count": 9672,
+        "candidates_token_count": 36
+      },
+      {
+        "prompt_token_count": 20438,
+        "candidates_token_count": 91
+      }
+    ]
+  },
+  {
+    "question": "What is the large, round, and black object on the wall?",
+    "answer": "A clock",
+    "pred_answer": "Cabinet doorknob.",
+    "question_id": [
+      "0c6b5dce-8baf-4d95-b7ca-26fe915c4bd7"
+    ],
+    "category": "object recognition",
+    "episode_history": "hm3d-v0/001-hm3d-TPhiubUHKcP",
+    "api_logs": [
+      {
+        "call_type": "analyze_frame",
+        "query": "What is the large, round, and black object on the wall?",
+        "keyframe_path": "/pub3/qasim/hm3d/data/frames/001-hm3d-TPhiubUHKcP/00115-rgb.png",
+        "response": [
+          {
+            "label": "small round object",
+            "visual caption": "A small, round, light-colored object.",
+            "bbox": [
+              1246,
+              601,
+              1407,
+              678
+            ],
+            "your notes": "This small, round object is light-colored, but is not on the wall, it sits on the surface below the mirror."
+          },
+          {
+            "label": "wall switch",
+            "visual caption": "A white wall switch on the wall.",
+            "bbox": [
+              1703,
+              347,
+              1825,
+              516
+            ],
+            "your notes": "This is a white, rectangular switch on the wall. It is not large, round, or black."
+          }
+        ]
+      }
+    ],
+    "token_count": [
+      {
+        "prompt_token_count": 7031,
+        "candidates_token_count": 121
+      },
+      {
+        "prompt_token_count": 14373,
+        "candidates_token_count": 235
+      }
+    ]
+  },
+  {
+    "question": "What shape are the door knobs?",
+    "answer": "Round or spherical",
+    "pred_answer": "Round.",
+    "question_id": [
+      "e816a1f9-af6c-4901-8d54-4ddaa2a60dc3"
+    ],
+    "category": "attribute recognition",
+    "episode_history": "hm3d-v0/001-hm3d-TPhiubUHKcP",
+    "api_logs": [
+      {
+        "call_type": "analyze_frame",
+        "query": "what is the shape of the door knobs on the wooden closet?",
+        "keyframe_path": "/pub3/qasim/hm3d/data/frames/001-hm3d-TPhiubUHKcP/00000-rgb.png",
+        "response": [
+          {
+            "label": "door knob",
+            "visual caption": "A small dark-colored knob on the wood door.",
+            "bbox": [
+              1011,
+              827,
+              1056,
+              853
+            ],
+            "your notes": "The door knob is dark and appears to be round."
+          },
+          {
+            "label": "door knob",
+            "visual caption": "A small dark-colored knob on the wood door.",
+            "bbox": [
+              1342,
+              824,
+              1407,
+              857
+            ],
+            "your notes": "The door knob is dark and appears to be round."
+          }
+        ]
+      }
+    ],
+    "token_count": [
+      {
+        "prompt_token_count": 7024,
+        "candidates_token_count": 41
+      },
+      {
+        "prompt_token_count": 14401,
+        "candidates_token_count": 93
+      }
+    ]
+  },
+  {
+    "question": "What type of flooring does this house feature?",
+    "answer": "Wood panels",
+    "pred_answer": "Wooden flooring.",
+    "question_id": [
+      "19baf626-2db5-4fb0-a7ad-02896fa77b18"
+    ],
+    "category": "attribute recognition",
+    "episode_history": "hm3d-v0/001-hm3d-TPhiubUHKcP",
+    "api_logs": [
+      {
+        "call_type": "analyze_frame",
+        "query": "What type of flooring is visible?",
+        "keyframe_path": "/pub3/qasim/hm3d/data/frames/001-hm3d-TPhiubUHKcP/00035-rgb.png",
+        "response": [
+          {
+            "label": "wooden floor",
+            "visual caption": "A portion of a wooden floor with orange hue.",
+            "bbox": [
+              1566,
+              972,
+              1754,
+              1078
+            ],
+            "your notes": "The floor appears to be made of wood. The color tone suggests that it might be made of a light wood type."
+          },
+          {
+            "label": "wooden floor",
+            "visual caption": "A section of a wooden floor with orange hue.",
+            "bbox": [
+              1708,
+              1056,
+              1885,
+              1078
+            ],
+            "your notes": "The floor appears to be made of wood. The color tone suggests that it might be made of a light wood type."
+          }
+        ]
+      }
+    ],
+    "token_count": [
+      {
+        "prompt_token_count": 7026,
+        "candidates_token_count": 35
+      },
+      {
+        "prompt_token_count": 14452,
+        "candidates_token_count": 156
+      }
+    ]
+  },
+  {
+    "question": "What is to the left of the mirror?",
+    "answer": "A plant in a tall vase",
+    "pred_answer": "Vase and part of cabinet.",
+    "question_id": [
+      "b6dcf043-30a6-4b4e-9787-9b29bd1b1703"
+    ],
+    "category": "spatial understanding",
+    "episode_history": "hm3d-v0/001-hm3d-TPhiubUHKcP",
+    "api_logs": [
+      {
+        "call_type": "analyze_frame",
+        "query": "What is to the left of the mirror?",
+        "keyframe_path": "/pub3/qasim/hm3d/data/frames/001-hm3d-TPhiubUHKcP/00115-rgb.png",
+        "response": [
+          {
+            "label": "tall vase",
+            "visual caption": "A tall white vase with green grass-like decorations",
+            "bbox": [
+              495,
+              4,
+              864,
+              645
+            ],
+            "your notes": "The vase is to the left of the mirror. The vase is tall and has a narrow base, with the grass extending upwards and outwards."
+          },
+          {
+            "label": "cabinet",
+            "visual caption": "A black cabinet with two rows of storage and silver knobs",
+            "bbox": [
+              574,
+              638,
+              1438,
+              1078
+            ],
+            "your notes": "The top of the black cabinet extends under the bottom edge of the mirror. A portion of the cabinet is to the left of the mirror."
+          },
+          {
+            "label": "wall",
+            "visual caption": "A light colored wall.",
+            "bbox": [
+              0,
+              0,
+              608,
+              1078
+            ],
+            "your notes": "The left side of the mirror is placed on the wall."
+          }
+        ]
+      }
+    ],
+    "token_count": [
+      {
+        "prompt_token_count": 7026,
+        "candidates_token_count": 70
+      },
+      {
+        "prompt_token_count": 14410,
+        "candidates_token_count": 121
+      }
+    ]
+  },
+  {
+    "question": "What is to the left of the staircase?",
+    "answer": "A storage closet",
+    "pred_answer": "A closet door and wall.",
+    "question_id": [
+      "5460114d-e885-4eae-8bdc-a273deb3df0a"
+    ],
+    "category": "spatial understanding",
+    "episode_history": "hm3d-v0/001-hm3d-TPhiubUHKcP",
+    "api_logs": [
+      {
+        "call_type": "analyze_frame",
+        "query": "What is to the left of the staircase?",
+        "keyframe_path": "/pub3/qasim/hm3d/data/frames/001-hm3d-TPhiubUHKcP/00090-rgb.png",
+        "response": [
+          {
+            "label": "closet door",
+            "visual caption": "A dark colored closet door with horizontal slats.",
+            "bbox": [
+              585,
+              156,
+              912,
+              1005
+            ],
+            "your notes": "This closet door is directly to the left of the staircase in the image."
+          },
+          {
+            "label": "wall",
+            "visual caption": "A large, dark wall.",
+            "bbox": [
+              0,
+              0,
+              495,
+              1078
+            ],
+            "your notes": "This dark wall is to the left of the closet door, and thus also left of the staircase."
+          }
+        ]
+      }
+    ],
+    "token_count": [
+      {
+        "prompt_token_count": 7026,
+        "candidates_token_count": 46
+      },
+      {
+        "prompt_token_count": 14083,
+        "candidates_token_count": 251
+      }
+    ]
+  },
+  {
+    "question": "Are the cabinets below the mirror closed?",
+    "answer": "Yes.",
+    "pred_answer": "Yes, the cabinets are closed.",
+    "question_id": [
+      "d16b6600-beb5-4bf4-8045-d018b75eefb1"
+    ],
+    "category": "object state recognition",
+    "episode_history": "hm3d-v0/001-hm3d-TPhiubUHKcP",
+    "api_logs": [
+      {
+        "call_type": "analyze_frame",
+        "query": "Are the cabinets below the mirror closed?",
+        "keyframe_path": "/pub3/qasim/hm3d/data/frames/001-hm3d-TPhiubUHKcP/00115-rgb.png",
+        "response": [
+          {
+            "label": "black cabinet",
+            "visual caption": "A dark black cabinet with visible doors and silver knobs.",
+            "bbox": [
+              572,
+              641,
+              1428,
+              1080
+            ],
+            "your notes": "The cabinet doors are all aligned with the cabinet frame and do not appear to be ajar."
+          }
+        ]
+      }
+    ],
+    "token_count": [
+      {
+        "prompt_token_count": 7025,
+        "candidates_token_count": 16
+      },
+      {
+        "prompt_token_count": 13918,
+        "candidates_token_count": 150
+      }
+    ]
+  },
+  {
+    "question": "Is the bedroom door open?",
+    "answer": "Yes",
+    "pred_answer": "Yes, the door is open.",
+    "question_id": [
+      "21f8ed6a-4ca4-465f-986d-c4390984d8a9"
+    ],
+    "category": "object state recognition",
+    "episode_history": "hm3d-v0/001-hm3d-TPhiubUHKcP",
+    "api_logs": [
+      {
+        "call_type": "analyze_frame",
+        "query": "Is the doorway open or closed?",
+        "keyframe_path": "/pub3/qasim/hm3d/data/frames/001-hm3d-TPhiubUHKcP/00035-rgb.png",
+        "response": [
+          {
+            "label": "doorway frame",
+            "visual caption": "A light-colored door frame with a rectangular opening.",
+            "bbox": [
+              1672,
+              2,
+              1916,
+              1075
+            ],
+            "your notes": "The door frame is visible on the right side of the image. The door is open, revealing a glimpse of the room beyond."
+          }
+        ]
+      }
+    ],
+    "token_count": [
+      {
+        "prompt_token_count": 7023,
+        "candidates_token_count": 41
+      },
+      {
+        "prompt_token_count": 13986,
+        "candidates_token_count": 164
+      }
+    ]
+  },
+  {
+    "question": "Where is the mirror?",
+    "answer": "Next to the staircase above the dark brown cabinet",
+    "pred_answer": "Above a cabinet, near stairs.",
+    "question_id": [
+      "501c3264-ca08-487d-a038-0e83968359f6"
+    ],
+    "category": "object localization",
+    "episode_history": "hm3d-v0/001-hm3d-TPhiubUHKcP",
+    "api_logs": [
+      {
+        "call_type": "analyze_frame",
+        "query": "What is the relationship between the mirror and other objects?",
+        "keyframe_path": "/pub3/qasim/hm3d/data/frames/001-hm3d-TPhiubUHKcP/00115-rgb.png",
+        "response": [
+          {
+            "label": "framed mirror",
+            "visual caption": "A rectangular mirror with a distressed wooden frame.",
+            "bbox": [
+              873,
+              16,
+              1428,
+              616
+            ],
+            "your notes": "The mirror is the main reflective surface in the image. It reflects a hallway or room and has its own frame and has a slightly angled orientation on the wall."
+          },
+          {
+            "label": "tall vase",
+            "visual caption": "A tall, narrow white vase with dark green decorative stalks.",
+            "bbox": [
+              433,
+              10,
+              860,
+              643
+            ],
+            "your notes": "The vase is placed to the left of the mirror and appears to be in front of the wall. It is taller than the height of the cabinet and mirror and its height exceeds the top of the mirror."
+          },
+          {
+            "label": "dark cabinet",
+            "visual caption": "A dark cabinet with two rows of drawers and silver knobs.",
+            "bbox": [
+              579,
+              637,
+              1445,
+              1078
+            ],
+            "your notes": "The cabinet is directly beneath the mirror. The vase is placed on top of the cabinet's surface. It is a solid, dark-colored object that provides a base for the vase and mirror."
+          },
+          {
+            "label": "small bowl",
+            "visual caption": "A small, light-colored bowl.",
+            "bbox": [
+              1234,
+              589,
+              1399,
+              679
+            ],
+            "your notes": "The bowl is placed on the right side of the cabinet top, adjacent to the mirror and right of the vase."
+          },
+          {
+            "label": "wall switch",
+            "visual caption": "A rectangular light switch on the wall.",
+            "bbox": [
+              1703,
+              348,
+              1824,
+              514
+            ],
+            "your notes": "The light switch is placed to the right of the mirror on the wall. It is flat and protrudes only slightly from the wall."
+          }
+        ]
+      }
+    ],
+    "token_count": [
+      {
+        "prompt_token_count": 7022,
+        "candidates_token_count": 48
+      },
+      {
+        "prompt_token_count": 14742,
+        "candidates_token_count": 232
+      }
+    ]
+  },
+  {
+    "question": "What is the green object in the left of the garage?",
+    "answer": "A hose",
+    "pred_answer": "A coiled garden hose.",
+    "question_id": [
+      "564d876c-44f1-4915-8d4b-ab5a7728494f"
+    ],
+    "category": "object recognition",
+    "episode_history": "hm3d-v0/002-hm3d-wcojb4TFT35",
+    "api_logs": [
+      {
+        "call_type": "analyze_frame",
+        "query": "what is the green object near the car?",
+        "keyframe_path": "/pub3/qasim/hm3d/data/frames/002-hm3d-wcojb4TFT35/00075-rgb.png",
+        "response": [
+          {
+            "label": "coiled garden hose",
+            "visual caption": "A green coiled garden hose hanging on a wall.",
+            "bbox": [
+              328,
+              316,
+              476,
+              488
+            ],
+            "your notes": "The green object is a coiled garden hose hanging on a wall. The car appears to be in front of the object in the image."
+          }
+        ]
+      }
+    ],
+    "token_count": [
+      {
+        "prompt_token_count": 7557,
+        "candidates_token_count": 38
+      },
+      {
+        "prompt_token_count": 15113,
+        "candidates_token_count": 130
+      }
+    ]
+  },
+  {
+    "question": "What is the bin with the yellow lid?",
+    "answer": "A recycling bin",
+    "pred_answer": "Both trash cans have yellow lids.",
+    "question_id": [
+      "77c6644e-6018-4ef3-a683-276d3d2af67f"
+    ],
+    "category": "object recognition",
+    "episode_history": "hm3d-v0/002-hm3d-wcojb4TFT35",
+    "api_logs": [
+      {
+        "call_type": "analyze_frame",
+        "query": "what color are the lids of the bins?",
+        "keyframe_path": "/pub3/qasim/hm3d/data/frames/002-hm3d-wcojb4TFT35/00035-rgb.png",
+        "response": [
+          {
+            "label": "bin lid",
+            "visual caption": "A yellow rectangular bin lid.",
+            "bbox": [
+              19,
+              24,
+              595,
+              299
+            ],
+            "your notes": "This is the lid of the left bin. The lid is yellow."
+          },
+          {
+            "label": "bin lid",
+            "visual caption": "A yellow rectangular bin lid.",
+            "bbox": [
+              211,
+              532,
+              426,
+              658
+            ],
+            "your notes": "This is the lid of the right bin. The lid is yellow."
+          }
+        ]
+      }
+    ],
+    "token_count": [
+      {
+        "prompt_token_count": 7554,
+        "candidates_token_count": 29
+      },
+      {
+        "prompt_token_count": 15494,
+        "candidates_token_count": 120
+      }
+    ]
+  },
+  {
+    "question": "What color is the car?",
+    "answer": "Blue",
+    "pred_answer": "The car is blue.",
+    "question_id": [
+      "a86ef102-5500-4fbf-8fae-cdbeb20a3b7b"
+    ],
+    "category": "attribute recognition",
+    "episode_history": "hm3d-v0/002-hm3d-wcojb4TFT35",
+    "api_logs": [
+      {
+        "call_type": "analyze_frame",
+        "query": "What color is the car?",
+        "keyframe_path": "/pub3/qasim/hm3d/data/frames/002-hm3d-wcojb4TFT35/00000-rgb.png",
+        "response": [
+          {
+            "label": "car body",
+            "visual caption": "The body of a car, with a visible tire and door handle.",
+            "bbox": [
+              0,
+              369,
+              758,
+              1078
+            ],
+            "your notes": "The car's body is mostly blue. The visible portion includes the door, tire, and part of the hood."
+          }
+        ]
+      }
+    ],
+    "token_count": [
+      {
+        "prompt_token_count": 7551,
+        "candidates_token_count": 28
+      },
+      {
+        "prompt_token_count": 15080,
+        "candidates_token_count": 102
+      }
+    ]
+  },
+  {
+    "question": "What material is the floor?",
+    "answer": "concrete",
+    "pred_answer": "Concrete.",
+    "question_id": [
+      "438e8c6f-f27d-4d3d-b13d-6f41c2981c2a"
+    ],
+    "category": "attribute recognition",
+    "episode_history": "hm3d-v0/002-hm3d-wcojb4TFT35",
+    "api_logs": [
+      {
+        "call_type": "analyze_frame",
+        "query": "What is the material of the floor?",
+        "keyframe_path": "/pub3/qasim/hm3d/data/frames/002-hm3d-wcojb4TFT35/00000-rgb.png",
+        "response": [
+          {
+            "label": "garage floor",
+            "visual caption": "A concrete floor in a garage",
+            "bbox": [
+              3,
+              513,
+              1839,
+              1075
+            ],
+            "your notes": "The floor appears to be made of concrete, with a light brown or gray tone."
+          }
+        ]
+      }
+    ],
+    "token_count": [
+      {
+        "prompt_token_count": 7551,
+        "candidates_token_count": 33
+      },
+      {
+        "prompt_token_count": 15242,
+        "candidates_token_count": 125
+      }
+    ]
+  },
+  {
+    "question": "What is on the top shelf to the right side of the garage?",
+    "answer": "An ice cooler",
+    "pred_answer": "Green box, dark item, white container.",
+    "question_id": [
+      "9b4a7fbb-680d-4e39-8d60-7b1e521f3108"
+    ],
+    "category": "spatial understanding",
+    "episode_history": "hm3d-v0/002-hm3d-wcojb4TFT35",
+    "api_logs": [
+      {
+        "call_type": "analyze_frame",
+        "query": "what is on the top shelf on the right side of the garage?",
+        "keyframe_path": "/pub3/qasim/hm3d/data/frames/002-hm3d-wcojb4TFT35/00000-rgb.png",
+        "response": [
+          {
+            "label": "shelf contents",
+            "visual caption": "A green box, a dark item, and a white container on a brown shelf",
+            "bbox": [
+              1503,
+              129,
+              1706,
+              207
+            ],
+            "your notes": "On the top shelf on the right side of the garage there is a green box, a dark item, and a white container."
+          }
+        ]
+      }
+    ],
+    "token_count": [
+      {
+        "prompt_token_count": 7559,
+        "candidates_token_count": 47
+      },
+      {
+        "prompt_token_count": 15319,
+        "candidates_token_count": 124
+      }
+    ]
+  },
+  {
+    "question": "Is the garbage bin open?",
+    "answer": "Yes.",
+    "pred_answer": "Yes, the garbage bins are slightly open.",
+    "question_id": [
+      "35bfcf60-4227-4bbb-9213-e1bf643b2325"
+    ],
+    "category": "object state recognition",
+    "episode_history": "hm3d-v0/002-hm3d-wcojb4TFT35",
+    "api_logs": [
+      {
+        "call_type": "analyze_frame",
+        "query": "Is the garbage bin open?",
+        "keyframe_path": "/pub3/qasim/hm3d/data/frames/002-hm3d-wcojb4TFT35/00005-rgb.png",
+        "response": [
+          {
+            "label": "brown garbage bin",
+            "visual caption": "A tall, brown garbage bin with a slightly open lid.",
+            "bbox": [
+              1128,
+              536,
+              1248,
+              725
+            ],
+            "your notes": "The garbage bin is tall and brown. The lid is slightly open, revealing the interior of the bin. This bin is located in the back of the garage area, to the right of a grey trash bag"
+          },
+          {
+            "label": "yellow garbage bin",
+            "visual caption": "A tall, yellow garbage bin with a slightly open lid.",
+            "bbox": [
+              1257,
+              540,
+              1376,
+              736
+            ],
+            "your notes": "The garbage bin is tall and yellow. The lid is slightly open, revealing the interior of the bin. This bin is located in the back of the garage area, to the right of the brown bin"
+          }
+        ]
+      }
+    ],
+    "token_count": [
+      {
+        "prompt_token_count": 7551,
+        "candidates_token_count": 29
+      },
+      {
+        "prompt_token_count": 15214,
+        "candidates_token_count": 206
+      }
+    ]
+  },
+  {
+    "question": "Is the house doorway open or closed?q",
+    "answer": "Open",
+    "pred_answer": "The doorway is open.",
+    "question_id": [
+      "3a803472-47cd-4903-8380-d0b00efbbf08"
+    ],
+    "category": "object state recognition",
+    "episode_history": "hm3d-v0/002-hm3d-wcojb4TFT35",
+    "api_logs": [
+      {
+        "call_type": "analyze_frame",
+        "query": "Is the doorway open or closed?",
+        "keyframe_path": "/pub3/qasim/hm3d/data/frames/002-hm3d-wcojb4TFT35/00020-rgb.png",
+        "response": [
+          {
+            "label": "doorway",
+            "visual caption": "A doorway with a white frame.",
+            "bbox": [
+              948,
+              78,
+              1244,
+              828
+            ],
+            "your notes": "The doorway is visible and there is no door present. The view through the doorway reveals a room behind it. This suggests that the doorway is open."
+          },
+          {
+            "label": "door frame",
+            "visual caption": "A white door frame.",
+            "bbox": [
+              942,
+              81,
+              1280,
+              868
+            ],
+            "your notes": "The door frame is visible but the actual door is not present."
+          }
+        ]
+      }
+    ],
+    "token_count": [
+      {
+        "prompt_token_count": 7554,
+        "candidates_token_count": 40
+      },
+      {
+        "prompt_token_count": 15175,
+        "candidates_token_count": 136
+      }
+    ]
+  },
+  {
+    "question": "What can I use to water my plants?",
+    "answer": "The green hose",
+    "pred_answer": "A green garden hose.",
+    "question_id": [
+      "87019892-7a7f-4ce0-b1e6-4c0d6e87b90a"
+    ],
+    "category": "functional reasoning",
+    "episode_history": "hm3d-v0/002-hm3d-wcojb4TFT35",
+    "api_logs": [
+      {
+        "call_type": "analyze_frame",
+        "query": "Is there a hose and can it be used to water plants?",
+        "keyframe_path": "/pub3/qasim/hm3d/data/frames/002-hm3d-wcojb4TFT35/00075-rgb.png",
+        "response": [
+          {
+            "label": "green hose",
+            "visual caption": "A coiled green hose hanging on a wall.",
+            "bbox": [
+              312,
+              320,
+              464,
+              491
+            ],
+            "your notes": "The hose appears to be a garden hose."
+          }
+        ]
+      }
+    ],
+    "token_count": [
+      {
+        "prompt_token_count": 7554,
+        "candidates_token_count": 57
+      },
+      {
+        "prompt_token_count": 15105,
+        "candidates_token_count": 118
+      }
+    ]
+  },
+  {
+    "question": "What can I use to keep drinks cold at a picnic?",
+    "answer": "The blue cooler",
+    "pred_answer": "Unable to determine.",
+    "question_id": [
+      "6fddec60-f221-4944-88c3-a132dfbfd1ed"
+    ],
+    "category": "functional reasoning",
+    "episode_history": "hm3d-v0/002-hm3d-wcojb4TFT35",
+    "api_logs": [],
+    "token_count": [
+      {
+        "prompt_token_count": 7557,
+        "candidates_token_count": 221
+      }
+    ]
+  },
+  {
+    "question": "What type of car is in the garage?",
+    "answer": "A sedan",
+    "pred_answer": "Dark blue or black sedan.",
+    "question_id": [
+      "7f15d867-8ba6-47fa-9bca-9d9ae64046b7"
+    ],
+    "category": "world knowledge",
+    "episode_history": "hm3d-v0/002-hm3d-wcojb4TFT35",
+    "api_logs": [
+      {
+        "call_type": "analyze_frame",
+        "query": "What is the color and style of the car?",
+        "keyframe_path": "/pub3/qasim/hm3d/data/frames/002-hm3d-wcojb4TFT35/00000-rgb.png",
+        "response": [
+          {
+            "label": "car",
+            "visual caption": "A dark colored car with silver rims",
+            "bbox": [
+              0,
+              375,
+              766,
+              1080
+            ],
+            "your notes": "The car appears to be a dark blue or black sedan. The rims are silver in color."
+          }
+        ]
+      }
+    ],
+    "token_count": [
+      {
+        "prompt_token_count": 7554,
+        "candidates_token_count": 37
+      },
+      {
+        "prompt_token_count": 15079,
+        "candidates_token_count": 133
+      }
+    ]
+  },
+  {
+    "question": "Which bin should I put paper in?",
+    "answer": "The bin with the yellow lid.",
+    "pred_answer": "Unable to determine.",
+    "question_id": [
+      "025257b6-8b7e-4f6f-aacc-1788069cbfad"
+    ],
+    "category": "world knowledge",
+    "episode_history": "hm3d-v0/002-hm3d-wcojb4TFT35",
+    "api_logs": [
+      {
+        "call_type": "analyze_frame",
+        "query": "what type of bins are visible?",
+        "keyframe_path": "/pub3/qasim/hm3d/data/frames/002-hm3d-wcojb4TFT35/00005-rgb.png",
+        "response": [
+          {
+            "label": "brown bin",
+            "visual caption": "A brown, large, rectangular bin with a lid",
+            "bbox": [
+              1128,
+              533,
+              1248,
+              673
+            ],
+            "your notes": "This is a trash bin with a brown color and a rectangular body. It's likely a standard outdoor bin."
+          },
+          {
+            "label": "yellow bin",
+            "visual caption": "A yellow, large, rectangular bin with a lid",
+            "bbox": [
+              1255,
+              535,
+              1376,
+              738
+            ],
+            "your notes": "This is a large bin with a yellow lid and brown body. It appears to be a waste container."
+          }
+        ]
+      }
+    ],
+    "token_count": [
+      {
+        "prompt_token_count": 7553,
+        "candidates_token_count": 29
+      },
+      {
+        "prompt_token_count": 15173,
+        "candidates_token_count": 166
+      }
+    ]
+  },
+  {
+    "question": "Where is the garage opener?",
+    "answer": "To the left of the house doorway",
+    "pred_answer": "On the ceiling.",
+    "question_id": [
+      "28ea4932-55bf-44b3-9a48-73fde896b8ce"
+    ],
+    "category": "object localization",
+    "episode_history": "hm3d-v0/002-hm3d-wcojb4TFT35",
+    "api_logs": [
+      {
+        "call_type": "analyze_frame",
+        "query": "what is the content of the hanging tools?",
+        "keyframe_path": "/pub3/qasim/hm3d/data/frames/002-hm3d-wcojb4TFT35/00045-rgb.png",
+        "response": [
+          {
+            "label": "hanging tool",
+            "visual caption": "A black and red set of jumper cables hanging from a wall",
+            "bbox": [
+              1109,
+              383,
+              1345,
+              698
+            ],
+            "your notes": "The cables are thick and black with red ends."
+          },
+          {
+            "label": "hanging tool",
+            "visual caption": "A black object hanging on a wall",
+            "bbox": [
+              1355,
+              396,
+              1438,
+              598
+            ],
+            "your notes": "The object has a dark color and appears to be fabric."
+          }
+        ]
+      },
+      {
+        "call_type": "analyze_frame",
+        "query": "is there a garage door opener in this frame?",
+        "keyframe_path": "/pub3/qasim/hm3d/data/frames/002-hm3d-wcojb4TFT35/00000-rgb.png",
+        "response": [
+          {
+            "label": "garage door opener",
+            "visual caption": "A white device hanging from the ceiling with a white cord attached to it.",
+            "bbox": [
+              581,
+              19,
+              771,
+              177
+            ],
+            "your notes": "The object appears to be a garage door opener. It is attached to the ceiling. The cable going down is typical of these devices"
+          }
+        ]
+      }
+    ],
+    "token_count": [
+      {
+        "prompt_token_count": 7551,
+        "candidates_token_count": 42
+      },
+      {
+        "prompt_token_count": 15161,
+        "candidates_token_count": 93
+      },
+      {
+        "prompt_token_count": 23216,
+        "candidates_token_count": 98
+      }
+    ]
+  },
+  {
+    "question": "Where is the broom?",
+    "answer": "Below the garage door opener",
+    "pred_answer": "Near the doorway and electrical outlet.",
+    "question_id": [
+      "30d3104b-cc05-4860-83e8-255fe8311662"
+    ],
+    "category": "object localization",
+    "episode_history": "hm3d-v0/002-hm3d-wcojb4TFT35",
+    "api_logs": [
+      {
+        "call_type": "analyze_frame",
+        "query": "Where are the brooms and mops?",
+        "keyframe_path": "/pub3/qasim/hm3d/data/frames/002-hm3d-wcojb4TFT35/00025-rgb.png",
+        "response": [
+          {
+            "label": "red broom",
+            "visual caption": "A broom with a red handle and yellow bristles leaning against the wall.",
+            "bbox": [
+              965,
+              473,
+              1107,
+              977
+            ],
+            "your notes": "Located near the doorway, with a long red handle and yellow bristles."
+          },
+          {
+            "label": "yellow broom",
+            "visual caption": "A broom with a yellow and brown handle leaning against the wall.",
+            "bbox": [
+              1445,
+              844,
+              1678,
+              1077
+            ],
+            "your notes": "Located near the electrical outlet, it has a yellow and brown handle."
+          },
+          {
+            "label": "blue brush",
+            "visual caption": "A blue brush with a long handle leaning against the wall.",
+            "bbox": [
+              625,
+              822,
+              802,
+              979
+            ],
+            "your notes": "Located near the door, this blue brush is used for cleaning."
+          }
+        ]
+      }
+    ],
+    "token_count": [
+      {
+        "prompt_token_count": 7550,
+        "candidates_token_count": 66
+      },
+      {
+        "prompt_token_count": 15856,
+        "candidates_token_count": 93
+      }
+    ]
+  },
+  {
+    "question": "What is the object to the left of the bed?",
+    "answer": "A radiator",
+    "pred_answer": "Radiator and wardrobe.",
+    "question_id": [
+      "23fb241e-989a-4299-a3fb-8d41f7156397"
+    ],
+    "category": "object recognition",
+    "episode_history": "hm3d-v0/003-hm3d-c5eTyR3Rxyh",
+    "api_logs": [
+      {
+        "call_type": "analyze_frame",
+        "query": "What is to the left of the bed?",
+        "keyframe_path": "/pub3/qasim/hm3d/data/frames/003-hm3d-c5eTyR3Rxyh/00035-rgb.png",
+        "response": [
+          {
+            "label": "white radiator",
+            "visual caption": "A white radiator with vertical bars.",
+            "bbox": [
+              631,
+              548,
+              988,
+              773
+            ],
+            "your notes": "The radiator is situated along the wall to the left of the bed. It is white and has a ribbed design."
+          },
+          {
+            "label": "white wardrobe",
+            "visual caption": "A white wardrobe with gold handles.",
+            "bbox": [
+              170,
+              176,
+              604,
+              757
+            ],
+            "your notes": "The wardrobe is a tall, white piece of furniture, located further left than the radiator, and partially out of view."
+          },
+          {
+            "label": "carpeted floor",
+            "visual caption": "A light grey carpeted floor.",
+            "bbox": [
+              3,
+              616,
+              1914,
+              1075
+            ],
+            "your notes": "The carpeted floor stretches across the room, under the bed and other items."
+          }
+        ]
+      }
+    ],
+    "token_count": [
+      {
+        "prompt_token_count": 7941,
+        "candidates_token_count": 42
+      },
+      {
+        "prompt_token_count": 16433,
+        "candidates_token_count": 165
+      }
+    ]
+  },
+  {
+    "question": "What is above the sink?",
+    "answer": "A mirror ",
+    "pred_answer": "A framed artwork.",
+    "question_id": [
+      "96d7f5ef-14b2-432a-8b85-21a0621e41a4"
+    ],
+    "category": "object recognition",
+    "episode_history": "hm3d-v0/003-hm3d-c5eTyR3Rxyh",
+    "api_logs": [
+      {
+        "call_type": "analyze_frame",
+        "query": "What is above the sink?",
+        "keyframe_path": "/pub3/qasim/hm3d/data/frames/003-hm3d-c5eTyR3Rxyh/00025-rgb.png",
+        "response": [
+          {
+            "label": "framed artwork",
+            "visual caption": "A framed artwork with a black frame and pink background depicting a cat.",
+            "bbox": [
+              827,
+              160,
+              1011,
+              487
+            ],
+            "your notes": "This framed artwork is on the wall above the radiator and to the left of the bathroom door."
+          },
+          {
+            "label": "framed artwork",
+            "visual caption": "A framed artwork with a black frame and pink background depicting bees.",
+            "bbox": [
+              1023,
+              139,
+              1259,
+              481
+            ],
+            "your notes": "This framed artwork is on the wall above the radiator and to the right of the other artwork."
+          },
+          {
+            "label": "framed artwork",
+            "visual caption": "A framed artwork with a black frame and drawing.",
+            "bbox": [
+              1526,
+              275,
+              1758,
+              599
+            ],
+            "your notes": "This framed artwork is on the wall above the sink."
+          }
+        ]
+      }
+    ],
+    "token_count": [
+      {
+        "prompt_token_count": 7936,
+        "candidates_token_count": 80
+      },
+      {
+        "prompt_token_count": 16245,
+        "candidates_token_count": 126
+      }
+    ]
+  },
+  {
+    "question": "What shape is the mirror?",
+    "answer": "An oval",
+    "pred_answer": "No mirror visible.",
+    "question_id": [
+      "915cb310-31be-4114-846c-242fc59b581d"
+    ],
+    "category": "attribute recognition",
+    "episode_history": "hm3d-v0/003-hm3d-c5eTyR3Rxyh",
+    "api_logs": [
+      {
+        "call_type": "analyze_frame",
+        "query": "What shape is the mirror?",
+        "keyframe_path": "/pub3/qasim/hm3d/data/frames/003-hm3d-c5eTyR3Rxyh/00025-rgb.png",
+        "response": [
+          {
+            "label": "wall art",
+            "visual caption": "a black framed picture on the wall",
+            "bbox": [
+              1518,
+              318,
+              1762,
+              598
+            ],
+            "your notes": "the framed art appears to be a rectangle"
+          }
+        ]
+      }
+    ],
+    "token_count": [
+      {
+        "prompt_token_count": 7936,
+        "candidates_token_count": 53
+      },
+      {
+        "prompt_token_count": 16018,
+        "candidates_token_count": 96
+      }
+    ]
+  },
+  {
+    "question": "What color is the bed comforter?",
+    "answer": "Brown",
+    "pred_answer": "Light brown.",
+    "question_id": [
+      "d7019200-5300-459e-a2c1-b54d5ec0a80b"
+    ],
+    "category": "attribute recognition",
+    "episode_history": "hm3d-v0/003-hm3d-c5eTyR3Rxyh",
+    "api_logs": [
+      {
+        "call_type": "analyze_frame",
+        "query": "What color is the bed comforter?",
+        "keyframe_path": "/pub3/qasim/hm3d/data/frames/003-hm3d-c5eTyR3Rxyh/00035-rgb.png",
+        "response": [
+          {
+            "label": "bed comforter",
+            "visual caption": "A light brown bed comforter.",
+            "bbox": [
+              912,
+              699,
+              1603,
+              951
+            ],
+            "your notes": "The bed comforter is light brown."
+          }
+        ]
+      }
+    ],
+    "token_count": [
+      {
+        "prompt_token_count": 7937,
+        "candidates_token_count": 42
+      },
+      {
+        "prompt_token_count": 16160,
+        "candidates_token_count": 137
+      }
+    ]
+  },
+  {
+    "question": "Does the bedroom have a lot of furniture?",
+    "answer": "No",
+    "pred_answer": "No, it has moderate furniture.",
+    "question_id": [
+      "6be2fe87-f20c-48a2-a8fb-161362d86e2a"
+    ],
+    "category": "spatial understanding",
+    "episode_history": "hm3d-v0/003-hm3d-c5eTyR3Rxyh",
+    "api_logs": [
+      {
+        "call_type": "analyze_frame",
+        "query": "what is in the bedroom?",
+        "keyframe_path": "/pub3/qasim/hm3d/data/frames/003-hm3d-c5eTyR3Rxyh/00035-rgb.png",
+        "response": [
+          {
+            "label": "bed with headboard",
+            "visual caption": "A bed with a gray headboard, gray sheets, and two gray pillows.",
+            "bbox": [
+              961,
+              213,
+              1622,
+              1056
+            ],
+            "your notes": "The bed is centrally located and dominates the right side of the room. It features a dark headboard, light gray sheets and a pair of gray pillows. The bed frame appears to be dark."
+          },
+          {
+            "label": "wall art",
+            "visual caption": "Two framed pieces of wall art with abstract designs.",
+            "bbox": [
+              1528,
+              97,
+              1731,
+              409
+            ],
+            "your notes": "Two framed pieces of art are hung side-by-side on the wall to the right of the bed. The art features abstract designs with reddish-orange and other colors, and the frames appear to be black."
+          },
+          {
+            "label": "light switch",
+            "visual caption": "A white light switch mounted on a wall.",
+            "bbox": [
+              78,
+              282,
+              199,
+              387
+            ],
+            "your notes": "A light switch is mounted on the wall to the left side."
+          },
+          {
+            "label": "radiator",
+            "visual caption": "A white, horizontal radiator under a wall.",
+            "bbox": [
+              554,
+              446,
+              1303,
+              618
+            ],
+            "your notes": "A white radiator is positioned on the wall under the wall between the bed and a closet."
+          },
+          {
+            "label": "closet",
+            "visual caption": "A white closet with golden handles.",
+            "bbox": [
+              456,
+              398,
+              576,
+              750
+            ],
+            "your notes": "A closet with multiple drawers and gold handles stands along the left wall. The closet is white."
+          }
+        ]
+      }
+    ],
+    "token_count": [
+      {
+        "prompt_token_count": 7939,
+        "candidates_token_count": 40
+      },
+      {
+        "prompt_token_count": 16702,
+        "candidates_token_count": 259
+      }
+    ]
+  },
+  {
+    "question": "Is there space under the bed for storage?",
+    "answer": "Yes",
+    "pred_answer": "No space under the bed.",
+    "question_id": [
+      "79dfe5ce-8a8c-47f3-a606-ab5ab4591c56"
+    ],
+    "category": "spatial understanding",
+    "episode_history": "hm3d-v0/003-hm3d-c5eTyR3Rxyh",
+    "api_logs": [
+      {
+        "call_type": "analyze_frame",
+        "query": "Is there space under the bed?",
+        "keyframe_path": "/pub3/qasim/hm3d/data/frames/003-hm3d-c5eTyR3Rxyh/00035-rgb.png",
+        "response": [
+          {
+            "label": "bed frame",
+            "visual caption": "A dark brown bed frame with a mattress and bedding.",
+            "bbox": [
+              975,
+              562,
+              1560,
+              1076
+            ],
+            "your notes": "The bed frame appears to be a solid base, which typically means there is no space under the bed itself. The bottom edge of the frame sits directly on the floor."
+          },
+          {
+            "label": "bed leg",
+            "visual caption": "A small silver bed leg.",
+            "bbox": [
+              1426,
+              973,
+              1491,
+              1048
+            ],
+            "your notes": "There is a small silver leg near the bed's corner, it does not create space under the bed."
+          }
+        ]
+      }
+    ],
+    "token_count": [
+      {
+        "prompt_token_count": 7939,
+        "candidates_token_count": 35
+      },
+      {
+        "prompt_token_count": 16320,
+        "candidates_token_count": 270
+      }
+    ]
+  },
+  {
+    "question": "Is the patio door open?",
+    "answer": "No.",
+    "pred_answer": "Yes, the patio door is open.",
+    "question_id": [
+      "bbb83d84-289c-4f1d-a470-772e5c823a90"
+    ],
+    "category": "object state recognition",
+    "episode_history": "hm3d-v0/003-hm3d-c5eTyR3Rxyh",
+    "api_logs": [
+      {
+        "call_type": "analyze_frame",
+        "query": "is the patio door open?",
+        "keyframe_path": "/pub3/qasim/hm3d/data/frames/003-hm3d-c5eTyR3Rxyh/00075-rgb.png",
+        "response": [
+          {
+            "label": "patio doors",
+            "visual caption": "A set of white framed glass doors.",
+            "bbox": [
+              894,
+              286,
+              1267,
+              815
+            ],
+            "your notes": "The glass portion of the doors are visible, with the view through the doors showing an exterior environment."
+          },
+          {
+            "label": "door curtain",
+            "visual caption": "A dark colored curtain to the left of the door.",
+            "bbox": [
+              800,
+              291,
+              908,
+              834
+            ],
+            "your notes": "The curtain is partially obscuring the left side of the door frame."
+          }
+        ]
+      }
+    ],
+    "token_count": [
+      {
+        "prompt_token_count": 7936,
+        "candidates_token_count": 30
+      },
+      {
+        "prompt_token_count": 16098,
+        "candidates_token_count": 179
+      }
+    ]
+  },
+  {
+    "question": "Are the lights turned on in the bedroom?",
+    "answer": "Yes.",
+    "pred_answer": "No, the lights are off.",
+    "question_id": [
+      "41ad08e1-cb46-4599-8beb-def3b0f91e34"
+    ],
+    "category": "object state recognition",
+    "episode_history": "hm3d-v0/003-hm3d-c5eTyR3Rxyh",
+    "api_logs": [
+      {
+        "call_type": "analyze_frame",
+        "query": "Are the lights on in the bedroom and is there a light fixture present?",
+        "keyframe_path": "/pub3/qasim/hm3d/data/frames/003-hm3d-c5eTyR3Rxyh/00035-rgb.png",
+        "response": [
+          {
+            "label": "ceiling light fixture",
+            "visual caption": "A circular light fixture on the ceiling.",
+            "bbox": [
+              600,
+              11,
+              635,
+              51
+            ],
+            "your notes": "The light fixture is present. It does not appear to be on as the light it casts is very faint if present at all, meaning the bulb is not on or the light it emits is not bright."
+          }
+        ]
+      }
+    ],
+    "token_count": [
+      {
+        "prompt_token_count": 7939,
+        "candidates_token_count": 91
+      },
+      {
+        "prompt_token_count": 16283,
+        "candidates_token_count": 130
+      }
+    ]
+  },
+  {
+    "question": "Where can I take a nap?",
+    "answer": "On the bed in the bedroom",
+    "pred_answer": "The bed in the bedroom.",
+    "question_id": [
+      "9ca30022-6b6c-4950-b91d-e90ee80f49d8"
+    ],
+    "category": "functional reasoning",
+    "episode_history": "hm3d-v0/003-hm3d-c5eTyR3Rxyh",
+    "api_logs": [
+      {
+        "call_type": "analyze_frame",
+        "query": "What are the features of the bed?",
+        "keyframe_path": "/pub3/qasim/hm3d/data/frames/003-hm3d-c5eTyR3Rxyh/00035-rgb.png",
+        "response": [
+          {
+            "label": "bed headboard",
+            "visual caption": "A dark gray rectangular headboard",
+            "bbox": [
+              912,
+              180,
+              1190,
+              491
+            ],
+            "your notes": "The headboard is dark gray and seems to be made of a cushioned material."
+          },
+          {
+            "label": "bed pillows",
+            "visual caption": "Two gray pillows on a bed",
+            "bbox": [
+              936,
+              407,
+              1176,
+              571
+            ],
+            "your notes": "There are two gray pillows positioned side by side on the bed."
+          },
+          {
+            "label": "bed cover",
+            "visual caption": "A light gray bed cover",
+            "bbox": [
+              915,
+              556,
+              1518,
+              960
+            ],
+            "your notes": "The bed is covered with a light gray cover."
+          },
+          {
+            "label": "bed frame",
+            "visual caption": "A dark gray bed frame",
+            "bbox": [
+              927,
+              839,
+              1557,
+              1068
+            ],
+            "your notes": "The bed frame is dark gray and appears to be a box frame."
+          }
+        ]
+      },
+      {
+        "call_type": "analyze_frame",
+        "query": "What are the features of the bed?",
+        "keyframe_path": "/pub3/qasim/hm3d/data/frames/003-hm3d-c5eTyR3Rxyh/00070-rgb.png",
+        "response": [
+          {
+            "label": "bed headboard",
+            "visual caption": "A dark grey padded headboard",
+            "bbox": [
+              1288,
+              412,
+              1906,
+              748
+            ],
+            "your notes": "The headboard is dark grey and appears to be made of a padded fabric material."
+          },
+          {
+            "label": "bed pillows",
+            "visual caption": "Two light grey pillows laying on the bed",
+            "bbox": [
+              1284,
+              591,
+              1912,
+              767
+            ],
+            "your notes": "There are two pillows, both appearing light grey in color. They are positioned horizontally across the bed."
+          },
+          {
+            "label": "bed mattress",
+            "visual caption": "A grey mattress with a striped bed cover",
+            "bbox": [
+              1301,
+              750,
+              1916,
+              1077
+            ],
+            "your notes": "The mattress has a striped bed cover and appears light grey in color. "
+          },
+          {
+            "label": "bed frame",
+            "visual caption": "A dark blue bed frame",
+            "bbox": [
+              1363,
+              887,
+              1893,
+              1077
+            ],
+            "your notes": "The bed frame has a dark blue color. "
+          }
+        ]
+      },
+      {
+        "call_type": "analyze_frame",
+        "query": "What are the features of the bed?",
+        "keyframe_path": "/pub3/qasim/hm3d/data/frames/003-hm3d-c5eTyR3Rxyh/00000-rgb.png",
+        "response": [
+          {
+            "label": "bed frame",
+            "visual caption": "A dark bed frame",
+            "bbox": [
+              720,
+              708,
+              827,
+              906
+            ],
+            "your notes": "The bed frame is partially visible, and it is a dark color."
+          },
+          {
+            "label": "bed sheet",
+            "visual caption": "A gray bed sheet",
+            "bbox": [
+              720,
+              509,
+              827,
+              792
+            ],
+            "your notes": "The bed sheet is gray and covers part of the bed."
+          },
+          {
+            "label": "yellow blanket",
+            "visual caption": "A yellow blanket",
+            "bbox": [
+              750,
+              468,
+              827,
+              551
+            ],
+            "your notes": "There is a yellow blanket partially visible on the bed"
+          }
+        ]
+      }
+    ],
+    "token_count": [
+      {
+        "prompt_token_count": 7937,
+        "candidates_token_count": 256
+      },
+      {
+        "prompt_token_count": 35703,
+        "candidates_token_count": 564
+      }
+    ]
+  },
+  {
+    "question": "What style of paintings are put up in the bedrrom?",
+    "answer": "Abstract",
+    "pred_answer": "Abstract style.",
+    "question_id": [
+      "1015cab7-827a-437c-ab86-6e4c2a9dd083"
+    ],
+    "category": "world knowledge",
+    "episode_history": "hm3d-v0/003-hm3d-c5eTyR3Rxyh",
+    "api_logs": [
+      {
+        "call_type": "analyze_frame",
+        "query": "What style are the framed art pieces?",
+        "keyframe_path": "/pub3/qasim/hm3d/data/frames/003-hm3d-c5eTyR3Rxyh/00035-rgb.png",
+        "response": [
+          {
+            "label": "first framed art piece",
+            "visual caption": "A framed picture with black edges hanging on a white wall and containing abstract shapes with colors orange, yellow, and green.",
+            "bbox": [
+              1578,
+              133,
+              1664,
+              395
+            ],
+            "your notes": "The artwork appears to be in an abstract style."
+          },
+          {
+            "label": "second framed art piece",
+            "visual caption": "A framed picture with black edges hanging on a white wall and containing abstract shapes with the color orange.",
+            "bbox": [
+              1664,
+              165,
+              1739,
+              437
+            ],
+            "your notes": "The artwork appears to be in an abstract style."
+          }
+        ]
+      }
+    ],
+    "token_count": [
+      {
+        "prompt_token_count": 7943,
+        "candidates_token_count": 28
+      },
+      {
+        "prompt_token_count": 16106,
+        "candidates_token_count": 166
+      }
+    ]
+  },
+  {
+    "question": "Where is the cartoon cat?",
+    "answer": "Its drawn on the pink photo frame",
+    "pred_answer": "In a framed artwork.",
+    "question_id": [
+      "9fc2d987-fc9c-4771-a0d4-07d24e2b7910"
+    ],
+    "category": "object localization",
+    "episode_history": "hm3d-v0/003-hm3d-c5eTyR3Rxyh",
+    "api_logs": [],
+    "token_count": [
+      {
+        "prompt_token_count": 7936,
+        "candidates_token_count": 172
+      }
+    ]
+  },
+  {
+    "question": "Where is the orange painting?",
+    "answer": "Above the bed",
+    "pred_answer": "On the bedroom wall.",
+    "question_id": [
+      "f776a834-1e21-4442-8834-18b6f9d6cfad"
+    ],
+    "category": "object localization",
+    "episode_history": "hm3d-v0/003-hm3d-c5eTyR3Rxyh",
+    "api_logs": [],
+    "token_count": [
+      {
+        "prompt_token_count": 7936,
+        "candidates_token_count": 735
+      }
+    ]
+  },
+  {
+    "question": "What is at the center of the breakfast table?",
+    "answer": "A large fruit bowl",
+    "pred_answer": "A glass bowl.",
+    "question_id": [
+      "06745779-f1b8-458b-8daa-ccc18d8958c8"
+    ],
+    "category": "object recognition",
+    "episode_history": "hm3d-v0/004-hm3d-66seV3BWPoX",
+    "api_logs": [
+      {
+        "call_type": "analyze_frame",
+        "query": "What is on the table?",
+        "keyframe_path": "/pub3/qasim/hm3d/data/frames/004-hm3d-66seV3BWPoX/00030-rgb.png",
+        "response": [
+          {
+            "label": "decorative bowl",
+            "visual caption": "A clear glass bowl with brown spots in it.",
+            "bbox": [
+              424,
+              749,
+              960,
+              997
+            ],
+            "your notes": "The bowl is the only object on the table, it's made of glass, and it has some brown spots. It's located in the center of the table."
+          },
+          {
+            "label": "tablecloth",
+            "visual caption": "An orange round table cloth with flower pattern.",
+            "bbox": [
+              0,
+              783,
+              1340,
+              1076
+            ],
+            "your notes": "The table is covered by an orange tablecloth with black flower pattern. The tablecloth covers the entire table."
+          }
+        ]
+      }
+    ],
+    "token_count": [
+      {
+        "prompt_token_count": 9767,
+        "candidates_token_count": 36
+      },
+      {
+        "prompt_token_count": 20324,
+        "candidates_token_count": 196
+      }
+    ]
+  },
+  {
+    "question": "What is above the red couch?",
+    "answer": "Paintings",
+    "pred_answer": "Stairs and framed pictures.",
+    "question_id": [
+      "9a0fe947-4c0b-47b8-a1dc-414f2d555c67"
+    ],
+    "category": "object recognition",
+    "episode_history": "hm3d-v0/004-hm3d-66seV3BWPoX",
+    "api_logs": [
+      {
+        "call_type": "analyze_frame",
+        "query": "what is above the red sofa?",
+        "keyframe_path": "/pub3/qasim/hm3d/data/frames/004-hm3d-66seV3BWPoX/00040-rgb.png",
+        "response": [
+          {
+            "label": "white stairs",
+            "visual caption": "A staircase with white banisters and wooden railings",
+            "bbox": [
+              1196,
+              139,
+              1918,
+              857
+            ],
+            "your notes": "The staircase is directly above the red sofa. It has white railings, a wooden banister, and tiled steps."
+          },
+          {
+            "label": "framed picture",
+            "visual caption": "A framed picture hanging on the wall",
+            "bbox": [
+              1758,
+              341,
+              1916,
+              540
+            ],
+            "your notes": "The picture is above and slightly to the right of the sofa."
+          },
+          {
+            "label": "wall art",
+            "visual caption": "A framed art piece on the wall",
+            "bbox": [
+              1128,
+              232,
+              1248,
+              381
+            ],
+            "your notes": "The framed piece is slightly above and to the left of the sofa."
+          }
+        ]
+      }
+    ],
+    "token_count": [
+      {
+        "prompt_token_count": 9764,
+        "candidates_token_count": 43
+      },
+      {
+        "prompt_token_count": 20409,
+        "candidates_token_count": 297
+      }
+    ]
+  },
+  {
+    "question": "What is the shape of the panels on the floor?",
+    "answer": "Square",
+    "pred_answer": "Rectangular.",
+    "question_id": [
+      "e8a806b3-bf39-4854-84bd-72c25493d8cd"
+    ],
+    "category": "attribute recognition",
+    "episode_history": "hm3d-v0/004-hm3d-66seV3BWPoX",
+    "api_logs": [
+      {
+        "call_type": "analyze_frame",
+        "query": "What is the shape of the floor panels?",
+        "keyframe_path": "/pub3/qasim/hm3d/data/frames/004-hm3d-66seV3BWPoX/00095-rgb.png",
+        "response": [
+          {
+            "label": "floor panels",
+            "visual caption": "Floor made of rectangular red and grey panels.",
+            "bbox": [
+              23,
+              834,
+              1171,
+              1077
+            ],
+            "your notes": "The floor is made of small rectangular panels. It appears that the floor panel is made of a red brick and a black stone and the bricks and stones are arranged in a running bond pattern. "
+          }
+        ]
+      }
+    ],
+    "token_count": [
+      {
+        "prompt_token_count": 9768,
+        "candidates_token_count": 42
+      },
+      {
+        "prompt_token_count": 20235,
+        "candidates_token_count": 122
+      }
+    ]
+  },
+  {
+    "question": "What is in the center of the room with the stairs?",
+    "answer": "A red couch",
+    "pred_answer": "A red sofa.",
+    "question_id": [
+      "884e2405-85f6-446f-a0ab-a03e537e5184"
+    ],
+    "category": "spatial understanding",
+    "episode_history": "hm3d-v0/004-hm3d-66seV3BWPoX",
+    "api_logs": [
+      {
+        "call_type": "analyze_frame",
+        "query": "What is in the center of the room?",
+        "keyframe_path": "/pub3/qasim/hm3d/data/frames/004-hm3d-66seV3BWPoX/00025-rgb.png",
+        "response": [
+          {
+            "label": "red couch",
+            "visual caption": "A red two-seater couch.",
+            "bbox": [
+              781,
+              604,
+              1165,
+              841
+            ],
+            "your notes": "The red couch is positioned at the center of the room."
+          },
+          {
+            "label": "stairs",
+            "visual caption": "A white staircase with a wooden railing.",
+            "bbox": [
+              602,
+              231,
+              1138,
+              808
+            ],
+            "your notes": "The stairs go up to another level. The lower part of the stairs is aligned with the red couch."
+          },
+          {
+            "label": "tiled floor",
+            "visual caption": "A floor covered with square brown tiles.",
+            "bbox": [
+              0,
+              660,
+              1918,
+              1078
+            ],
+            "your notes": "The tiled floor surrounds the red couch."
+          }
+        ]
+      }
+    ],
+    "token_count": [
+      {
+        "prompt_token_count": 9769,
+        "candidates_token_count": 156
+      },
+      {
+        "prompt_token_count": 20669,
+        "candidates_token_count": 222
+      }
+    ]
+  },
+  {
+    "question": "Is the kitchen countertop clean?",
+    "answer": "Yes.",
+    "pred_answer": "Not perfectly clean.",
+    "question_id": [
+      "cec83622-f735-435a-b054-1e201a48652c"
+    ],
+    "category": "object state recognition",
+    "episode_history": "hm3d-v0/004-hm3d-66seV3BWPoX",
+    "api_logs": [
+      {
+        "call_type": "analyze_frame",
+        "query": "Is the kitchen countertop clean?",
+        "keyframe_path": "/pub3/qasim/hm3d/data/frames/004-hm3d-66seV3BWPoX/00000-rgb.png",
+        "response": [
+          {
+            "label": "kitchen counter",
+            "visual caption": "A dark, reflective kitchen countertop with a black edge.",
+            "bbox": [
+              238,
+              623,
+              1157,
+              1067
+            ],
+            "your notes": "The countertop surface appears to have some light spots or reflections. The edges are black."
+          },
+          {
+            "label": "sink faucet",
+            "visual caption": "A black kitchen sink faucet.",
+            "bbox": [
+              11,
+              473,
+              130,
+              586
+            ],
+            "your notes": "A black faucet is next to the sink."
+          },
+          {
+            "label": "kitchen sink",
+            "visual caption": "A white kitchen sink.",
+            "bbox": [
+              5,
+              627,
+              224,
+              660
+            ],
+            "your notes": "The sink is white and next to the countertop. Part of its edge is visible."
+          }
+        ]
+      }
+    ],
+    "token_count": [
+      {
+        "prompt_token_count": 9763,
+        "candidates_token_count": 34
+      },
+      {
+        "prompt_token_count": 20354,
+        "candidates_token_count": 126
+      }
+    ]
+  },
+  {
+    "question": "Is the front door open or closed?",
+    "answer": "Open",
+    "pred_answer": "The front door is open.",
+    "question_id": [
+      "9104773d-a2f0-4be3-a370-f7bf6e242ff7"
+    ],
+    "category": "object state recognition",
+    "episode_history": "hm3d-v0/004-hm3d-66seV3BWPoX",
+    "api_logs": [
+      {
+        "call_type": "analyze_frame",
+        "query": "Is the door open or closed?",
+        "keyframe_path": "/pub3/qasim/hm3d/data/frames/004-hm3d-66seV3BWPoX/00050-rgb.png",
+        "response": [
+          {
+            "label": "doorway",
+            "visual caption": "A doorway with a partially visible door",
+            "bbox": [
+              1136,
+              3,
+              1361,
+              1072
+            ],
+            "your notes": "The door is partially visible and open."
+          },
+          {
+            "label": "Door frame",
+            "visual caption": "Door frame with black edges",
+            "bbox": [
+              1173,
+              3,
+              1288,
+              1060
+            ],
+            "your notes": " The door frame suggests that the door is not closed."
+          },
+          {
+            "label": "door jamb",
+            "visual caption": "a white door jamb on the wall",
+            "bbox": [
+              1290,
+              3,
+              1361,
+              1078
+            ],
+            "your notes": "The door jamb suggest that the door is not closed."
+          }
+        ]
+      }
+    ],
+    "token_count": [
+      {
+        "prompt_token_count": 9765,
+        "candidates_token_count": 63
+      },
+      {
+        "prompt_token_count": 20544,
+        "candidates_token_count": 218
+      }
+    ]
+  },
+  {
+    "question": "Where can I wash my hands?",
+    "answer": "In the sink in the kitchen",
+    "pred_answer": "Kitchen sink.",
+    "question_id": [
+      "65fbee94-eb23-40b3-84c3-32129c95b52d"
+    ],
+    "category": "functional reasoning",
+    "episode_history": "hm3d-v0/004-hm3d-66seV3BWPoX",
+    "api_logs": [],
+    "token_count": [
+      {
+        "prompt_token_count": 9764,
+        "candidates_token_count": 148
+      }
+    ]
+  },
+  {
+    "question": "Where should I store fruits that I want to last long?",
+    "answer": "In the fridge",
+    "pred_answer": "Inside the closed refrigerator or cabinets.",
+    "question_id": [
+      "e59e9409-776f-4c14-945e-11772fd5ff50"
+    ],
+    "category": "functional reasoning",
+    "episode_history": "hm3d-v0/004-hm3d-66seV3BWPoX",
+    "api_logs": [
+      {
+        "call_type": "analyze_frame",
+        "query": "Is the refrigerator open?",
+        "keyframe_path": "/pub3/qasim/hm3d/data/frames/004-hm3d-66seV3BWPoX/00020-rgb.png",
+        "response": [
+          {
+            "label": "refrigerator door",
+            "visual caption": "The white refrigerator has two doors with gold-colored handles.",
+            "bbox": [
+              894,
+              181,
+              1303,
+              806
+            ],
+            "your notes": "Both the upper and lower refrigerator doors are closed and appear to be flush with the body of the fridge."
+          },
+          {
+            "label": "refrigerator handle",
+            "visual caption": "A gold handle of the refrigerator.",
+            "bbox": [
+              1140,
+              371,
+              1240,
+              492
+            ],
+            "your notes": "The handle is oriented vertically. It appears closed."
+          },
+          {
+            "label": "refrigerator handle",
+            "visual caption": "A gold handle of the refrigerator.",
+            "bbox": [
+              1100,
+              802,
+              1205,
+              926
+            ],
+            "your notes": "The handle is oriented vertically. It appears closed."
+          }
+        ]
+      },
+      {
+        "call_type": "analyze_frame",
+        "query": "Are the kitchen cabinets open?",
+        "keyframe_path": "/pub3/qasim/hm3d/data/frames/004-hm3d-66seV3BWPoX/00015-rgb.png",
+        "response": [
+          {
+            "label": "upper kitchen cabinet",
+            "visual caption": "A row of closed upper kitchen cabinets with glass doors",
+            "bbox": [
+              67,
+              4,
+              633,
+              210
+            ],
+            "your notes": "The cabinet doors appear to be fully closed. The doors are framed glass doors. The cabinet has white paint."
+          },
+          {
+            "label": "lower kitchen cabinets",
+            "visual caption": "lower kitchen cabinets with white doors",
+            "bbox": [
+              1,
+              646,
+              591,
+              1016
+            ],
+            "your notes": "The cabinet doors appear to be fully closed. The doors are paneled. The cabinet has white paint."
+          }
+        ]
+      }
+    ],
+    "token_count": [
+      {
+        "prompt_token_count": 9769,
+        "candidates_token_count": 113
+      },
+      {
+        "prompt_token_count": 32127,
+        "candidates_token_count": 289
+      }
+    ]
+  },
+  {
+    "question": "Is this home in the suburbs?",
+    "answer": "No.",
+    "pred_answer": "No, it is not.",
+    "question_id": [
+      "8ddd3d37-86fb-41cf-9948-d0b639706a93"
+    ],
+    "category": "world knowledge",
+    "episode_history": "hm3d-v0/004-hm3d-66seV3BWPoX",
+    "api_logs": [
+      {
+        "call_type": "analyze_frame",
+        "query": "Is there a yard or any greenery visible outside the doorway?",
+        "keyframe_path": "/pub3/qasim/hm3d/data/frames/004-hm3d-66seV3BWPoX/00060-rgb.png",
+        "response": [
+          {
+            "label": "cobblestone street",
+            "visual caption": "A street paved with cobblestones of varying colors.",
+            "bbox": [
+              13,
+              637,
+              1902,
+              1075
+            ],
+            "your notes": "The ground visible outside the doorway is a cobblestone street and there is no greenery."
+          },
+          {
+            "label": "wall",
+            "visual caption": "A wall with a reddish-brown surface and a small rectangular stone structure near its base.",
+            "bbox": [
+              170,
+              0,
+              1100,
+              665
+            ],
+            "your notes": "This is the outside wall visible though the doorway. It does not have any greenery."
+          }
+        ]
+      },
+      {
+        "call_type": "analyze_frame",
+        "query": "Describe the surrounding buildings visible from this frame.",
+        "keyframe_path": "/pub3/qasim/hm3d/data/frames/004-hm3d-66seV3BWPoX/00070-rgb.png",
+        "response": [
+          {
+            "label": "red building wall",
+            "visual caption": "A red wall with a rough texture.",
+            "bbox": [
+              0,
+              0,
+              1171,
+              525
+            ],
+            "your notes": "The wall is painted a reddish color, and there are some dark markings on it."
+          },
+          {
+            "label": "garage door",
+            "visual caption": "A white garage door with horizontal panels.",
+            "bbox": [
+              560,
+              182,
+              1150,
+              690
+            ],
+            "your notes": "The garage door is closed and has a dark frame. There's also a drawing on the surface."
+          },
+          {
+            "label": "stone wall",
+            "visual caption": "A low stone wall at the base of the red wall.",
+            "bbox": [
+              1,
+              528,
+              608,
+              851
+            ],
+            "your notes": "The stone wall is made of light-colored blocks."
+          },
+          {
+            "label": "street",
+            "visual caption": "A cobblestone street.",
+            "bbox": [
+              566,
+              738,
+              1165,
+              1045
+            ],
+            "your notes": "The street is made with red and blue cobbles."
+          }
+        ]
+      },
+      {
+        "call_type": "analyze_frame",
+        "query": "Describe what is visible on the street in front of the building",
+        "keyframe_path": "/pub3/qasim/hm3d/data/frames/004-hm3d-66seV3BWPoX/00075-rgb.png",
+        "response": [
+          {
+            "label": "pavement",
+            "visual caption": "A stone paved street.",
+            "bbox": [
+              1,
+              737,
+              1916,
+              1077
+            ],
+            "your notes": "The pavement is made of rectangular stones of different colors."
+          },
+          {
+            "label": "drain",
+            "visual caption": "A small square metal drain.",
+            "bbox": [
+              1751,
+              856,
+              1831,
+              891
+            ],
+            "your notes": "The drain is located near the bottom of the image, on the paved street."
+          }
+        ]
+      },
+      {
+        "call_type": "analyze_frame",
+        "query": "Describe the building across the street, is there greenery present?",
+        "keyframe_path": "/pub3/qasim/hm3d/data/frames/004-hm3d-66seV3BWPoX/00085-rgb.png",
+        "response": [
+          {
+            "label": "building facade",
+            "visual caption": "A facade with three different colors of paint and with damage.",
+            "bbox": [
+              0,
+              0,
+              1918,
+              1078
+            ],
+            "your notes": "The building across the street has a facade with three different sections. The leftmost section is light blue, with a dark section below, and a visible hole in the wall. The middle section is off-white with some exposed brick and a couple of pipes, and the right section is a red-brown color. There is no visible greenery."
+          },
+          {
+            "label": "left building section",
+            "visual caption": "A light blue wall with some decorative elements and a black tiled section at the bottom.",
+            "bbox": [
+              0,
+              0,
+              526,
+              1078
+            ],
+            "your notes": "This is the leftmost section of the building. It has a light blue section with a white awning-like decoration, a large hole in the wall, and a black tiled section at the bottom."
+          },
+          {
+            "label": "middle building section",
+            "visual caption": "An off-white wall with visible damage and exposed brick.",
+            "bbox": [
+              526,
+              0,
+              1157,
+              1078
+            ],
+            "your notes": "This is the middle section of the building. It's an off-white wall with visible damage, including a section where the brick is exposed. There is also a pipe and some writing on the wall."
+          },
+          {
+            "label": "right building section",
+            "visual caption": "A red-brown wall with graffiti and a stone base.",
+            "bbox": [
+              1157,
+              0,
+              1918,
+              1078
+            ],
+            "your notes": "This is the rightmost section of the building. It's a red-brown wall with some graffiti, and it has a stone base."
+          }
+        ]
+      },
+      {
+        "call_type": "analyze_frame",
+        "query": "Describe the street in front of the building, is there a curb?",
+        "keyframe_path": "/pub3/qasim/hm3d/data/frames/004-hm3d-66seV3BWPoX/00090-rgb.png",
+        "response": [
+          {
+            "label": "street pavement",
+            "visual caption": "A cobbled pavement with light grey and brown stones.",
+            "bbox": [
+              0,
+              869,
+              1918,
+              1078
+            ],
+            "your notes": "The street appears to be made of rectangular cobble stones. There is no curb present in the image; the street meets the base of the buildings directly."
+          }
+        ]
+      },
+      {
+        "call_type": "analyze_frame",
+        "query": "Describe the kitchen style, is it modern or older?",
+        "keyframe_path": "/pub3/qasim/hm3d/data/frames/004-hm3d-66seV3BWPoX/00000-rgb.png",
+        "response": [
+          {
+            "label": "kitchen cabinets",
+            "visual caption": "White kitchen cabinets with glass doors and decorative wood trim.",
+            "bbox": [
+              1,
+              0,
+              585,
+              295
+            ],
+            "your notes": "These are traditional style cabinets with a decorative trim."
+          },
+          {
+            "label": "kitchen counter",
+            "visual caption": "A dark colored kitchen counter with a shiny surface.",
+            "bbox": [
+              261,
+              632,
+              1121,
+              1072
+            ],
+            "your notes": "The counter is dark in color, and has a shiny surface."
+          },
+          {
+            "label": "backsplash tiles",
+            "visual caption": "A white backsplash with a patterned decorative border.",
+            "bbox": [
+              0,
+              427,
+              1119,
+              621
+            ],
+            "your notes": "The backsplash uses decorative ceramic tiles with a detailed trim."
+          },
+          {
+            "label": "sink faucet",
+            "visual caption": "A silver kitchen sink faucet",
+            "bbox": [
+              13,
+              473,
+              130,
+              617
+            ],
+            "your notes": "The faucet is a modern style with a curved neck and a single lever handle."
+          }
+        ]
+      },
+      {
+        "call_type": "analyze_frame",
+        "query": "Describe the windows and view, are there buildings in view?",
+        "keyframe_path": "/pub3/qasim/hm3d/data/frames/004-hm3d-66seV3BWPoX/00030-rgb.png",
+        "response": [
+          {
+            "label": "window with view",
+            "visual caption": "A set of three windows with white frames and multiple panes. The view is distorted.",
+            "bbox": [
+              49,
+              0,
+              1152,
+              635
+            ],
+            "your notes": "The windows are partially distorted, but it appears there are buildings visible in the view. The windows have multiple panes and white frames."
+          },
+          {
+            "label": "second window with view",
+            "visual caption": "Another set of three windows with white frames and multiple panes, partially obscured by what appears to be an artifact of processing.",
+            "bbox": [
+              1509,
+              166,
+              1918,
+              615
+            ],
+            "your notes": "These windows are also partially distorted and show a view that seems to include buildings. The window frames are white, and the windows have multiple panes."
+          }
+        ]
+      }
+    ],
+    "token_count": [
+      {
+        "prompt_token_count": 9764,
+        "candidates_token_count": 1177
+      },
+      {
+        "prompt_token_count": 93975,
+        "candidates_token_count": 400
+      }
+    ]
+  },
+  {
+    "question": "Where is the breakfast table?",
+    "answer": "To the left of the kitchen",
+    "pred_answer": "In the dining room.",
+    "question_id": [
+      "81739eb9-ef32-42e3-b1cf-fa8e826813ef"
+    ],
+    "category": "object localization",
+    "episode_history": "hm3d-v0/004-hm3d-66seV3BWPoX",
+    "api_logs": [
+      {
+        "call_type": "analyze_frame",
+        "query": "What does the table look like?",
+        "keyframe_path": "/pub3/qasim/hm3d/data/frames/004-hm3d-66seV3BWPoX/00030-rgb.png",
+        "response": [
+          {
+            "label": "table top",
+            "visual caption": "A round table top with an orange tablecloth that has a dark pattern.",
+            "bbox": [
+              0,
+              783,
+              1303,
+              1078
+            ],
+            "your notes": "The table is round and has a tablecloth with a visible pattern. The main color of the cloth is orange."
+          },
+          {
+            "label": "bowl on table",
+            "visual caption": "A glass bowl with decorative elements in the center of the table.",
+            "bbox": [
+              439,
+              810,
+              842,
+              970
+            ],
+            "your notes": "The bowl is located in the center of the table and it is made of glass."
+          }
+        ]
+      }
+    ],
+    "token_count": [
+      {
+        "prompt_token_count": 9763,
+        "candidates_token_count": 36
+      },
+      {
+        "prompt_token_count": 20298,
+        "candidates_token_count": 158
+      }
+    ]
+  },
+  {
+    "question": "Where are the light switches?",
+    "answer": "To the right of the front door",
+    "pred_answer": "On the wall near the door frame.",
+    "question_id": [
+      "d9737f88-11c2-454d-aa40-a2e1f3111505"
+    ],
+    "category": "object localization",
+    "episode_history": "hm3d-v0/004-hm3d-66seV3BWPoX",
+    "api_logs": [
+      {
+        "call_type": "analyze_frame",
+        "query": "location of the light switch panel",
+        "keyframe_path": "/pub3/qasim/hm3d/data/frames/004-hm3d-66seV3BWPoX/00060-rgb.png",
+        "response": [
+          {
+            "label": "light switch panel",
+            "visual caption": "A white light switch panel with multiple rectangular buttons.",
+            "bbox": [
+              1591,
+              640,
+              1870,
+              751
+            ],
+            "your notes": "This is a light switch panel located on the wall near the door frame. It is composed of four rectangular buttons."
+          }
+        ]
+      }
+    ],
+    "token_count": [
+      {
+        "prompt_token_count": 9763,
+        "candidates_token_count": 61
+      },
+      {
+        "prompt_token_count": 20209,
+        "candidates_token_count": 106
+      }
+    ]
+  }
+]

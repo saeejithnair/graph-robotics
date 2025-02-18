@@ -1,0 +1,90 @@
+[
+   {
+      "label": "dining table",
+      "caption": "Round white tablecloth-covered table with a brown wooden base",
+      "bbox": [
+         412,
+         625,
+         960,
+         969
+      ],
+      "confidence": 0.97
+   },
+   {
+      "label": "chairs",
+      "caption": "Four wicker chairs surrounding a table, all have light brown frames and woven seats",
+      "bbox": [
+         391,
+         624,
+         1092,
+         963
+      ],
+      "confidence": 0.95
+   },
+   {
+      "label": "armoire",
+      "caption": "Tall wooden cabinet with a mirrored door and ornate carvings",
+      "bbox": [
+         1082,
+         185,
+         1401,
+         798
+      ],
+      "confidence": 0.93
+   },
+   {
+      "label": "dresser",
+      "caption": "Wooden dresser with wicker drawers and white heart-shaped handles",
+      "bbox": [
+         1370,
+         511,
+         1509,
+         869
+      ],
+      "confidence": 0.91
+   },
+   {
+      "label": "lamp",
+      "caption": "Red lamp with a gold base and a white shade",
+      "bbox": [
+         1365,
+         427,
+         1464,
+         529
+      ],
+      "confidence": 0.89
+   },
+   {
+      "label": "picture frames",
+      "caption": "Several rectangular picture frames with a variety of colorful images",
+      "bbox": [
+         904,
+         332,
+         1021,
+         500
+      ],
+      "confidence": 0.87
+   },
+   {
+      "label": "plant",
+      "caption": "Green palm plant with long leaves in a white pot",
+      "bbox": [
+         975,
+         291,
+         1125,
+         565
+      ],
+      "confidence": 0.85
+   },
+   {
+      "label": "sliding doors",
+      "caption": "Large glass sliding doors with white blinds and a view of a pool",
+      "bbox": [
+         316,
+         255,
+         750,
+         714
+      ],
+      "confidence": 0.83
+   }
+]

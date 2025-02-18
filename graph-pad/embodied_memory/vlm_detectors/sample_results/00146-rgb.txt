@@ -1,0 +1,101 @@
+[
+   {
+      "label": "wicker chair",
+      "caption": "Brown wicker chair with a white cloth draped over it",
+      "bbox": [
+         652,
+         291,
+         1267,
+         1036
+      ],
+      "confidence": 0.97
+   },
+   {
+      "label": "framed pictures",
+      "caption": "Three framed pictures with black frames, showing a beach scene",
+      "bbox": [
+         748,
+         27,
+         1171,
+         205
+      ],
+      "confidence": 0.95
+   },
+   {
+      "label": "bed",
+      "caption": "White bed with a brown and white patterned comforter",
+      "bbox": [
+         0,
+         669,
+         403,
+         993
+      ],
+      "confidence": 0.93
+   },
+   {
+      "label": "wooden shelves",
+      "caption": "Brown wooden shelves with various items on them",
+      "bbox": [
+         1363,
+         302,
+         1651,
+         810
+      ],
+      "confidence": 0.91
+   },
+   {
+      "label": "nightstand",
+      "caption": "Wooden nightstand with two drawers",
+      "bbox": [
+         345,
+         745,
+         499,
+         993
+      ],
+      "confidence": 0.89
+   },
+   {
+      "label": "mirror",
+      "caption": "Large rectangular mirror with a wooden frame",
+      "bbox": [
+         1728,
+         345,
+         1900,
+         788
+      ],
+      "confidence": 0.87
+   },
+   {
+      "label": "throw pillows",
+      "caption": "Two gray throw pillows with white stitching",
+      "bbox": [
+         0,
+         734,
+         268,
+         842
+      ],
+      "confidence": 0.85
+   },
+   {
+      "label": "basket",
+      "caption": "Wicker basket with a brown woven pattern",
+      "bbox": [
+         1651,
+         766,
+         1824,
+         864
+      ],
+      "confidence": 0.83
+   },
+   {
+      "label": "stuffed animal",
+      "caption": "Small brown stuffed animal on a wooden shelf",
+      "bbox": [
+         1440,
+         766,
+         1536,
+         799
+      ],
+      "confidence": 0.81
+   }
+]

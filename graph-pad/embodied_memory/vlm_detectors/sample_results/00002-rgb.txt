@@ -1,0 +1,112 @@
+[
+   {
+      "label": "kitchen counter",
+      "caption": "Gray speckled countertop with a polished surface",
+      "bbox": [
+         259,
+         668,
+         1680,
+         830
+      ],
+      "confidence": 0.98
+   },
+   {
+      "label": "kitchen sink",
+      "caption": "Stainless steel kitchen sink with a chrome faucet",
+      "bbox": [
+         984,
+         683,
+         1463,
+         765
+      ],
+      "confidence": 0.95
+   },
+   {
+      "label": "kitchen cabinets",
+      "caption": "Dark brown wood cabinets with handles",
+      "bbox": [
+         769,
+         153,
+         1505,
+         463
+      ],
+      "confidence": 0.92
+   },
+   {
+      "label": "microwave",
+      "caption": "Stainless steel microwave with a digital display",
+      "bbox": [
+         1000,
+         353,
+         1320,
+         462
+      ],
+      "confidence": 0.9
+   },
+   {
+      "label": "bar stools",
+      "caption": "Two black padded bar stools",
+      "bbox": [
+         376,
+         993,
+         779,
+         1078
+      ],
+      "confidence": 0.85
+   },
+   {
+      "label": "stainless steel refrigerator",
+      "caption": "Stainless steel refrigerator with a black handle",
+      "bbox": [
+         0,
+         394,
+         336,
+         1078
+      ],
+      "confidence": 0.83
+   },
+   {
+      "label": "fruit bowl",
+      "caption": "White ceramic bowl with yellow and red fruit",
+      "bbox": [
+         796,
+         570,
+         948,
+         622
+      ],
+      "confidence": 0.8
+   },
+   {
+      "label": "wooden cutting board",
+      "caption": "Brown wooden cutting board with a rectangular shape",
+      "bbox": [
+         936,
+         576,
+         1023,
+         629
+      ],
+      "confidence": 0.78
+   },
+   {
+      "label": "wooden sign",
+      "caption": "Wooden sign with white text and a distressed finish",
+      "bbox": [
+         1562,
+         513,
+         1712,
+         624
+      ],
+      "confidence": 0.75
+   },
+   {
+      "label": "wooden door",
+      "caption": "White painted wooden door with a handle",
+      "bbox": [
+         435,
+         239,
+         691,
+         667
+      ],
+      "confidence": 0.73
+   }
+]

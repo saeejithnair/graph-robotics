@@ -1,0 +1,32 @@
+[
+  {
+    "question": "What color is the car?",
+    "answer": "Blue",
+    "pred_answer": "Dark blue or black.",
+    "question_id": [
+      "a86ef102-5500-4fbf-8fae-cdbeb20a3b7b"
+    ],
+    "category": "attribute recognition",
+    "episode_history": "hm3d-v0/002-hm3d-wcojb4TFT35",
+    "api_logs": [
+      {
+        "call_type": "analyze_frame",
+        "query": "What is the color of the car?",
+        "keyframe_path": "/pub3/qasim/hm3d/data/frames/002-hm3d-wcojb4TFT35/00000-rgb.png",
+        "response": [
+          {
+            "label": "dark-colored sedan",
+            "visual caption": "A dark-colored sedan with visible damage to the side, parked in a cluttered garage.",
+            "bbox": [
+              0,
+              362,
+              729,
+              1078
+            ],
+            "your notes": "The car appears to be dark blue or black.  The lighting conditions in the garage make it difficult to determine the exact shade. There is damage visible on the side of the car."
+          }
+        ]
+      }
+    ]
+  }
+]

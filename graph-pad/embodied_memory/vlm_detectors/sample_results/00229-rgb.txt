@@ -1,0 +1,112 @@
+[
+   {
+      "label": "whiteboard",
+      "caption": "White rectangular whiteboard with black marker drawings",
+      "bbox": [
+         647,
+         402,
+         1008,
+         596
+      ],
+      "confidence": 0.98
+   },
+   {
+      "label": "office chair",
+      "caption": "Black fabric office chair with wheels",
+      "bbox": [
+         0,
+         623,
+         606,
+         1049
+      ],
+      "confidence": 0.95
+   },
+   {
+      "label": "office chair",
+      "caption": "Black fabric office chair with wheels",
+      "bbox": [
+         1376,
+         629,
+         1918,
+         1077
+      ],
+      "confidence": 0.94
+   },
+   {
+      "label": "desk",
+      "caption": "White rectangular desk with metal legs",
+      "bbox": [
+         1025,
+         638,
+         1405,
+         878
+      ],
+      "confidence": 0.92
+   },
+   {
+      "label": "shelving unit",
+      "caption": "Light brown wooden shelving unit with open shelves",
+      "bbox": [
+         1272,
+         232,
+         1918,
+         702
+      ],
+      "confidence": 0.91
+   },
+   {
+      "label": "office chair",
+      "caption": "White leather office chair with metal base",
+      "bbox": [
+         593,
+         542,
+         764,
+         676
+      ],
+      "confidence": 0.89
+   },
+   {
+      "label": "laptop",
+      "caption": "Black laptop computer with a closed screen",
+      "bbox": [
+         1622,
+         454,
+         1883,
+         523
+      ],
+      "confidence": 0.88
+   },
+   {
+      "label": "red folder",
+      "caption": "Red plastic folder with a closed flap",
+      "bbox": [
+         1292,
+         664,
+         1397,
+         727
+      ],
+      "confidence": 0.85
+   },
+   {
+      "label": "blue folder",
+      "caption": "Blue plastic folder with a closed flap",
+      "bbox": [
+         1320,
+         714,
+         1411,
+         778
+      ],
+      "confidence": 0.84
+   },
+   {
+      "label": "blue folder",
+      "caption": "Blue plastic folder with a closed flap",
+      "bbox": [
+         1415,
+         771,
+         1501,
+         828
+      ],
+      "confidence": 0.83
+   }
+]
