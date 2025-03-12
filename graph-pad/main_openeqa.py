@@ -31,7 +31,7 @@ from eqa.api import FrameLevelAPI, NodeLevelAPI
 )
 def main(cfg: DictConfig):
     # check for GOOGLE_API_KEY api key
-    with open("/home/qasim/Projects/graph-robotics/api_keys/gemini_key.txt") as f:
+    with open("../api_keys/gemini_key.txt") as f:
         GOOGLE_API_KEY = f.read().strip()
         # genai.set_api_key(GOOGLE_API_KEY)
 
@@ -60,8 +60,8 @@ def main(cfg: DictConfig):
     if cfg.use_184_subset:
         subset_questions = openeqa_184
     subset_questions = [
-        "f2e82760-5c3c-41b1-88b6-85921b9e7b32",
-        "7447d782-d1a7-4c87-86dc-b5eafc5a0f76",
+        # "f2e82760-5c3c-41b1-88b6-85921b9e7b32",
+        # "7447d782-d1a7-4c87-86dc-b5eafc5a0f76",
     ]
     print("running {:,} questions".format(len(questions)))
     if len(subset_questions) > 0:
@@ -119,8 +119,6 @@ def main(cfg: DictConfig):
 
     for idx, item in enumerate(tqdm.tqdm(questions)):
         if cfg.questions_dry_run and idx >= 5:
-            break
-        if idx >= 1e6:
             break
 
         # skip completed questions
