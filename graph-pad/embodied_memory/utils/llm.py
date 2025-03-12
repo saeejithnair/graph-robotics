@@ -5,7 +5,7 @@ import time
 
 
 def init_gemini():
-    with open("/home/qasim/Projects/graph-robotics/api_keys/gemini_key.txt") as f:
+    with open("../api_keys/gemini_key.txt") as f:
         GOOGLE_API_KEY = f.read().strip()
     os.environ["GOOGLE_API_KEY"] = GOOGLE_API_KEY
     os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = os.path.abspath(

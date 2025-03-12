@@ -148,7 +148,7 @@ def ask_question(
 def main(args: argparse.Namespace):
     # check for google api key
     # check for GOOGLE_API_KEY api key
-    with open("/home/qasim/Projects/graph-robotics/api_keys/gemini_key.txt") as f:
+    with open("../api_keys/gemini_key.txt") as f:
         GOOGLE_API_KEY = f.read().strip()
         GOOGLE_API_KEY = "AIzaSyCJtymXxwho9G9womXQD12HDZJNBbZjVqU"
     os.environ["GOOGLE_API_KEY"] = GOOGLE_API_KEY

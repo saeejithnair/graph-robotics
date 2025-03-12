@@ -18,7 +18,7 @@ detections_exp_suffix: detections # helpful label to identify your detections
 force_detection: !!bool True
 save_detections: !!bool True
 detections_model: gemini-2.0-flash-exp
-device: cuda:1
+device: cuda:0
 make_edges: !!bool False
 
 

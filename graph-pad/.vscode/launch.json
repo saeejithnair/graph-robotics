@@ -12,7 +12,8 @@
             "console": "integratedTerminal",
             "justMyCode": false,
             "env": {
-                "CUDA_LAUNCH_BLOCKING": "1"
+                "CUDA_LAUNCH_BLOCKING": "1",
+                "CUDA_VISIBLE_DEVICES": "2"
             }
         },
         {
@@ -26,7 +27,10 @@
                 "max_search_depth=20"
             ],
             "console": "integratedTerminal",
-            "justMyCode": false
+            "justMyCode": false,
+            "env": {
+                "CUDA_VISIBLE_DEVICES": "2"
+            }
         },
         {
             "name": "evaluate-predictions.py (baseline 1.5)",
@@ -84,25 +88,6 @@
             "console": "integratedTerminal",
             "justMyCode": false
         },
-        // {
-        //     "name": "main_geometry.py",
-        //     "type": "debugpy",
-        //     "request": "launch",
-        //     "program": "main_geometry.py",
-        //     "console": "integratedTerminal",
-        //     "justMyCode": false,
-        //     "env": {
-        //         "CUDA_VISIBLE_DEVICES": "2"
-        //     }
-        // },
-        // {
-        //     "name": "main_rooms.py",
-        //     "type": "debugpy",
-        //     "request": "launch",
-        //     "program": "main_rooms.py",
-        //     "console": "integratedTerminal",
-        //     "justMyCode": false
-        // },
     ],
     "compounds": [
         {
