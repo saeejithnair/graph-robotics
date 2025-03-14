@@ -1,2 +1,4 @@
 outputs/
 checkpoints/
+graph-pad/debug
+debug/
