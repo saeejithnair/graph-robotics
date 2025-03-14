@@ -1,0 +1,9 @@
+main:
+  device: cuda
+  graph_path: /home/SOME_USERNAME/HOV-SG/output/hm3dsem/00824-Dd4bFSTQ8gi/graph
+  long_query:
+    spec: [obj, room, floor] # [obj, room, floor], [obj, room], [obj, floor], [obj].
+models:
+  clip:
+    type: ViT-H-14 # ViT-L/14@336px # ViT-H-14
+    checkpoint: checkpoints/laion2b_s32b_b79k.bin # checkpoints/ovseg_clipl14_9a1909.pth checkpoints/laion2b_s32b_b79k.bin
