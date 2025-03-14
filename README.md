@@ -3,13 +3,14 @@ Create GraphPad conda environment
 ```
 conda create -n graphpad python=3.9
 conda activate graphpad
-pip install -r requirements.txt
+./graph-pad/install.sh
 ```
-Next, install the [HOVSG](https://github.com/hovsg/HOV-SG) repo, don't forget to run
+Next, install the HOVSG folder, (don't use the [repo](https://github.com/hovsg/HOV-SG)). You basically need to run
 ```
+cd HOV-SG
 pip install -e .
 ```
-Download the SAM checkpoint sam_vit_h_4b8939.pth and put it in the folder "checkpoints".
+Download the SAM checkpoint sam_vit_h_4b8939.pth and put it in the folder "graph-pad/checkpoints".
 
 Download the [OpenEQA](https://github.com/facebookresearch/open-eqa/tree/main) dataset open-eqa-v0.json and put it in the folder eqa/data/open-eqa-v0.json. 
 
