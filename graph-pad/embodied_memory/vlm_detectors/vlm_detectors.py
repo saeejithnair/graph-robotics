@@ -60,7 +60,7 @@ class VLMPrompter(ABC):
             skip_bg=False,
         )
         self.detection_model.set_classes(
-            self.obj_classes.get_classes_arr(), device=device
+            self.obj_classes.get_classes_arr(),  #  device=device
         )
         self.gemini_model = gemini_model
         self.prompt_file = prompt_file
