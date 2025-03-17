@@ -7,7 +7,7 @@ import hydra
 import numpy as np
 import open3d as o3d
 import torch
-import torchvision
+# import torchvision
 from omegaconf import DictConfig
 from PIL import Image
 from tqdm import tqdm
@@ -27,6 +27,8 @@ from embodied_memory.vlm_detectors import (
     VLMObjectDetectorYOLO,
 )
 
+import google.generativeai as genai
+
 
 # A logger for this file
 @hydra.main(
@@ -38,9 +40,19 @@ from embodied_memory.vlm_detectors import (
 # @profile
 def main(cfg: DictConfig):
     cfg = utils.process_cfg(cfg)
+        # check for GOOGLE_API_KEY api key
+    with open("../api_keys/gemini_key.txt") as f:
+        GOOGLE_API_KEY = f.read().strip()
+        # genai.set_api_key(GOOGLE_API_KEY)
+
+    os.environ["GOOGLE_API_KEY"] = GOOGLE_API_KEY
+    genai.configure(api_key=os.environ["GOOGLE_API_KEY"])
+    os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = (
+        "/home/qasim/Projects/graph-robotics/api_keys/total-byte-432318-q3-78e6d4aa6497.json"
+    )
 
     # Initialize the dataset
-    device = "cuda:0"
+    device = cfg.device
     dataset = get_dataset(
         dataconfig=cfg.dataset_config,
         start=cfg.start,
@@ -64,7 +76,7 @@ def main(cfg: DictConfig):
     shutil.rmtree(result_dir_embodied_memory, ignore_errors=True)
 
     # Initialize modules
-    embodied_memory = EmbodiedMemory(cfg.visual_memory_size, cfg.room_types)
+    embodied_memory = EmbodiedMemory(cfg.visual_memory_size, cfg.room_types, cfg.device)
     perceptor = VLMObjectDetectorYOLO(
         gemini_model=cfg.detections_model, device=device, with_edges=False
     )
@@ -195,7 +207,7 @@ def main(cfg: DictConfig):
                     dbscan_eps=cfg["dbscan_eps"],
                     dbscan_min_points=cfg["dbscan_min_points"],
                 )
-
+        break
     if cfg["run_filter_final_frame"]:
         for id in embodied_memory.scene_graph.get_node_ids():
             embodied_memory.scene_graph[id].denoise(

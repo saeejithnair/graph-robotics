@@ -1,10 +1,10 @@
 defaults:
   - base_paths
 
-dataset_root: /pub3/qasim/hm3d/data/frames
+dataset_root: /Users/vaniagrawal/Desktop/VA/UCLA/Capstone/graph-robotics/graph-pad/data/frames
 dataset_config: ${repo_root}/configs/dataconfigs/hm3d.yaml
 scene_id: 002-hm3d-wcojb4TFT35 # 000-hm3d-BFRyYbPCCPE # 002-hm3d-wcojb4TFT35
-room_types: 
+room_types:
   - kitchen
   - living room
   - bedroom

@@ -9,7 +9,7 @@ defaults:
   - logging_level
   - _self_
 
-result_root: /pub3/qasim/hm3d/data/graphpad-sg
+result_root: /Users/vaniagrawal/Desktop/VA/UCLA/Capstone/graph-robotics/graph-pad/data/graphpad-sg
 image_height: 1080
 image_width: 1920
 max_frames: 10
@@ -18,9 +18,8 @@ detections_exp_suffix: detections # helpful label to identify your detections
 force_detection: !!bool True
 save_detections: !!bool True
 detections_model: gemini-2.0-flash-exp
-device: cuda:0
+device: cpu
 make_edges: !!bool False
-
 
 skip_frame: 5
 # EQA Paramters
@@ -28,18 +27,17 @@ questions: eqa/data/open-eqa-v0.json
 questions_model: gemini-2.0-flash-exp
 questions_output_dir: eqa/results
 questions_exp_name: flexgraph
-questions_dry_run : False
-questions_ignore_old_results : False
+questions_dry_run: False
+questions_ignore_old_results: False
 use_184_subset: False
 max_search_depth: 20
 visual_memory_size: 5
 api_type: frame_level
 # Rooms and Floors
 room_grid_resolution: 0.2
-debug_folder: /home/qasim/Projects/graph-robotics/graph-pad/debug
+debug_folder: /Users/vaniagrawal/Desktop/VA/UCLA/Capstone/graph-robotics/graph-pad/debug
 stride: 1
 exp_suffix: r_mapping # helpful label to identify your mapping experiment
-
 
 save_video: !!bool False
 save_objects_all_frames: !!bool False
@@ -51,9 +49,9 @@ obj_pcd_max_points: 5000
 debug_render: !!bool False
 vis_render: !!bool False
 
-denoise_interval: 5           # Run DBSCAN every k frame. This operation is heavy
-filter_interval: 5            # Filter objects that have too few associations or are too small
-merge_interval: 5             # Merge objects based on geometric and semantic similarity
+denoise_interval: 5 # Run DBSCAN every k frame. This operation is heavy
+filter_interval: 5 # Filter objects that have too few associations or are too small
+merge_interval: 5 # Merge objects based on geometric and semantic similarity
 run_denoise_final_frame: !!bool True
 run_filter_final_frame: !!bool True
 run_merge_final_frame: !!bool True
@@ -69,11 +67,10 @@ obj_min_detections: 1
 # For merge_overlap_objects() function
 use_rerun: !!bool True
 save_rerun: !!bool False
-
 # hydra:
 #   verbose: true
-  # mode: MULTIRUN
-  # sweeper:
-  #   params:
-  #     downsample_voxel_size: 0.025, 0.01, 0.001, 0.001
-  #     obj_pcd_max_points: 5000, 10000, 100000, 100000
+# mode: MULTIRUN
+# sweeper:
+#   params:
+#     downsample_voxel_size: 0.025, 0.01, 0.001, 0.001
+#     obj_pcd_max_points: 5000, 10000, 100000, 100000

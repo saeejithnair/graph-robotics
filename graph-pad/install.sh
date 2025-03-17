@@ -1,6 +1,7 @@
 #!/bin/bash
 conda activate graphpad
-pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118 # Edit this line to get torch to compile with your cuda
+# pip3 install torch 
+pip3 install torchvision torchaudio # Edit this line to get torch to compile with your cuda
 pip install hydra-core
 pip install git+https://github.com/ultralytics/CLIP.git
 pip install numpy
