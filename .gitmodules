@@ -17,3 +17,6 @@
 [submodule "third-party/segment-anything"]
 	path = third-party/segment-anything
 	url = https://github.com/facebookresearch/segment-anything.git
+[submodule "third-party/stretch_ai"]
+	path = third-party/stretch_ai
+	url = https://github.com/hello-robot/stretch_ai.git
