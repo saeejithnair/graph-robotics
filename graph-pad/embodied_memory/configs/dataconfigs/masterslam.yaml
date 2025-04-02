@@ -1,0 +1,16 @@
+dataset_name: 'masterslam'
+camera_params:
+  # These are default values that will be overridden by actual image dimensions
+  image_height: 1440  # Default height for iPhone images
+  image_width: 1920   # Default width for iPhone images
+  
+  # These are invalid placeholder values
+  # Actual values are computed in __getitem__ based on image dimensions
+  # Using negative values to make it obvious if these are incorrectly used
+  fx: -1
+  fy: -1
+  cx: -1
+  cy: -1
+  
+  # Depth is already in meters
+  png_depth_scale: 1.0 

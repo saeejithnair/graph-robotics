@@ -1,0 +1,12 @@
+defaults:
+  - base_paths
+
+dataset_root: /pub0/smnair/robotics/MASt3R-SLAM/logs
+dataset_config: ${repo_root}/embodied_memory/configs/dataconfigs/masterslam.yaml
+scene_id: IMG_8114_v3_3
+room_types: 
+  - living room
+  - kitchen
+  - bedroom
+  - bathroom
+  - hallway

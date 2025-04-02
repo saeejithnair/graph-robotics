@@ -2,7 +2,6 @@ import yaml
 
 from .datasets import Hm3dDataset, ScannetDataset
 
-
 def update_recursive(dict1, dict2):
     """
     Update two config dictionaries recursively.
@@ -75,5 +74,8 @@ def get_dataset(dataconfig, basedir, sequence, **kwargs):
         return MultiscanDataset(config_dict, basedir, sequence, **kwargs)
     elif config_dict["dataset_name"].lower() in ["hm3d"]:
         return Hm3dDataset(config_dict, basedir, sequence, **kwargs)
+    elif config_dict['dataset_name'].lower() in ['masterslam']:
+        from .masterslam_dataset import MasterSLAMDataset
+        return MasterSLAMDataset(config_dict, basedir, sequence, **kwargs)
     else:
         raise ValueError(f"Unknown dataset name {config_dict['dataset_name']}")

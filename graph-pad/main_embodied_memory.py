@@ -32,12 +32,17 @@ from embodied_memory.vlm_detectors import (
 @hydra.main(
     version_base=None,
     config_path="embodied_memory/configs/mapping",
-    config_name="hm3d_mapping",
+    config_name="masterslam_mapping",
     # config_name="scannet_mapping",
 )
 # @profile
 def main(cfg: DictConfig):
     cfg = utils.process_cfg(cfg)
+    
+    # Force set the scene_id to IMG_8114_v3_3 for MasterSLAM dataset
+    print(f"Original scene_id: {cfg.scene_id}")
+    cfg.scene_id = "IMG_8114_v3_3"
+    print(f"Using scene_id: {cfg.scene_id}")
 
     # Initialize the dataset
     device = "cuda:0"

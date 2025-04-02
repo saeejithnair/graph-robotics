@@ -522,7 +522,7 @@ class EdgeConsolidator(VLMPrompter):
                 prompt.append("Relationships:\n" + json.dumps(relationships_prompt))
 
         relationships_output = []
-        for i in range(8):
+        for i in range(16):
             try:
                 model = genai.GenerativeModel(model_name=self.gemini_model)
                 response = utils.call_gemini(model, prompt).strip()
@@ -559,6 +559,7 @@ class EdgeConsolidator(VLMPrompter):
             except:
                 relationships_output = []
                 print("failed to consolidate relationships, trying again")
+                time.sleep(30)
                 continue
         raise Exception("Failed to consolidate edges")
 
