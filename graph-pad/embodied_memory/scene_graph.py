@@ -159,8 +159,6 @@ class SceneGraph:
         os.makedirs(save_dir, exist_ok=True)
         save_dir = Path(save_dir)
         json_path = save_dir / "scene_graph.json"
-        masks_path = save_dir / "masks.npz"
-        bboxes_path = save_dir / "bboxes.npz"
         visual_embs_path = save_dir / "visual_embs.npz"
         caption_embs_path = save_dir / "caption_embs.npz"
         bboxes3d_path = save_dir / "bboxes_3d.txt"
@@ -171,8 +169,6 @@ class SceneGraph:
         visual_embs, caption_embs = [], []
         for id in self.get_node_ids():
             node = self.nodes[id]
-            masks.append(np.array(node.masks))
-            bboxes.append(np.array(node.bboxes))
 
             # Bug: Centroid is a moving average of centroid, not actual centroid
             json_data.append(
@@ -200,13 +196,20 @@ class SceneGraph:
                 str(save_dir / Path("pcd-" + str(node.id) + ".pcd")), node.local_pcd
             )
 
+            np.savez(
+                save_dir / ("masks-" + str(node.id) + "-" + str(node.label) + ".npz"),
+                masks=np.array(node.masks),
+            )
+            np.savez(
+                save_dir / ("bboxes-" + str(node.id) + "-" + str(node.label) + ".npz"),
+                bboxes=np.array(node.bboxes),
+            )
+
             crops.append(node.crops)
             bboxes_3d.append(node.features.bbox_3d)
             visual_embs.append(node.features.visual_emb)
             caption_embs.append(node.features.caption_emb)
 
-        np.savez(masks_path, masks=masks)
-        np.savez(bboxes_path, bboxes=bboxes)
         np.savez(visual_embs_path, visual_embs=visual_embs)
         np.savez(caption_embs_path, caption_embs=caption_embs)
 
@@ -223,8 +226,6 @@ class SceneGraph:
 def load_scenegraph(save_dir):
     nodes = {}
     save_dir = Path(save_dir)
-    masks = np.load(save_dir / "masks.npz", allow_pickle=True)["masks"]
-    bboxes = np.load(save_dir / "bboxes.npz", allow_pickle=True)["bboxes"]
     visual_embs = np.load(save_dir / "visual_embs.npz", allow_pickle=True)[
         "visual_embs"
     ]
@@ -249,14 +250,24 @@ def load_scenegraph(save_dir):
             str(save_dir / Path("pcd-" + str(data["id"]) + ".pcd"))
         )
 
+        masks = np.load(
+            save_dir / ("masks-" + str(data["id"]) + "-" + str(data["label"]) + ".npz"),
+            allow_pickle=True,
+        )["masks"]
+        bboxes = np.load(
+            save_dir
+            / ("bboxes-" + str(data["id"]) + "-" + str(data["label"]) + ".npz"),
+            allow_pickle=True,
+        )["bboxes"]
+
         trk = Node(
             id=data["id"],
             label=data["label"],
             captions=data["caption"],
             features=features,
             keyframe_ids=data["keyframe_ids"],
-            masks=masks[i],
-            bboxes=bboxes[i],
+            masks=masks,
+            bboxes=bboxes,
             local_pcd=local_pcd,
             crops=crops[i],
             level=data["level"],

@@ -21,7 +21,7 @@ from .visualizer import Visualizer2D, Visualizer3D
 
 class EmbodiedMemory:
     def __init__(self, visual_memory_size, room_types, device="cuda"):
-        self.scene_graph = SceneGraph()
+        self.scene_graph = SceneGraph(nodes={})
         self.navigation_log = NavigationLog()
         self.visual_memory_size = visual_memory_size
         self.hierarchy_matrix = None
