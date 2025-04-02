@@ -522,7 +522,7 @@ class EdgeConsolidator(VLMPrompter):
                 prompt.append("Relationships:\n" + json.dumps(relationships_prompt))
 
         relationships_output = []
-        for i in range(4):
+        for i in range(8):
             try:
                 model = genai.GenerativeModel(model_name=self.gemini_model)
                 response = utils.call_gemini(model, prompt).strip()

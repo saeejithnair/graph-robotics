@@ -1,3 +1,4 @@
+import gc
 import os
 import shutil
 import sys
@@ -7,7 +8,6 @@ import hydra
 import numpy as np
 import open3d as o3d
 import torch
-import torchvision
 from omegaconf import DictConfig
 from PIL import Image
 from tqdm import tqdm
@@ -18,7 +18,7 @@ from embodied_memory.datasets import get_dataset
 from embodied_memory.detection_feature_extractor import DetectionFeatureExtractor
 from embodied_memory.embodied_memory import EmbodiedMemory
 from embodied_memory.relationship_scorer import HierarchyExtractor
-from embodied_memory.scene_graph import associate_dets_to_nodes
+from embodied_memory.scene_graph import associate_dets_to_nodes, reset_node_counter
 from embodied_memory.visualizer import Visualizer2D, Visualizer3D
 from embodied_memory.vlm_detectors import (
     CaptionConsolidator,
@@ -267,11 +267,23 @@ def main(cfg: DictConfig):
     embodied_memory.visualize_2d(
         visualizer2d, result_dir, hierarchy_matrix, hierarchy_type_matrix
     )
-
+    del (
+        embodied_memory.scene_graph,
+        embodied_memory.full_scene_pcd,
+        embodied_memory,
+        perceptor,
+        edge_consolidator,
+        caption_consolidator,
+        feature_extractor,
+    )
+    torch.cuda.empty_cache()
+    gc.collect()
     print("Completed generation of", cfg.scene_id)
 
 
 if __name__ == "__main__":
+    import subprocess
+
     scene_ids = []
     with open("subset_scene_ids.txt", "r") as f:
         for line in f.readlines():
@@ -280,6 +292,9 @@ if __name__ == "__main__":
             scene_ids.append(line.strip())
     # sorted(scene_ids)
     for id in scene_ids:
+        # subprocess.run(["python", "main_embodied_memory.py", f"scene_id={id}"])
+        reset_node_counter()
         sys.argv.append("scene_id=" + id)
         print("PROCESSSING SCENE:", id)
         main()
+        gc.collect()
